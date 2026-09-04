@@ -1,0 +1,60 @@
+<!-- ---------- the philosophy ---------- -->
+<section class="beliefs" data-nav="ink" aria-label="The philosophy of BEAUX DE PARIS">
+  <header bdpReveal="rise">
+    <p class="label beliefs__kicker rule">The philosophy</p>
+    <h2 class="t-display beliefs__title">
+      Three beliefs, <em>held lightly.</em>
+    </h2>
+  </header>
+
+  <ol class="beliefs__list">
+    @for (b of beliefs; track b.numeral) {
+      <li class="belief" bdpReveal="rise">
+        <span class="belief__num numeral" aria-hidden="true">{{ b.numeral }}</span>
+        <h3 class="belief__title t-title">{{ b.title }}</h3>
+        <p class="belief__copy t-body">{{ b.copy }}</p>
+      </li>
+    }
+  </ol>
+</section>
+
+<!-- ---------- the house ---------- -->
+<section id="maison" class="house" data-nav="ink" aria-label="The House of BEAUX DE PARIS">
+  <div class="house__scene" aria-hidden="true">
+    <div class="house__glow"></div>
+    <bdp-dust class="house__dust" [density]="18" />
+    <div class="house__bot house__bot--l" [bdpParallax]="0.1">
+      <bdp-botanical kind="sprig" />
+    </div>
+    <div class="house__bot house__bot--r" [bdpParallax]="-0.08">
+      <bdp-botanical kind="iris" />
+    </div>
+    <div class="house__still">
+      <div class="house__ped"><bdp-pedestal kind="marble" /></div>
+      <div class="house__bottle"><bdp-product-art [fragrance]="no1" alt="" /></div>
+      <div class="house__shadow"></div>
+    </div>
+  </div>
+
+  <div class="house__copy" bdpReveal="rise">
+    <p class="label house__kicker">The House of Beaux de Paris</p>
+    <h2 class="t-display house__title">
+      Fragrance is more than a scent.
+      <em>It is the impression that remains.</em>
+    </h2>
+    <p class="t-lead house__lede">
+      A trace of light. A flower remembered. The tone of a voice, hours after
+      the room has emptied. BEAUX DE PARIS was founded in Paris to compose that
+      impression — perfumes built like architecture, from light, petals and
+      wood.
+    </p>
+    <p class="t-body house__body">
+      Composed in Grasse. Bottled by hand in our atelier at 8 Rue Royale. Worn
+      wherever elegance is expected — and never announced.
+    </p>
+    <p class="house__sig serif-i">— La Maison, Paris</p>
+    <p class="house__meta label-thin">
+      Maison fondée MMXIX — Grasse &amp; Paris — Nº1 L'Aube · Nº2 Le Velours · Nº3 Jardin de Lune
+    </p>
+  </div>
+</section>

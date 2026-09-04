@@ -1,0 +1,32 @@
+:host {
+  display: block;
+  width: 100%;
+  height: auto;
+  line-height: 0;
+  color: rgb(48 36 29 / 0.55);
+}
+
+.botanical {
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.botanical__stroke,
+.botanical__petals {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.1;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.botanical__petals {
+  stroke-width: 0.9;
+}
+
+/* hard shapes (fruit / blooms) keep their own fill behaviour */
+.botanical circle[fill="currentColor"],
+.botanical path[fill="currentColor"] {
+  fill: currentColor;
+}

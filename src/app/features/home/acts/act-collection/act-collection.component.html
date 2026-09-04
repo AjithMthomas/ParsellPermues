@@ -1,0 +1,73 @@
+<section id="collection" class="collection" aria-label="The BEAUX DE PARIS collection">
+  <header class="collection__head" bdpReveal="rise">
+    <p class="label collection__kicker">The collection</p>
+    <h2 class="t-display collection__title">
+      Three fragrances. <em>One house.</em>
+    </h2>
+  </header>
+
+  @for (f of fragrances; track f.slug) {
+    <article
+      [id]="'world-' + f.slug"
+      class="world world--{{ f.world }} world--{{ sideOf(f) }}"
+      [style]="styleOf(f)"
+      [attr.data-nav]="navOf(f)"
+      [attr.aria-label]="f.code + ' — ' + f.name"
+    >
+      <div class="world__scene-wrap">
+        <div class="world__scene">
+          <div class="world__scene-glow" aria-hidden="true"></div>
+          <bdp-world-stage [fragrance]="f" [plate]="true" />
+        </div>
+        <p class="world__fig label-num">Fig. {{ pad($index + 1) }} — {{ f.code }} {{ f.name }} on {{ material(f) }}</p>
+      </div>
+
+      <div class="world__copy">
+        <p class="label world__kicker">
+          <span class="numeral world__numeral">{{ f.code }}</span>
+          &nbsp;·&nbsp; {{ f.descriptor }}
+        </p>
+        <h3 class="t-display world__name">{{ f.name }}</h3>
+        <p class="serif-i world__line">{{ f.line }}</p>
+        <p class="t-body world__desc">{{ f.intro }}</p>
+
+        <div class="world__notes" aria-label="Olfactory pyramid">
+          <div class="world__notes-row">
+            <span class="label world__notes-key">Top</span>
+            <span class="world__notes-val">{{ join(f.topNotes) }}</span>
+          </div>
+          <div class="world__notes-row">
+            <span class="label world__notes-key">Heart</span>
+            <span class="world__notes-val">{{ join(f.heartNotes) }}</span>
+          </div>
+          <div class="world__notes-row">
+            <span class="label world__notes-key">Base</span>
+            <span class="world__notes-val">{{ join(f.baseNotes) }}</span>
+          </div>
+        </div>
+
+        <div class="world__action">
+          <span class="world__price">{{ price(f) }} <em>— 100 ml</em></span>
+          <button
+            class="btn-editorial world__add"
+            type="button"
+            (click)="addToBag(f)"
+            [attr.data-cursor]="added().includes(f.slug) ? '' : 'ADD'"
+          >
+            @if (added().includes(f.slug)) {
+              <span class="world__added">Added to your bag</span>
+            } @else {
+              Add to bag
+            }
+          </button>
+        </div>
+        <div class="world__order">
+          <button class="link-line world__order-wa" type="button" (click)="orderOnWhatsApp(f)">
+            Order on WhatsApp
+          </button>
+        </div>
+        <p class="world__vol label-thin">50 ml · 100 ml — Complimentary delivery</p>
+      </div>
+    </article>
+  }
+</section>

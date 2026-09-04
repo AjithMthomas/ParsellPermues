@@ -1,0 +1,21 @@
+:host {
+  display: block;
+}
+
+.skip-link {
+  position: fixed;
+  top: -100px;
+  left: 1rem;
+  z-index: 4000;
+  background: var(--color-ink);
+  color: var(--color-porcelain);
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  padding: 0.9rem 1.4rem;
+  transition: top 0.3s var(--ease-luxe);
+}
+.skip-link:focus {
+  top: 1rem;
+}

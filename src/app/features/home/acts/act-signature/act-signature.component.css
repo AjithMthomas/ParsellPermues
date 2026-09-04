@@ -1,0 +1,225 @@
+:host {
+  display: block;
+}
+
+.film-sec--signature {
+  height: calc(100svh + 55vh);
+}
+@media (max-width: 767px) {
+  .film-sec--signature {
+    height: auto;
+  }
+}
+
+.sig-stage {
+  background: var(--color-ivory);
+}
+
+.sig-glow {
+  position: absolute;
+  right: 6vw;
+  top: 6vh;
+  width: 46vw;
+  height: 46vw;
+  border-radius: 50%;
+  filter: blur(70px);
+  background: radial-gradient(circle, rgb(247 234 204 / 0.85), transparent 70%);
+  pointer-events: none;
+}
+
+.sig-dust {
+  opacity: 0.5;
+}
+
+/* ---------- copy ---------- */
+.sig-copy {
+  position: absolute;
+  z-index: 4;
+  left: var(--gutter);
+  top: 50%;
+  transform: translateY(-50%);
+  width: min(36vw, 34rem);
+}
+.sig-kicker {
+  color: var(--color-champagne);
+}
+.sig-title {
+  margin-top: 1.4rem;
+  color: var(--color-ink);
+  font-size: clamp(3rem, 6vw, 6rem);
+  line-height: 0.98;
+}
+.sig-title em {
+  font-style: italic;
+  color: var(--color-champagne);
+}
+.sig-line {
+  margin-top: 1.2rem;
+  font-size: clamp(1.15rem, 1.5vw, 1.5rem);
+  color: var(--color-mocha);
+}
+.sig-desc {
+  margin-top: 1.2rem;
+  color: var(--color-mocha);
+  max-width: 30rem;
+}
+.sig-trio {
+  margin-top: 1.8rem;
+  color: var(--color-champagne);
+  letter-spacing: 0.24em;
+  line-height: 2;
+}
+
+.sig-action {
+  margin-top: 2.4rem;
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+.sig-price {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  color: var(--color-ink);
+}
+.sig-price em {
+  font-family: var(--font-body);
+  font-size: 0.68rem;
+  font-style: normal;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-mocha);
+  margin-left: 0.4rem;
+}
+.sig-added {
+  color: var(--color-champagne);
+}
+.sig-wa {
+  margin-top: 1.1rem;
+  color: var(--color-mocha);
+  font-size: 0.625rem;
+}
+.sig-wa:hover {
+  color: var(--color-champagne);
+}
+.sig-hint {
+  margin-top: 2rem;
+  color: var(--color-taupe);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+.sig-hint::before {
+  content: "";
+  width: 2.4rem;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.5;
+}
+
+/* ---------- the still on marble ---------- */
+.sig-stage-art {
+  position: absolute;
+  z-index: 3;
+  right: 4vw;
+  bottom: -4vh;
+  width: min(24vw, 21rem);
+  aspect-ratio: 200 / 340;
+}
+.sig-ped {
+  position: absolute;
+  inset: 0;
+  will-change: transform;
+}
+.sig-bottle {
+  position: absolute;
+  left: 34%;
+  bottom: 5%;
+  width: 32%;
+  z-index: 3;
+  will-change: transform;
+}
+.sig-shadow {
+  position: absolute;
+  left: 17%;
+  bottom: 4.4%;
+  width: 66%;
+  height: 2.4%;
+  background: radial-gradient(ellipse at center, rgb(74 55 41 / 0.26), transparent 66%);
+  border-radius: 50%;
+  filter: blur(2px);
+  z-index: 2;
+}
+.sig-plant {
+  position: absolute;
+  left: -28%;
+  bottom: -4%;
+  width: 84%;
+  color: rgb(48 36 29 / 0.38);
+  transform: rotate(-14deg);
+  z-index: 1;
+}
+
+/* visitor light */
+.sig-light {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  opacity: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    30vmax 42vmax at var(--lx, 60%) var(--ly, 40%),
+    rgb(255 250 235 / 0.5),
+    transparent 70%
+  );
+  mix-blend-mode: soft-light;
+  transition: opacity 1s var(--ease-luxe);
+}
+
+/* ---------- responsive ---------- */
+@media (max-width: 1023px) {
+  .sig-stage {
+    position: relative;
+    overflow: hidden;
+    padding-top: 5rem;
+  }
+  .sig-copy {
+    position: relative;
+    top: auto;
+    left: auto;
+    transform: none;
+    width: 88vw;
+    margin: 0 auto;
+    padding-top: 2rem;
+  }
+  .sig-stage-art {
+    position: relative;
+    right: auto;
+    bottom: auto;
+    margin: 3rem auto 0;
+    width: min(52vw, 22rem);
+  }
+  .sig-glow {
+    width: 90vw;
+    height: 90vw;
+    right: -10vw;
+    top: 20vh;
+  }
+}
+
+@media (max-width: 767px) {
+  .film-sec--signature {
+    height: auto;
+  }
+  .sig-stage {
+    padding-bottom: 0;
+    overflow: hidden;
+  }
+  .sig-stage-art {
+    width: 78vw;
+    margin-top: 2.4rem;
+  }
+  .sig-hint {
+    display: none;
+  }
+}

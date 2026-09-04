@@ -1,0 +1,70 @@
+<header
+  class="nav"
+  [class.nav--ivory]="ui.navTheme() === 'ivory'"
+  [attr.aria-label]="'Site navigation'"
+>
+  <div class="nav__inner">
+    <a
+      class="nav__brand"
+      href="#top"
+      (click)="go('top', $event)"
+      aria-label="BEAUX DE PARIS — back to the top"
+    >
+      <span class="nav__brand-name">BEAUX&nbsp;DE&nbsp;PARIS</span>
+      <span class="nav__brand-sub">Haute parfumerie</span>
+    </a>
+
+    <nav class="nav__links" aria-label="Primary">
+      @for (l of links; track l.target + l.label) {
+        <a
+          class="nav__link"
+          href="#{{ l.target }}"
+          (click)="go(l.target, $event)"
+        >{{ l.label }}</a>
+      }
+    </nav>
+
+    <div class="nav__actions">
+      <button
+        class="nav__action"
+        type="button"
+        (click)="ui.openSearch()"
+        aria-label="Search the house"
+        aria-haspopup="dialog"
+      >
+        <span class="nav__action-text">Search</span>
+        <svg class="nav__icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="10.5" cy="10.5" r="6.5" stroke="currentColor" stroke-width="1.2" />
+          <line x1="15.6" y1="15.6" x2="21" y2="21" stroke="currentColor" stroke-width="1.2" />
+        </svg>
+      </button>
+
+      <button
+        class="nav__action"
+        type="button"
+        (click)="openBag($event)"
+        aria-label="Open your bag"
+        aria-haspopup="dialog"
+      >
+        <span class="nav__action-text">Bag</span>
+        <svg class="nav__icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M5 8h14l-1.2 12H6.2L5 8Z" stroke="currentColor" stroke-width="1.2" />
+          <path d="M9 10V6a3 3 0 0 1 6 0v4" stroke="currentColor" stroke-width="1.2" />
+        </svg>
+        @if (cart.count() > 0) {
+          <span class="nav__count" aria-hidden="true">{{ cart.count() }}</span>
+        }
+      </button>
+
+      <button
+        class="nav__menu-btn"
+        type="button"
+        (click)="ui.openMenu()"
+        aria-label="Open the menu"
+        aria-haspopup="dialog"
+      >
+        <span>Menu</span>
+      </button>
+    </div>
+  </div>
+</header>

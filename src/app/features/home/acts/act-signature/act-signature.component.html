@@ -1,0 +1,52 @@
+<section
+  class="film-sec film-sec--signature"
+  #sec
+  data-nav="ink"
+  aria-label="The signature — Nº1 L'Aube on its marble pedestal"
+>
+  <div class="film-stage sig-stage">
+    <div class="sig-glow" aria-hidden="true"></div>
+    <bdp-dust class="sig-dust" [density]="20" />
+
+    <div class="sig-copy">
+      <p class="label sig-kicker rule">Scene VIII — The signature</p>
+      <h2 class="t-display sig-title">
+        Nº1 — <em>L'Aube</em>
+      </h2>
+      <p class="serif-i sig-line">{{ no1.line }}</p>
+      <p class="t-body sig-desc">{{ no1.intro }}</p>
+      <p class="sig-trio label-thin">{{ join(no1.topNotes) }} — {{ join(no1.heartNotes) }} — {{ join(no1.baseNotes) }}</p>
+      <div class="sig-action">
+        <span class="sig-price">{{ price() }} <em>— 100 ml</em></span>
+        <button class="btn-editorial" type="button" (click)="addToBag()">
+          @if (added()) {
+            <span class="sig-added">Added to your bag</span>
+          } @else {
+            Add to bag
+          }
+        </button>
+      </div>
+      <button class="link-line sig-wa" type="button" (click)="orderOnWhatsApp()">
+        Order on WhatsApp — {{ wa.display }}
+      </button>
+      <p class="sig-hint label-thin" aria-hidden="true">Move your light across the glass</p>
+    </div>
+
+    <!-- the still: bottle settling on its marble pedestal -->
+    <div class="sig-stage-art" aria-hidden="true">
+      <div class="sig-ped">
+        <bdp-pedestal kind="marble" />
+      </div>
+      <div class="sig-bottle">
+        <bdp-product-art [fragrance]="no1" alt="" />
+      </div>
+      <div class="sig-shadow"></div>
+      <div class="sig-plant">
+        <bdp-botanical kind="sprig" />
+      </div>
+    </div>
+
+    <!-- visitor light -->
+    <div class="sig-light" aria-hidden="true"></div>
+  </div>
+</section>

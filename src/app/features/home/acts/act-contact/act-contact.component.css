@@ -1,0 +1,119 @@
+:host {
+  display: block;
+}
+
+.contact {
+  background: var(--color-ivory);
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 2rem;
+  padding: clamp(7rem, 14vh, 11rem) var(--gutter) clamp(8rem, 16vh, 13rem);
+}
+
+.contact__intro {
+  grid-column: 1 / 6;
+}
+.contact__kicker {
+  color: var(--color-champagne);
+}
+.contact__title {
+  margin-top: 1.4rem;
+}
+.contact__title em {
+  font-style: italic;
+  color: var(--color-champagne);
+}
+.contact__copy {
+  margin-top: 1.6rem;
+  color: var(--color-mocha);
+  max-width: 30rem;
+}
+
+.contact__rows {
+  list-style: none;
+  margin-top: 3rem;
+  border-top: 1px solid var(--hairline);
+}
+.contact__row {
+  display: flex;
+  gap: 2rem;
+  align-items: baseline;
+  padding: 1rem 0.2rem;
+  border-bottom: 1px solid var(--hairline);
+}
+.contact__row-key {
+  color: var(--color-champagne);
+  min-width: 7rem;
+}
+.contact__row-val {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 1.15rem;
+  letter-spacing: 0.04em;
+  color: var(--color-ink);
+}
+.contact__row a.contact__row-val {
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.6s var(--ease-luxe);
+}
+.contact__row a.contact__row-val:hover {
+  border-color: var(--color-champagne);
+}
+
+.contact__form {
+  grid-column: 7 / 13;
+  padding-top: 1rem;
+}
+.field {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 2.1rem;
+}
+.field label {
+  color: var(--color-mocha);
+  margin-bottom: 0.5rem;
+}
+.field input,
+.field textarea {
+  font-family: var(--font-body);
+  font-weight: 300;
+  font-size: 1rem;
+  color: var(--color-ink);
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid rgb(48 36 29 / 0.24);
+  padding: 0.55rem 0.1rem;
+  resize: vertical;
+  transition: border-color 0.6s var(--ease-luxe);
+}
+.field input:focus,
+.field textarea:focus {
+  outline: none;
+  border-bottom-color: var(--color-champagne);
+}
+.contact__thanks {
+  color: var(--color-mocha);
+  max-width: 26rem;
+  padding-top: 1rem;
+}
+
+@media (max-width: 1023px) {
+  .contact {
+    display: block;
+  }
+  .contact__form {
+    margin-top: 4rem;
+  }
+}
+@media (max-width: 767px) {
+  .contact {
+    padding: 6rem 1.4rem;
+  }
+  .contact__row {
+    display: block;
+  }
+  .contact__row-key {
+    display: block;
+    margin-bottom: 0.3rem;
+  }
+}

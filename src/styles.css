@@ -1,0 +1,401 @@
+@import "tailwindcss";
+
+/* ============================================================
+   BEAUX DE PARIS — design tokens
+   ============================================================ */
+@theme {
+  /* palette — the majority of the site stays ivory / cream / stone */
+  --color-ivory: #f7f4ee;
+  --color-porcelain: #fcfbf8;
+  --color-cream: #ede7dc;
+  --color-sand: #d8cfc0;
+  --color-taupe: #a89b8b;
+  --color-ink: #30241d;
+  --color-mocha: #4a3729;
+  --color-bronze: #6f4a2b;
+  --color-champagne: #b89452;
+  --color-softgold: #d5bd8a;
+  --color-wine: #5a1725;
+  --color-velours: #241a14;
+  --color-velours-soft: #382a20;
+  --color-mist: #efede6;
+
+  /* typography */
+  --font-display: "Cormorant Garamond", "Cormorant", Georgia, "Times New Roman", serif;
+  --font-body: "Montserrat", "Helvetica Neue", Helvetica, Arial, sans-serif;
+
+  /* motion */
+  --ease-luxe: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-soft: cubic-bezier(0.33, 1, 0.68, 1);
+  --ease-film: cubic-bezier(0.76, 0, 0.24, 1);
+
+  /* shadows — diffused, physical, never hard */
+  --shadow-soft: 0 1.5rem 4rem -1.5rem rgb(48 36 29 / 0.14);
+  --shadow-still: 0 1rem 3rem -1.2rem rgb(48 36 29 / 0.12);
+
+  /* hairline */
+  --hairline: rgb(48 36 29 / 0.16);
+  --hairline-light: rgb(252 251 248 / 0.24);
+}
+
+/* ============================================================
+   base
+   ============================================================ */
+@layer base {
+  html {
+    background: var(--color-ivory);
+    color: var(--color-ink);
+    scrollbar-width: thin;
+    scrollbar-color: rgb(48 36 29 / 0.25) transparent;
+  }
+
+  html,
+  body {
+    overflow-x: clip;
+  }
+
+  body {
+    font-family: var(--font-body);
+    font-weight: 300;
+    font-size: 16px;
+    line-height: 1.7;
+    color: var(--color-ink);
+    background: var(--color-ivory);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background: rgb(184 148 82 / 0.85);
+    color: var(--color-porcelain);
+  }
+
+  img,
+  svg {
+    display: block;
+    max-width: 100%;
+  }
+
+  button {
+    font: inherit;
+    color: inherit;
+    background: none;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  :focus-visible {
+    outline: 1px solid var(--color-champagne);
+    outline-offset: 4px;
+  }
+
+  /* lenis */
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+  .lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+  .lenis.lenis-stopped {
+    overflow: hidden;
+  }
+}
+
+/* ============================================================
+   fluid type scale (single source — never scattered rems)
+   ============================================================ */
+:root {
+  --t-hero: clamp(3rem, 7.6vw, 7.9rem);
+  --t-display: clamp(2.5rem, 5.2vw, 5.7rem);
+  --t-title: clamp(1.9rem, 3.3vw, 3.6rem);
+  --t-head: clamp(1.35rem, 2vw, 2.1rem);
+  --t-lead: clamp(1.06rem, 1.3vw, 1.3rem);
+  --t-body: clamp(0.95rem, 1vw, 1rem);
+  --t-caption: 0.8rem;
+  --t-micro: 0.625rem;
+  --gutter: clamp(1.25rem, 4vw, 4rem);
+  --container: 90rem;
+  --measure: 42rem;
+}
+
+/* ============================================================
+   component vocabulary
+   ============================================================ */
+@layer components {
+  /* --- type as artwork ------------------------------------ */
+  .font-display {
+    font-family: var(--font-display);
+    font-weight: 300;
+  }
+
+  .t-hero {
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-size: var(--t-hero);
+    line-height: 0.98;
+    letter-spacing: 0.005em;
+  }
+  .t-display {
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-size: var(--t-display);
+    line-height: 1.02;
+    letter-spacing: 0.01em;
+  }
+  .t-title {
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-size: var(--t-title);
+    line-height: 1.08;
+    letter-spacing: 0.012em;
+  }
+  .t-head {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: var(--t-head);
+    line-height: 1.2;
+    letter-spacing: 0.02em;
+  }
+  .t-lead {
+    font-weight: 300;
+    font-size: var(--t-lead);
+    line-height: 1.75;
+    letter-spacing: 0.01em;
+  }
+  .t-body {
+    font-weight: 300;
+    font-size: var(--t-body);
+    line-height: 1.85;
+    letter-spacing: 0.012em;
+  }
+  .t-caption {
+    font-size: var(--t-caption);
+    line-height: 1.6;
+    letter-spacing: 0.03em;
+  }
+  .serif-i {
+    font-style: italic;
+    font-weight: 300;
+  }
+
+  /* --- small caps labels ---------------------------------- */
+  .label {
+    font-family: var(--font-body);
+    font-size: 0.625rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.38em;
+    line-height: 1.6;
+  }
+  .label-thin {
+    font-family: var(--font-body);
+    font-size: 0.6875rem;
+    font-weight: 300;
+    text-transform: uppercase;
+    letter-spacing: 0.42em;
+    line-height: 1.7;
+  }
+  .label-num {
+    font-family: var(--font-body);
+    font-size: 0.625rem;
+    font-weight: 300;
+    letter-spacing: 0.3em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* --- editorial hairlines --------------------------------- */
+  .hairline {
+    height: 1px;
+    background: var(--hairline);
+  }
+  .hairline-light {
+    height: 1px;
+    background: var(--hairline-light);
+  }
+  .rule {
+    position: relative;
+  }
+  .rule::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -0.55em;
+    height: 1px;
+    width: 2.6rem;
+    background: var(--color-champagne);
+    opacity: 0.7;
+  }
+
+  /* --- elegant links / CTA --------------------------------- */
+  .link-line {
+    position: relative;
+    display: inline-block;
+    font-family: var(--font-body);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.34em;
+    padding-bottom: 0.65em;
+    cursor: pointer;
+  }
+  .link-line::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 1px;
+    background: currentColor;
+    transform: scaleX(0.32);
+    transform-origin: left center;
+    opacity: 0.65;
+    transition: transform 0.9s var(--ease-luxe), opacity 0.9s var(--ease-luxe);
+  }
+  .link-line:hover::after,
+  .link-line:focus-visible::after {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+
+  /* minimal bordered action for commerce */
+  .btn-editorial {
+    display: inline-flex;
+    align-items: center;
+    gap: 1.1em;
+    padding: 1.05em 2.4em;
+    border: 1px solid rgb(48 36 29 / 0.3);
+    font-family: var(--font-body);
+    font-size: 0.625rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.34em;
+    transition: background-color 0.7s var(--ease-luxe), color 0.7s var(--ease-luxe),
+      border-color 0.7s var(--ease-luxe);
+    cursor: pointer;
+    color: var(--color-ink);
+  }
+  .btn-editorial:hover {
+    background: var(--color-ink);
+    border-color: var(--color-ink);
+    color: var(--color-porcelain);
+  }
+  .btn-editorial--light {
+    border-color: rgb(252 251 248 / 0.45);
+    color: var(--color-porcelain);
+  }
+  .btn-editorial--light:hover {
+    background: var(--color-porcelain);
+    border-color: var(--color-porcelain);
+    color: var(--color-ink);
+  }
+  .btn-editorial--ghost {
+    border-color: transparent;
+    padding-left: 0;
+    padding-right: 0;
+  }
+  .btn-editorial--ghost:hover {
+    background: transparent;
+    color: var(--color-champagne);
+  }
+
+  /* --- vertical editorial side-labels ----------------------- */
+  .vert-label {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+  }
+
+  /* --- chapter numerals ------------------------------------- */
+  .numeral {
+    font-family: var(--font-display);
+    font-weight: 300;
+    font-style: italic;
+    color: var(--color-champagne);
+    line-height: 1;
+  }
+
+  /* --- hides text until its reveal (JS driven) -------------- */
+  .js-hidden {
+    visibility: hidden;
+  }
+
+  /* --- reveal masks ------------------------------------------ */
+  .mask-line {
+    display: block;
+    overflow: hidden;
+    padding-bottom: 0.06em;
+    margin-bottom: -0.06em;
+  }
+  .mask-line > span {
+    display: block;
+    will-change: transform;
+  }
+
+  /* --- film scene plumbing ----------------------------------- */
+  .film-sec {
+    position: relative;
+  }
+  .film-stage {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    height: 100svh;
+    overflow: hidden;
+    contain: layout paint;
+  }
+
+  /* --- atmosphere --------------------------------------------- */
+  .haze {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+  .dust-layer {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .grain {
+    position: fixed;
+    inset: -50%;
+    width: 200%;
+    height: 200%;
+    pointer-events: none;
+    z-index: 2000;
+    opacity: 0.05;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+    background-size: 300px 300px;
+  }
+
+  /* --- cursor label states ------------------------------------ */
+  [data-cursor] {
+    cursor: none;
+  }
+  @media (pointer: coarse) {
+    [data-cursor] {
+      cursor: auto;
+    }
+  }
+}
+
+/* ============================================================
+   reduced motion — preserve the design, remove the drama
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

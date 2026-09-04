@@ -1,0 +1,42 @@
+<!-- ---------- journal ---------- -->
+<section id="journal" class="journal" data-nav="ink" aria-label="The BEAUX DE PARIS journal">
+  <header class="journal__head" bdpReveal="rise">
+    <p class="label journal__kicker rule">From the journal</p>
+    <h2 class="t-display journal__title">The house, <em>in writing.</em></h2>
+  </header>
+
+  <div class="journal__list">
+    @for (e of entries; track e.num) {
+      <article class="entry" bdpReveal="rise" data-cursor="READ">
+        <span class="entry__num label-num" aria-hidden="true">{{ e.num }}</span>
+        <div class="entry__body">
+          <h3 class="entry__title t-title">{{ e.title }}</h3>
+          <p class="entry__abstract t-body">{{ e.abstract }}</p>
+        </div>
+        <span class="entry__tag label">{{ e.tag }}</span>
+      </article>
+    }
+  </div>
+</section>
+
+<!-- ---------- find your signature ---------- -->
+<section class="finder-teaser" id="finder" data-nav="ink" aria-label="Find your signature scent">
+  <div class="finder-teaser__inner" bdpReveal="rise">
+    <p class="label finder-teaser__kicker">Find your signature scent</p>
+    <h2 class="t-display finder-teaser__title">
+      Three questions. <em>One fragrance.</em>
+    </h2>
+    <p class="t-body finder-teaser__copy">
+      Tell the house how the day finds you — and be introduced to the BEAUX DE
+      PARIS composition that was waiting for you.
+    </p>
+    <button
+      class="btn-editorial finder-teaser__cta"
+      type="button"
+      (click)="findYours()"
+      data-cursor=""
+    >
+      Begin the questions
+    </button>
+  </div>
+</section>

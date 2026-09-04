@@ -1,0 +1,38 @@
+<section class="film-sec film-sec--mist" #sec data-nav="ink" aria-label="The mist of Nº1 L'Aube">
+  <div class="film-stage mist-stage">
+    <div class="mist-glow mist-glow--a" aria-hidden="true"></div>
+    <div class="mist-glow mist-glow--b" aria-hidden="true"></div>
+    <bdp-dust class="mist-dust" [density]="24" />
+
+    <div class="mist-type">
+      <p class="label mist-kicker rule">Scene V — The mist</p>
+      <h2 class="t-title mist-line">
+        One press — <em>a veil of fragrance.</em>
+      </h2>
+      <p class="t-body mist-note">
+        A fine mist, travelling toward you, dissolving into the light.
+      </p>
+    </div>
+
+    <!-- the flacon, floating in daylight -->
+    <div class="mist-product" aria-hidden="true">
+      <div class="mist-bottle">
+        <bdp-product-art [fragrance]="no1" alt="" />
+      </div>
+      <div class="mist-shadow"></div>
+      <div class="mist-glint"></div>
+    </div>
+
+    <!-- mist veil layers (soft cloud) -->
+    <div class="mist-veil" aria-hidden="true">
+      @for (p of [0, 1, 2, 3, 4]; track p) {
+        <span class="puff puff--{{ p }}"></span>
+      }
+    </div>
+
+    <!-- spray particle canvas -->
+    <canvas class="mist-spray" #spray aria-hidden="true"></canvas>
+
+    <div class="mist-bright" aria-hidden="true"></div>
+  </div>
+</section>

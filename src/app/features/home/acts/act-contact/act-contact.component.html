@@ -1,0 +1,73 @@
+<section id="contact" class="contact" data-nav="ink" aria-label="Contact BEAUX DE PARIS">
+  <div class="contact__intro" bdpReveal="rise">
+    <p class="label contact__kicker rule">Contact — Beaux de Paris</p>
+    <h2 class="t-display contact__title">
+      Write to <em>the maison.</em>
+    </h2>
+    <p class="t-body contact__copy">
+      For the boutique, for the atelier, for a fragrance remembered — a note
+      reaches the house directly.
+    </p>
+
+    <ul class="contact__rows">
+      <li class="contact__row">
+        <span class="label contact__row-key">WhatsApp</span>
+        <a
+          class="contact__row-val"
+          href="https://wa.me/918075265863"
+          target="_blank"
+          rel="noreferrer"
+        >
+          +91 8075 265 863
+        </a>
+      </li>
+      <li class="contact__row">
+        <span class="label contact__row-key">Écrire</span>
+        <a class="contact__row-val" href="mailto:hello@beauxdeparis.fr">hello@beauxdeparis.fr</a>
+      </li>
+      <li class="contact__row">
+        <span class="label contact__row-key">Atelier</span>
+        <span class="contact__row-val">8 Rue Royale — Paris 8ᵉ</span>
+      </li>
+      <li class="contact__row">
+        <span class="label contact__row-key">Instagram</span>
+        <a
+          class="contact__row-val"
+          href="https://instagram.com/beauxdeparis"
+          target="_blank"
+          rel="noreferrer"
+        >
+          @beauxdeparis
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <div class="contact__form" bdpReveal="rise" [delay]="0.12">
+    @if (!sent()) {
+      <form (submit)="send($event)">
+        <div class="field">
+          <label class="label" for="c-name">Name</label>
+          <input id="c-name" name="name" type="text" required autocomplete="name" />
+        </div>
+        <div class="field">
+          <label class="label" for="c-email">Email</label>
+          <input id="c-email" name="email" type="email" required autocomplete="email" />
+        </div>
+        <div class="field">
+          <label class="label" for="c-subject">Subject</label>
+          <input id="c-subject" name="subject" type="text" />
+        </div>
+        <div class="field">
+          <label class="label" for="c-message">Message</label>
+          <textarea id="c-message" name="message" rows="4" required></textarea>
+        </div>
+        <button class="btn-editorial" type="submit">Send via WhatsApp</button>
+      </form>
+    } @else {
+      <p class="contact__thanks serif-i t-head" role="status">
+        Merci — WhatsApp is opening with your note. The atelier replies within the day.
+      </p>
+    }
+  </div>
+</section>

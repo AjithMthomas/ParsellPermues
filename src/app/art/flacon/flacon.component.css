@@ -1,0 +1,30 @@
+:host {
+  display: block;
+  --liq-1: #efd9a8;
+  --liq-2: #c7a263;
+  --liq-3: #8f6a33;
+  width: 100%;
+  height: auto;
+  line-height: 0;
+}
+
+.flacon {
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+/* slow internal light travelling across the liquid — continuous, faint */
+.flacon__band {
+  animation: bdp-band 16s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+@keyframes bdp-band {
+  from {
+    transform: translateX(-26px);
+  }
+  to {
+    transform: translateX(30px);
+  }
+}

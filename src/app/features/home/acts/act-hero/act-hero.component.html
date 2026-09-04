@@ -1,0 +1,102 @@
+<section class="hero" #sec data-nav="ink" aria-label="The arrival of Nº1 L'Aube">
+  <div class="hero__stage" #stage>
+
+    <!-- ── MASSIVE VERTICAL DISPLAY TYPE ──────────────────── -->
+    <div class="hero__type" #typeBlock>
+      <p class="label hero__eyebrow hero__word">Maison de haute parfumerie — Paris</p>
+      <h1 class="hero__display">
+        <span class="hero__line"><span class="hero__line-inner">THE</span></span>
+        <span class="hero__line"><span class="hero__line-inner">SCENT</span></span>
+        <span class="hero__line"><span class="hero__line-inner hero__line--italic">of</span></span>
+        <span class="hero__line"><span class="hero__line-inner hero__line--gold">ELEGANCE</span></span>
+      </h1>
+      <p class="t-body hero__sub">
+        Nº1 — L'Aube. A floral eau de parfum composed in Grasse, born of the
+        first hour of daylight.
+      </p>
+      <a
+        class="link-line hero__cta"
+        href="#collection"
+        (click)="scrollTo($event, 'collection')"
+        data-cursor=""
+      >
+        Discover the collection
+      </a>
+    </div>
+
+    <!-- ── PRODUCT PHOTOGRAPHIC PLATE (background scene) ───── -->
+    <div class="hero__plate" #plateEl aria-hidden="true">
+      <div class="hero__plate-inner">
+        <img
+          class="hero__plate-img"
+          [src]="'/assets/products/laube/scene.png'"
+          alt=""
+          fetchpriority="high"
+          decoding="async"
+        />
+        <div class="hero__plate-veil"></div>
+      </div>
+    </div>
+
+    <!-- ── FLOATING BOTTLE (lifts from scene during scroll) ── -->
+    <div class="hero__bottle-float" #bottleFloat aria-hidden="true">
+      <img
+        class="hero__bottle-img"
+        [src]="'/assets/products/laube/bottle-float.png'"
+        alt=""
+        loading="eager"
+        decoding="async"
+      />
+    </div>
+
+    <!-- ── INGREDIENT VIGNETTE ─────────────────────────────── -->
+    <div class="hero__vignette" aria-hidden="true">
+      <img
+        class="hero__vignette-img"
+        [src]="'/assets/products/laube/notes-heart.png'"
+        alt=""
+        loading="lazy"
+        decoding="async"
+      />
+    </div>
+
+    <!-- ── SIDE LABELS ─────────────────────────────────────── -->
+    <p class="label-thin vert-label hero__side hero__side--l">
+      BEAUX DE PARIS — THE SCENT OF ELEGANCE
+    </p>
+    <p class="label-thin vert-label hero__side hero__side--r" aria-hidden="true">
+      HAUTE PARFUMERIE — GRASSE · PARIS
+    </p>
+
+    <!-- ── SCROLL CUE ──────────────────────────────────────── -->
+    <div class="hero__cue" aria-hidden="true">
+      <span class="hero-cue__line"></span>
+    </div>
+
+    <!-- ── LIGHT SWEEP (awakening phase) ───────────────────── -->
+    <div class="hero__sweep" aria-hidden="true"></div>
+
+    <!-- ── THROUGH THE GLASS ───────────────────────────────── -->
+    <div class="hero__wash" aria-hidden="true"></div>
+    <div class="hero__world" aria-hidden="true">
+      <bdp-dust class="hero-dust" [density]="26" />
+      <div class="hero-world-bot hero-world-bot--l">
+        <bdp-botanical kind="sprig" />
+      </div>
+      <div class="hero-world-bot hero-world-bot--r">
+        <bdp-botanical kind="branch" />
+      </div>
+      <div class="hero-world-type">
+        <p class="label">Scene III — Inside the fragrance</p>
+        <h2 class="t-display hero-world-title">
+          You have passed <em>through the glass.</em>
+        </h2>
+        <p class="t-body hero-world-copy">
+          What follows is not a scent you wear — it is the light the scent is
+          made of.
+        </p>
+      </div>
+    </div>
+
+  </div>
+</section>

@@ -1,0 +1,43 @@
+<section class="final-scene" data-nav="ivory" aria-label="Wear the unforgettable">
+  <div class="final__glow final__glow--a" aria-hidden="true"></div>
+  <div class="final__glow final__glow--b" aria-hidden="true"></div>
+  <bdp-dust
+    class="final__dust"
+    [density]="22"
+[palette]="['236, 214, 176', '184, 148, 82', '74, 55, 41']"
+  />
+
+  <div class="final__copy" bdpReveal="rise">
+    <p class="label final__kicker">The final scene</p>
+    <h2 class="t-hero final__title">
+      <span>Wear</span>
+      <span>the</span>
+      <span class="final__gold">unforgettable.</span>
+    </h2>
+    <p class="t-body final__note">
+      Nº1 — L'Aube. A floral eau de parfum of the first hour of day.
+      {{ price() }} — 100 ml.
+    </p>
+    <div class="final__action">
+      <button class="btn-editorial btn-editorial--light" type="button" (click)="addToBag()">
+        @if (added()) {
+          <span class="final__added">Added to your bag — merci</span>
+        } @else {
+          Add Nº1 L'Aube to your bag
+        }
+      </button>
+      <button class="btn-editorial btn-editorial--light" type="button" (click)="orderOnWhatsApp()">
+        Order on WhatsApp
+      </button>
+      <a class="link-line final__link" href="#contact" (click)="goContact($event)" data-cursor="">
+        Visit the atelier
+      </a>
+    </div>
+  </div>
+
+  <div class="final__stage" aria-hidden="true">
+    <div class="final__stage-inner" bdpReveal="rise" [delay]="0.15">
+      <bdp-world-stage [fragrance]="no1" />
+    </div>
+  </div>
+</section>

@@ -1,0 +1,508 @@
+:host {
+  display: block;
+}
+
+.hero {
+  height: calc(100svh + 65vh);
+}
+
+/* The stage stays pinned to the viewport for the whole scroll travel —
+   like every other film scene — so the product film plays in place and
+   hands off directly into the next act (no blank tail). */
+.hero__stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100dvh;
+  background: var(--color-ivory);
+  isolation: isolate;
+}
+
+/* ================================================================
+   DESKTOP LAYOUT — 1440px+
+   ================================================================ */
+
+/* ── MASSIVE VERTICAL DISPLAY TYPE (left ~42%) ─────────────────── */
+.hero__type {
+  position: absolute;
+  z-index: 4;
+  top: clamp(5rem, 12vh, 8rem);
+  left: var(--gutter);
+  width: min(42vw, 42rem);
+}
+
+.hero__eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  color: var(--color-mocha);
+  opacity: 0.85;
+  margin-bottom: clamp(1.2rem, 2.5vh, 2rem);
+}
+.hero__eyebrow::before {
+  content: "";
+  width: 3rem;
+  height: 1px;
+  background: var(--color-champagne);
+  opacity: 0.8;
+}
+
+.hero__display {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(4rem, 10vw, 12rem);
+  line-height: 0.88;
+  letter-spacing: -0.02em;
+  color: var(--color-ink);
+  text-transform: uppercase;
+  word-break: normal;
+  overflow-wrap: normal;
+}
+
+.hero__line {
+  display: block;
+}
+.hero__line-inner {
+  display: block;
+  will-change: transform;
+}
+.hero__line--italic {
+  font-style: italic;
+  font-weight: 300;
+  text-transform: none;
+  font-size: 0.72em;
+  letter-spacing: 0.04em;
+  margin-left: 0.15em;
+}
+.hero__line--gold {
+  color: var(--color-champagne);
+}
+
+.hero__sub {
+  margin-top: clamp(1.6rem, 4vh, 3rem);
+  max-width: 26rem;
+  color: var(--color-mocha);
+}
+
+.hero__cta {
+  margin-top: clamp(1.2rem, 3vh, 2rem);
+  color: var(--color-ink);
+}
+
+/* ── PRODUCT PHOTOGRAPHIC PLATE (right ~58%) ───────────────────── */
+.hero__plate {
+  position: absolute;
+  z-index: 2;
+  right: 0;
+  top: 0;
+  width: 58vw;
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  overflow: hidden;
+}
+
+.hero__plate-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.hero__plate-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 55% 32%;
+}
+
+.hero__plate-veil {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  /* Soft left-edge blend into the typography zone */
+  background: linear-gradient(
+    to right,
+    var(--color-ivory) 0%,
+    rgb(247 244 238 / 0.35) 8%,
+    transparent 28%
+  );
+}
+
+/* ── INGREDIENT VIGNETTE ───────────────────────────────────────── */
+.hero__vignette {
+  position: absolute;
+  z-index: 3;
+  left: min(36vw, 36rem);
+  bottom: 28vh;
+  width: clamp(6rem, 8vw, 9rem);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow:
+    0 1rem 2.5rem -0.5rem rgb(74 55 41 / 0.25),
+    0 0 0 1px rgb(252 251 248 / 0.4);
+}
+
+.hero__vignette-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 30%;
+}
+
+/* ── SIDE LABELS ───────────────────────────────────────────────── */
+.hero__side {
+  position: absolute;
+  z-index: 4;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-taupe);
+  font-size: 0.5625rem;
+}
+.hero__side--l {
+  left: 1.1rem;
+}
+.hero__side--r {
+  right: 1.1rem;
+}
+
+/* ── SCROLL CUE ────────────────────────────────────────────────── */
+.hero__cue {
+  position: absolute;
+  z-index: 4;
+  bottom: 2.2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.hero-cue__line {
+  width: 1px;
+  height: 3.4rem;
+  background: linear-gradient(to bottom, transparent, var(--color-champagne));
+  animation: bdp-cue 2.6s var(--ease-luxe) infinite;
+}
+@keyframes bdp-cue {
+  0% {
+    transform: scaleY(0);
+    transform-origin: top;
+  }
+  45% {
+    transform: scaleY(1);
+    transform-origin: top;
+  }
+  55% {
+    transform: scaleY(1);
+    transform-origin: bottom;
+  }
+  100% {
+    transform: scaleY(0);
+    transform-origin: bottom;
+  }
+}
+
+/* ── LIGHT SWEEP ───────────────────────────────────────────────── */
+.hero__sweep {
+  position: absolute;
+  top: -30%;
+  left: -40%;
+  width: 60%;
+  height: 160%;
+  background: linear-gradient(
+    102deg,
+    transparent 8%,
+    rgb(255 252 245 / 0.55) 42%,
+    rgb(255 250 235 / 0.85) 50%,
+    rgb(255 252 245 / 0.5) 58%,
+    transparent 92%
+  );
+  mix-blend-mode: soft-light;
+  transform: rotate(9deg);
+  opacity: 0;
+  z-index: 5;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+/* ── THROUGH THE GLASS ─────────────────────────────────────────── */
+.hero__wash {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  opacity: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(58% 60% at 50% 46%, rgb(252 248 236 / 0.98), transparent 76%),
+    radial-gradient(40% 46% at 30% 62%, rgb(246 235 205 / 0.9), transparent 78%),
+    radial-gradient(46% 40% at 72% 38%, rgb(238 226 197 / 0.85), transparent 80%),
+    var(--color-ivory);
+  will-change: opacity;
+}
+
+.hero__world {
+  position: absolute;
+  inset: 0;
+  z-index: 7;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.hero-world-type {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -46%);
+  text-align: center;
+  width: min(86vw, 58rem);
+}
+.hero-world-type .label {
+  color: var(--color-mocha);
+  opacity: 0.8;
+  margin-bottom: 1.6rem;
+}
+.hero-world-title {
+  color: var(--color-ink);
+}
+.hero-world-title em {
+  font-style: italic;
+  color: var(--color-champagne);
+}
+.hero-world-copy {
+  margin: 2rem auto 0;
+  max-width: 26rem;
+  color: var(--color-mocha);
+}
+
+.hero-world-bot {
+  position: absolute;
+  opacity: 0.5;
+  pointer-events: none;
+}
+.hero-world-bot--l {
+  width: 16vw;
+  left: 12vw;
+  top: 62%;
+  color: rgb(74 55 41 / 0.4);
+}
+.hero-world-bot--r {
+  width: 12vw;
+  right: 14vw;
+  top: 22%;
+  color: rgb(184 148 82 / 0.5);
+  transform: rotate(180deg) scaleY(-1);
+}
+
+.hero-dust {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+/* ── FLOATING BOTTLE (lifts from scene during scroll) ───────── */
+.hero__bottle-float {
+  position: absolute;
+  z-index: 8;
+  right: 18vw;
+  bottom: 14vh;
+  width: min(14vw, 13rem);
+  pointer-events: none;
+  opacity: 0;
+  will-change: transform, opacity;
+  filter: drop-shadow(0 2rem 3rem -0.5rem rgb(74 55 41 / 0.3));
+}
+.hero__bottle-img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* ── ENTRANCE STATES (set by GSAP via inline styles; CSS provides
+     the fallback visible state if GSAP hasn't fired yet) ───────── */
+.hero__wash,
+.hero__world,
+.hero__sweep {
+  opacity: 0;
+}
+
+/* ================================================================
+   TABLET — 768–1023px
+   ================================================================ */
+@media (max-width: 1023px) {
+  .hero__type {
+    top: clamp(5rem, 10vh, 7rem);
+    left: var(--gutter);
+    width: min(44vw, 36rem);
+  }
+
+  .hero__display {
+    font-size: clamp(3.5rem, 9vw, 7rem);
+  }
+
+  .hero__plate {
+    width: 56vw;
+    right: -1vw;
+  }
+
+  .hero__vignette {
+    left: min(34vw, 28rem);
+    bottom: 24vh;
+    width: clamp(5rem, 7vw, 8rem);
+  }
+
+  .hero__side--l {
+    display: none;
+  }
+}
+
+/* ================================================================
+   MOBILE — below 768px
+   Type stacks above the photo; no overlap.
+   ================================================================ */
+@media (max-width: 767px) {
+  .hero {
+    height: calc(100svh + 55vh);
+  }
+
+  /* ── type occupies the top ~48% ── */
+  .hero__type {
+    top: 4.2rem;
+    left: 1.4rem;
+    right: 1.4rem;
+    width: auto;
+    z-index: 5;
+  }
+
+  .hero__eyebrow {
+    margin-bottom: 0.8rem;
+  }
+  .hero__eyebrow::before {
+    display: none;
+  }
+
+  .hero__display {
+    font-size: clamp(2.8rem, 11.5vw, 4rem);
+    line-height: 0.92;
+  }
+
+  .hero__sub {
+    margin-top: 1rem;
+    max-width: 22rem;
+    font-size: 0.88rem;
+    position: relative;
+    z-index: 5;
+  }
+
+  .hero__cta {
+    margin-top: 0.9rem;
+    position: relative;
+    z-index: 5;
+  }
+
+  /* ── photo sits in the bottom ~55%, right-aligned ── */
+  .hero__plate {
+    width: 72vw;
+    height: 58vh;
+    top: auto;
+    bottom: 0;
+    right: 0;
+    z-index: 2;
+  }
+
+  .hero__plate-img {
+    object-fit: contain;
+    object-position: 55% 70%;
+  }
+
+  .hero__plate-veil {
+    background: linear-gradient(
+      to right,
+      var(--color-ivory) 0%,
+      transparent 20%
+    );
+  }
+
+  /* ── vignette sits to the right of the CTA, above the photo ── */
+  .hero__vignette {
+    left: auto;
+    right: 1.4rem;
+    bottom: 56vh;
+    width: clamp(3.4rem, 9vw, 5rem);
+    z-index: 4;
+  }
+
+  .hero__side--r {
+    display: none;
+  }
+
+  .hero__bottle-float {
+    right: 12vw;
+    bottom: 18vh;
+    width: 28vw;
+  }
+
+  .hero__cue {
+    bottom: 1.2rem;
+    z-index: 5;
+  }
+
+  .hero-world-bot--l {
+    left: 4vw;
+    width: 26vw;
+  }
+  .hero-world-bot--r {
+    right: 4vw;
+    width: 22vw;
+  }
+}
+
+/* ================================================================
+   SMALL MOBILE — 430px and below
+   ================================================================ */
+@media (max-width: 430px) {
+  .hero__type {
+    top: 3.6rem;
+    left: 1.2rem;
+    right: 1.2rem;
+  }
+
+  .hero__display {
+    font-size: clamp(2.2rem, 11vw, 3rem);
+  }
+
+  .hero__plate {
+    width: 78vw;
+    height: 52vh;
+  }
+
+  .hero__plate-img {
+    object-position: 52% 68%;
+  }
+
+  .hero__vignette {
+    right: 1.2rem;
+    bottom: 54vh;
+    width: clamp(3rem, 8vw, 4.2rem);
+  }
+}
+
+/* ================================================================
+   TALL / ULTRAWIDE
+   ================================================================ */
+@media (min-height: 900px) and (min-width: 1280px) {
+  .hero__type {
+    top: 10rem;
+  }
+}
+
+@media (min-width: 1600px) {
+  .hero__display {
+    font-size: 13rem;
+  }
+  .hero__plate {
+    width: 54vw;
+  }
+}

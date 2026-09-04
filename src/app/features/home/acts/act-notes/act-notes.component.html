@@ -1,0 +1,56 @@
+<section class="notes" data-nav="ink" aria-label="The olfactory journey of Nº1 L'Aube">
+  <header class="notes__head" bdpReveal="rise">
+    <p class="label notes__kicker rule">Scene IV — The olfactory journey</p>
+    <h2 class="t-display notes__title">
+      The scent, <em>read from within.</em>
+    </h2>
+    <p class="t-lead notes__lede">
+      Every BEAUX DE PARIS composition rises in three movements — an opening,
+      a heart, a memory. This is the architecture of <strong>Nº1 L'Aube</strong>.
+    </p>
+  </header>
+
+  @for (family of families; track family.key) {
+    <article class="notes__row notes__row--{{ family.side }}" data-cursor="VIEW">
+      <div
+        class="notes__visual notes__visual--{{ family.tone }}"
+[bdpParallax]="0.07"
+      >
+        <span class="notes__orb" aria-hidden="true">
+          <span class="notes__orb-glow"></span>
+          @if (photos[family.key](); as photo) {
+            <img
+              class="notes__photo"
+              [src]="photo"
+              [alt]="''"
+              loading="lazy"
+              decoding="async"
+            />
+          } @else {
+            <bdp-botanical [kind]="family.botanical" class="notes__botanical" />
+          }
+          <bdp-dust class="notes__dust" [density]="8" />
+        </span>
+      </div>
+
+      <div class="notes__copy">
+        <p class="label notes__family-label">
+          {{ family.numeral }} — {{ family.title }}
+        </p>
+        <h3 class="t-title notes__family-title">
+          {{ family.key === 'top' ? 'Awakening' : family.key === 'heart' ? 'Becoming' : 'Remaining' }}
+        </h3>
+        <p class="notes__poem serif-i t-head">{{ family.poem }}</p>
+        <ul class="notes__list">
+          @for (note of family.list; track note) {
+            <li class="notes__item">
+              <span class="notes__item-name">{{ note }}</span>
+              <span class="notes__item-rule" aria-hidden="true"></span>
+              <span class="notes__item-num">{{ $index + 1 }}</span>
+            </li>
+          }
+        </ul>
+      </div>
+    </article>
+  }
+</section>

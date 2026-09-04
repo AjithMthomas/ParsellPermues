@@ -1,0 +1,203 @@
+:host {
+  display: block;
+}
+
+.film-sec--mist {
+  height: calc(100svh + 150vh);
+}
+@media (max-width: 767px) {
+  .film-sec--mist {
+    height: calc(100svh + 105vh);
+  }
+}
+
+.mist-stage {
+  background: var(--color-ivory);
+  overflow: hidden;
+}
+
+.mist-glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(70px);
+  pointer-events: none;
+}
+.mist-glow--a {
+  width: 60vw;
+  height: 46vw;
+  left: 20vw;
+  top: -12vh;
+  background: radial-gradient(circle, rgb(248 240 216 / 0.95), transparent 70%);
+}
+.mist-glow--b {
+  width: 70vw;
+  height: 40vw;
+  left: 15vw;
+  bottom: -18vh;
+  background: radial-gradient(circle, rgb(255 252 244 / 1), transparent 72%);
+}
+
+.mist-dust {
+  opacity: 0.5;
+}
+
+/* centred editorial type */
+.mist-type {
+  position: absolute;
+  z-index: 4;
+  top: clamp(7rem, 17vh, 10rem);
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  width: min(80vw, 52rem);
+  color: var(--color-ink);
+}
+.mist-kicker {
+  color: var(--color-champagne);
+}
+.mist-line {
+  margin-top: 1.4rem;
+}
+.mist-line em {
+  font-style: italic;
+  color: var(--color-champagne);
+}
+.mist-note {
+  margin: 1.6rem auto 0;
+  color: var(--color-mocha);
+  max-width: 30rem;
+}
+
+/* product floating above the light */
+.mist-product {
+  position: absolute;
+  z-index: 3;
+  left: 50%;
+  bottom: 16vh;
+  transform: translateX(-50%);
+  width: min(17vw, 15.5rem);
+}
+.mist-bottle {
+  position: relative;
+  width: 100%;
+}
+.mist-shadow {
+  position: absolute;
+  left: 8%;
+  bottom: -6%;
+  width: 84%;
+  height: 4%;
+  background: radial-gradient(ellipse at center, rgb(74 55 41 / 0.22), transparent 66%);
+  border-radius: 50%;
+  filter: blur(3px);
+}
+.mist-glint {
+  position: absolute;
+  left: -20%;
+  top: 4%;
+  width: 30%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgb(255 255 255 / 0.95), transparent 70%);
+  filter: blur(1px);
+}
+
+/* mist veil puffs — origin at the stopper */
+.mist-veil {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  opacity: 0;
+}
+.puff {
+  position: absolute;
+  left: 50%;
+  bottom: 48vh;
+  width: 7vw;
+  aspect-ratio: 1;
+  margin-left: -3.5vw;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 40% 34%, rgb(255 255 255 / 0.95), transparent 62%),
+    radial-gradient(circle at 60% 66%, rgb(248 240 220 / 0.7), transparent 60%);
+  filter: blur(6px);
+  mix-blend-mode: screen;
+  will-change: transform, opacity;
+}
+.puff--1 {
+  width: 5vw;
+  margin-left: -2.5vw;
+}
+.puff--2 {
+  width: 11vw;
+  margin-left: -5.5vw;
+}
+.puff--3 {
+  width: 4.5vw;
+  margin-left: -2.25vw;
+  bottom: 42vh;
+}
+.puff--4 {
+  width: 13vw;
+  margin-left: -6.5vw;
+}
+
+/* spray particle canvas — realistic mist from the nozzle */
+.mist-spray {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  pointer-events: none;
+}
+
+/* slow brightness rising over the whole scene */
+.mist-bright {
+  position: absolute;
+  inset: 0;
+  z-index: 7;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(
+    72% 64% at 50% 46%,
+    rgb(255 253 246 / 0.85),
+    rgb(255 253 246 / 0.28) 60%,
+    transparent 100%
+  );
+}
+
+@media (max-width: 1023px) {
+  .mist-type {
+    top: 6.5rem;
+    width: 88vw;
+  }
+  .mist-product {
+    width: 26vw;
+    bottom: 18vh;
+  }
+  .puff {
+    width: 16vw;
+    margin-left: -8vw;
+    bottom: 40vh;
+  }
+}
+
+@media (max-width: 767px) {
+  .mist-type {
+    top: 5.2rem;
+  }
+  .mist-product {
+    width: 52vw;
+    bottom: 12vh;
+  }
+  .puff {
+    width: 26vw;
+    margin-left: -13vw;
+    bottom: 46vh;
+  }
+  .puff--2,
+  .puff--4 {
+    display: none;
+  }
+
+}

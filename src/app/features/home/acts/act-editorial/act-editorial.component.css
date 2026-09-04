@@ -1,0 +1,213 @@
+:host {
+  display: block;
+  background: var(--color-ivory);
+}
+
+/* ---------- beliefs: an editorial index ---------- */
+.beliefs {
+  padding: clamp(7rem, 16vh, 12rem) var(--gutter) clamp(4rem, 8vh, 7rem);
+}
+.beliefs__kicker {
+  color: var(--color-champagne);
+}
+.beliefs__title {
+  margin-top: 1.4rem;
+}
+.beliefs__title em {
+  font-style: italic;
+  color: var(--color-champagne);
+}
+
+.beliefs__list {
+  list-style: none;
+  margin-top: clamp(3rem, 7vh, 5rem);
+}
+
+.belief {
+  display: grid;
+  grid-template-columns: 5.5rem 1fr minmax(16rem, 30rem);
+  gap: 2rem;
+  align-items: baseline;
+  padding: clamp(2.4rem, 6vh, 4.4rem) 0.4rem;
+  border-top: 1px solid var(--hairline);
+  transition: padding-left 0.8s var(--ease-luxe);
+}
+.belief:last-child {
+  border-bottom: 1px solid var(--hairline);
+}
+.belief:hover {
+  padding-left: 1.4rem;
+}
+.belief__num {
+  font-size: clamp(1.6rem, 2.4vw, 2.4rem);
+}
+.belief__title {
+  color: var(--color-ink);
+  text-transform: capitalize;
+}
+.belief__copy {
+  color: var(--color-mocha);
+}
+
+@media (max-width: 1023px) {
+  .belief {
+    display: block;
+    padding: 2.6rem 0.2rem;
+  }
+  .belief__title {
+    margin-top: 0.9rem;
+  }
+  .belief__copy {
+    margin-top: 1rem;
+    max-width: 34rem;
+  }
+}
+
+/* ---------- the house ---------- */
+.house {
+  background: var(--color-porcelain);
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  min-height: 130vh;
+  overflow: hidden;
+}
+
+.house__scene {
+  grid-column: 1 / 8;
+  position: relative;
+  min-height: 100vh;
+}
+
+.house__glow {
+  position: absolute;
+  left: 8%;
+  top: 20%;
+  width: 70%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  filter: blur(70px);
+  background: radial-gradient(circle, rgb(248 237 208 / 0.9), transparent 70%);
+}
+.house__dust {
+  opacity: 0.55;
+}
+
+.house__bot {
+  position: absolute;
+  pointer-events: none;
+}
+.house__bot--l {
+  left: 6%;
+  top: 12%;
+  width: 16%;
+  color: rgb(74 55 41 / 0.4);
+}
+.house__bot--r {
+  right: 8%;
+  top: 58%;
+  width: 15%;
+  color: rgb(74 55 41 / 0.35);
+  transform: rotate(180deg) scaleY(-1);
+}
+
+.house__still {
+  position: absolute;
+  left: 50%;
+  top: 52%;
+  transform: translate(-50%, -50%);
+  width: min(24vw, 21rem);
+  aspect-ratio: 200 / 340;
+}
+.house__ped {
+  position: absolute;
+  inset: 0;
+}
+.house__bottle {
+  position: absolute;
+  left: 34%;
+  bottom: 5%;
+  width: 32%;
+  z-index: 3;
+}
+.house__shadow {
+  position: absolute;
+  left: 17%;
+  bottom: 4.4%;
+  width: 66%;
+  height: 2.4%;
+  background: radial-gradient(ellipse at center, rgb(74 55 41 / 0.24), transparent 66%);
+  border-radius: 50%;
+  filter: blur(2px);
+  z-index: 2;
+}
+
+.house__copy {
+  grid-column: 8 / 13;
+  align-self: center;
+  padding: clamp(6rem, 10vh, 9rem) clamp(2rem, 4vw, 5rem) clamp(6rem, 10vh, 9rem) clamp(1rem, 3vw, 4rem);
+  max-width: 44rem;
+}
+.house__kicker {
+  color: var(--color-champagne);
+}
+.house__title {
+  margin-top: 1.5rem;
+  color: var(--color-ink);
+}
+.house__title em {
+  font-style: italic;
+  color: var(--color-champagne);
+  display: block;
+}
+.house__lede {
+  margin-top: 2.4rem;
+  color: var(--color-mocha);
+}
+.house__body {
+  margin-top: 1.6rem;
+  color: var(--color-mocha);
+  max-width: 34rem;
+}
+.house__sig {
+  display: block;
+  margin-top: 2.6rem;
+  font-size: 1.3rem;
+  color: var(--color-ink);
+}
+.house__meta {
+  display: block;
+  margin-top: 1.6rem;
+  color: var(--color-taupe);
+  letter-spacing: 0.2em;
+  line-height: 2.1;
+}
+
+@media (max-width: 1023px) {
+  .house {
+    display: block;
+    min-height: auto;
+  }
+  .house__scene {
+    min-height: 60vh;
+  }
+  .house__still {
+    width: min(46vw, 22rem);
+    top: 58%;
+  }
+  .house__copy {
+    padding: 4rem 1.6rem 6rem;
+  }
+}
+
+@media (max-width: 767px) {
+  .beliefs {
+    padding: 6rem 1.4rem 3rem;
+  }
+  .house__scene {
+    min-height: 52vh;
+  }
+  .house__still {
+    width: 72vw;
+  }
+}

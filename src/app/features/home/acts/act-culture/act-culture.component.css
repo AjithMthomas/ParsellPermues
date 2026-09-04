@@ -1,0 +1,121 @@
+:host {
+  display: block;
+  background: var(--color-ivory);
+}
+
+/* ---------- journal ---------- */
+.journal {
+  padding: clamp(7rem, 15vh, 11rem) var(--gutter) clamp(3rem, 6vh, 5rem);
+}
+.journal__kicker {
+  color: var(--color-champagne);
+}
+.journal__title {
+  margin-top: 1.3rem;
+}
+.journal__title em {
+  font-style: italic;
+  color: var(--color-champagne);
+}
+
+.journal__list {
+  margin-top: clamp(3rem, 6vh, 4.5rem);
+}
+
+.entry {
+  display: grid;
+  grid-template-columns: 4.5rem 1fr 11rem;
+  gap: 2rem;
+  align-items: start;
+  padding: clamp(2.2rem, 5vh, 3.6rem) 0.3rem;
+  border-top: 1px solid var(--hairline);
+  transition: padding-left 0.8s var(--ease-luxe), color 0.8s var(--ease-luxe);
+}
+.entry:hover {
+  padding-left: 1.2rem;
+}
+.entry__num {
+  padding-top: 0.9rem;
+  color: var(--color-taupe);
+}
+.entry__title {
+  color: var(--color-ink);
+  transition: color 0.8s var(--ease-luxe), font-style 0.2s;
+  text-transform: capitalize;
+}
+.entry:hover .entry__title {
+  color: var(--color-champagne);
+}
+.entry__abstract {
+  margin-top: 0.8rem;
+  color: var(--color-mocha);
+  max-width: 34rem;
+}
+.entry__tag {
+  padding-top: 1rem;
+  color: var(--color-taupe);
+  justify-self: end;
+}
+
+@media (max-width: 1023px) {
+  .entry {
+    grid-template-columns: 3rem 1fr;
+  }
+  .entry__tag {
+    grid-column: 2;
+    justify-self: start;
+  }
+}
+
+/* ---------- finder teaser ---------- */
+.finder-teaser {
+  background: var(--color-porcelain);
+  padding: clamp(8rem, 18vh, 14rem) var(--gutter);
+  text-align: center;
+  position: relative;
+}
+.finder-teaser__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 52rem;
+  margin: 0 auto;
+}
+.finder-teaser__kicker {
+  color: var(--color-champagne);
+}
+.finder-teaser__title {
+  margin-top: 1.5rem;
+}
+.finder-teaser__title em {
+  font-style: italic;
+  color: var(--color-champagne);
+}
+.finder-teaser__copy {
+  margin-top: 1.6rem;
+  color: var(--color-mocha);
+  max-width: 34rem;
+}
+.finder-teaser__cta {
+  margin-top: 3rem;
+}
+
+@media (max-width: 767px) {
+  .journal {
+    padding: 6rem 1.4rem 2rem;
+  }
+  .entry {
+    display: block;
+    padding: 2rem 0.2rem;
+  }
+  .entry__title {
+    margin-top: 0.4rem;
+  }
+  .entry__tag {
+    display: inline-block;
+    margin-top: 1.2rem;
+  }
+  .finder-teaser {
+    padding: 7rem 1.4rem;
+  }
+}
