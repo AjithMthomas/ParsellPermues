@@ -29,7 +29,7 @@ const WORLD: Record<
   imports: [ProductArtComponent, PedestalComponent, BotanicalComponent, DustComponent],
   template: `
     @if (plate() && plateSrc(); as src) {
-      <div class="wplate" aria-hidden="true">
+      <div class="wplate" [class.wplate--mist]="isMistPlate()" aria-hidden="true">
         <img class="wplate__img" [src]="src" alt="" loading="lazy" decoding="async" />
         <span class="wplate__veil" aria-hidden="true"></span>
         <bdp-dust class="wplate__dust" [density]="14" />
@@ -151,7 +151,7 @@ const WORLD: Record<
       z-index: 0;
     }
 
-    /* ---- photographic campaign plate mode ---- */
+    /* ---- standard photographic campaign plate mode (e.g. Fig 2) ---- */
     .wplate {
       position: relative;
       width: min(30vw, 34rem);
@@ -186,6 +186,26 @@ const WORLD: Record<
       opacity: 0.8;
     }
 
+    /* ---- misty borderless blend mode ONLY for Fig 1 (Nº1 L'Aube) & Fig 3 (Nº3 Jardin de Lune) ---- */
+    .wplate.wplate--mist {
+      border: none;
+      border-radius: 0;
+      box-shadow: none;
+      background: transparent;
+      overflow: hidden;
+      /* Feather ONLY the outer 6-8% edges of the photo, keeping 100% full quality & clarity inside */
+      -webkit-mask-image: linear-gradient(to right, transparent 0%, black 6%, black 94%, transparent 100%),
+                          linear-gradient(to bottom, transparent 0%, black 6%, black 94%, transparent 100%);
+      -webkit-mask-composite: source-in;
+      mask-image: linear-gradient(to right, transparent 0%, black 6%, black 94%, transparent 100%),
+                  linear-gradient(to bottom, transparent 0%, black 6%, black 94%, transparent 100%);
+      mask-composite: intersect;
+    }
+    .wplate.wplate--mist .wplate__veil {
+      box-shadow: none;
+      background: none;
+    }
+
     @media (max-width: 1023px) {
       .wplate {
         width: min(72vw, 26rem);
@@ -211,6 +231,11 @@ export class WorldStageComponent {
         if (await this.assets.available(path)) this.plateSrc.set(path);
       })();
     });
+  }
+
+  protected isMistPlate(): boolean {
+    const slug = this.fragrance()?.slug;
+    return slug === "laube" || slug === "jardin-de-lune";
   }
 
   world(): { ped: PedestalKind; bot: BotanicalKind[]; bot2: BotanicalKind } {

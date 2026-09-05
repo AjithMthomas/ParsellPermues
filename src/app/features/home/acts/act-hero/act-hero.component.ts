@@ -6,8 +6,6 @@ import {
   afterNextRender,
 } from "@angular/core";
 import { gsap } from "gsap";
-import { BotanicalComponent } from "../../../../art/botanical/botanical.component";
-import { DustComponent } from "../../../../art/dust/dust.component";
 import { FRAGRANCES } from "../../../../data/fragrances";
 import { CapabilitiesService } from "../../../../core/capabilities.service";
 import { ScrollService } from "../../../../core/scroll.service";
@@ -21,7 +19,7 @@ const NO1 = FRAGRANCES[0];
  */
 @Component({
   selector: "bdp-act-hero",
-  imports: [BotanicalComponent, DustComponent],
+  imports: [],
   templateUrl: "./act-hero.component.html",
   styleUrl: "./act-hero.component.css",
 })
@@ -46,8 +44,6 @@ export class ActHeroComponent {
   private vignette!: HTMLElement;
   private cueEl!: HTMLElement;
   private sweepEl!: HTMLElement;
-  private washEl!: HTMLElement;
-  private worldEl!: HTMLElement;
   private heroLines!: HTMLElement[];
 
   constructor() {
@@ -67,8 +63,6 @@ export class ActHeroComponent {
     this.vignette = q(".hero__vignette");
     this.cueEl = q(".hero__cue");
     this.sweepEl = q(".hero__sweep");
-    this.washEl = q(".hero__wash");
-    this.worldEl = q(".hero__world");
     this.heroLines = Array.from(
       host.querySelectorAll<HTMLElement>(".hero__line-inner"),
     );
@@ -119,67 +113,86 @@ export class ActHeroComponent {
     void host;
   }
 
-  /** Scroll film: type lifts → bottle lifts and floats → sweep → through the glass. */
+  /** Scroll film:
+   * 1. Hero scroll start: bottle pops up out of pedestal bottle (Screenshot 2 style).
+   *    Hero typography, side labels, vignette, and photo plate STAY 100% visible (Screenshot 1 look).
+   * 2. Continuous scroll to Section 2 ("The olfactory journey"): single bottle moves smoothly
+   *    down into the right-side empty space (Screenshot 3 style).
+   * 3. Stops right there in Section 2's right-side center (NO double bottle!).
+   * 4. Fades out smoothly only when user scrolls past Section 2 header into note family cards.
+   */
   private scrollFilm(sec: HTMLElement, stage: HTMLElement, host: HTMLElement): void {
     if (this.caps.rm) return;
     const isMobile = this.caps.mobile;
+
+    const bottle = this.bottleFloat;
+    const notesSec = document.querySelector("bdp-act-notes") as HTMLElement;
 
     const tl = gsap.timeline({
       defaults: { ease: "power1.inOut" },
       scrollTrigger: {
         trigger: sec,
+        endTrigger: notesSec || sec,
         start: "top top",
-        end: "bottom bottom",
+        end: "bottom top",
         scrub: 0.5,
       },
     });
 
-    const type = this.typeBlock;
-    const plate = this.plateNode;
-    const bottle = this.bottleFloat;
-    const vignette = this.vignette;
-
-    // --- PHASE 1: type lifts, vignette shrinks (0.06 – 0.16) ---
-    tl.to(type, { yPercent: -14, opacity: 0, ease: "power2.in", duration: 0.12 }, 0.06);
-    tl.to(vignette, { scale: 0.3, opacity: 0, duration: 0.1, ease: "power2.in" }, 0.06);
-    tl.to([host.querySelector(".hero__side--l"), host.querySelector(".hero__side--r"), this.cueEl], {
-      opacity: 0,
-      duration: 0.08,
-    }, 0.06);
-
-    // --- PHASE 2: the scene stays — only the bottle wakes and lifts.
-    // The plate is the campaign photograph and remains fully visible;
-    // a gentle push-in keeps the film alive without ever hiding the image.
-    tl.to(plate, { scale: 1.06, duration: 0.55, ease: "power1.inOut" }, 0.12);
-    tl.fromTo(bottle,
-      { opacity: 0, y: 0, scale: 0.96 },
-      { opacity: 1, y: isMobile ? -70 : -120, scale: isMobile ? 1.2 : 1.35, duration: 0.1, ease: "power2.out" },
-      0.16,
-    );
-
-    // --- PHASE 3: light sweep across the floating bottle (0.24 – 0.44) ---
+    // --- PHASE 1: POP-UP IN HERO (Progress 0.0 -> 0.25) ---
+    // Hero typography & background stay completely untouched.
+    // The single bottle pops up out of the pedestal bottle.
     tl.fromTo(
-      this.sweepEl,
-      { xPercent: -140, opacity: 0 },
-      { xPercent: 90, opacity: 0.55, duration: 0.2, ease: "none" },
-      0.24,
+      bottle,
+      { opacity: 0, y: 0, scale: 0.94 },
+      {
+        opacity: 1,
+        y: isMobile ? -40 : -70,
+        scale: isMobile ? 1.08 : 1.18,
+        duration: 0.25,
+        ease: "power2.out",
+      },
+      0,
     );
-    tl.to(this.sweepEl, { opacity: 0, duration: 0.05 }, 0.46);
 
-    // --- PHASE 4: the bottle alone travels toward the camera (0.34 – 0.52) ---
-    tl.to(bottle, {
-      y: isMobile ? -150 : -230,
-      x: isMobile ? 6 : -20,
-      rotation: 0,
-      scale: isMobile ? 2.1 : 2.6,
-      duration: 0.2,
-      ease: "power2.in",
-    }, 0.34);
+    // Light sweep across the popped-up bottle
+    if (this.sweepEl) {
+      tl.fromTo(
+        this.sweepEl,
+        { xPercent: -140, opacity: 0 },
+        { xPercent: 90, opacity: 0.45, duration: 0.2, ease: "none" },
+        0.05,
+      );
+      tl.to(this.sweepEl, { opacity: 0, duration: 0.05 }, 0.25);
+    }
 
-    // --- PHASE 5: it passes into the light — plate still visible behind ---
-    tl.to(bottle, { opacity: 0, scale: isMobile ? 3.1 : 3.9, duration: 0.14, ease: "power1.in" }, 0.54);
-    tl.to(plate, { scale: 1.14, duration: 0.3, ease: "power1.in" }, 0.6);
+    // --- PHASE 2: MOVE TO SECTION 2 RIGHT SIDE CENTER & STOP THERE (Progress 0.25 -> 0.65) ---
+    // Floating bottle glides smoothly down and stops right in the center of Section 2 header space!
+    tl.to(
+      bottle,
+      {
+        y: isMobile ? 20 : 10,
+        x: 0,
+        scale: isMobile ? 0.88 : 0.95,
+        duration: 0.45,
+        ease: "power1.inOut",
+      },
+      0.25,
+    );
+
+    // --- PHASE 3: FADE OUT WHEN SCROLLING DOWN PAST SECTION 2 HEADER (Progress 0.85 -> 1.0) ---
+    // When user scrolls past Section 2 header into the note family cards, bottle fades cleanly.
+    tl.to(
+      bottle,
+      {
+        opacity: 0,
+        duration: 0.15,
+        ease: "power1.in",
+      },
+      0.85,
+    );
 
     void host;
+    void stage;
   }
 }

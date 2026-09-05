@@ -2,6 +2,7 @@
   display: block;
   background: var(--color-ivory);
   position: relative;
+  z-index: 1;
 }
 
 .notes {
@@ -9,28 +10,36 @@
 }
 
 .notes__head {
-  max-width: 52rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: clamp(2rem, 4vw, 5rem);
   padding-bottom: clamp(4rem, 10vh, 8rem);
+  position: relative;
 }
 
-.notes__kicker {
-  color: var(--color-champagne);
+.notes__head-copy {
+  max-width: 44rem;
+  flex: 1;
 }
-.notes__title {
-  margin-top: 1.6rem;
-  color: var(--color-ink);
+
+.notes__bottle-anchor {
+  flex: 1;
+  max-width: 26rem;
+  min-height: 240px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  position: relative;
 }
-.notes__title em {
-  font-style: italic;
-  color: var(--color-champagne);
-}
-.notes__lede {
-  margin-top: 1.8rem;
-  color: var(--color-mocha);
-  max-width: 38rem;
-}
-.notes__lede strong {
-  font-weight: 500;
+
+.notes__bottle-img {
+  width: min(15vw, 13.5rem);
+  height: auto;
+  display: block;
+  filter: drop-shadow(0 2.5rem 3.5rem rgb(74 55 41 / 0.35));
+  will-change: transform, opacity;
 }
 
 /* ---------- one family = a magazine spread ---------- */
