@@ -364,90 +364,140 @@
    MOBILE — below 768px
    Type stacks above the photo; no overlap.
    ================================================================ */
+/* ================================================================
+   MOBILE — below 768px
+   Clean luxury layout with zero overlaps.
+   ================================================================ */
 @media (max-width: 767px) {
   .hero {
-    height: calc(100svh + 55vh);
+    height: calc(100svh + 60vh);
   }
 
-  /* ── type occupies the top ~48% ── */
+  .hero__stage {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding-top: max(4.5rem, 9vh);
+    padding-bottom: 2rem;
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+    box-sizing: border-box;
+  }
+
+  /* ── TYPE BLOCK (stacks cleanly in top section) ── */
   .hero__type {
-    top: 4.2rem;
-    left: 1.4rem;
-    right: 1.4rem;
-    width: auto;
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+    width: 100%;
     z-index: 5;
+    margin: 0;
+    padding-right: 3.5rem; /* Leave space for top-right vignette emblem */
+    box-sizing: border-box;
   }
 
   .hero__eyebrow {
-    margin-bottom: 0.8rem;
+    font-size: 0.625rem;
+    letter-spacing: 0.12em;
+    margin-bottom: 0.6rem;
+    color: var(--color-mocha);
+    opacity: 0.9;
   }
   .hero__eyebrow::before {
     display: none;
   }
 
   .hero__display {
-    font-size: clamp(2.8rem, 11.5vw, 4rem);
+    font-size: clamp(2.4rem, 9.5vw, 3.4rem);
     line-height: 0.92;
+    letter-spacing: -0.01em;
   }
 
   .hero__sub {
-    margin-top: 1rem;
-    max-width: 22rem;
-    font-size: 0.88rem;
+    margin-top: 0.8rem;
+    max-width: 100%;
+    font-size: 0.85rem;
+    line-height: 1.45;
+    color: var(--color-mocha);
     position: relative;
     z-index: 5;
   }
 
   .hero__cta {
-    margin-top: 0.9rem;
+    display: inline-block;
+    margin-top: 0.8rem;
+    font-size: 0.75rem;
+    letter-spacing: 0.14em;
     position: relative;
     z-index: 5;
   }
 
-  /* ── photo sits in the bottom ~55%, right-aligned ── */
+  /* ── FLOWER EMBLEM BADGE (top-right accent) ── */
+  .hero__vignette {
+    position: absolute;
+    top: max(4.5rem, 9vh);
+    right: 1.25rem;
+    left: auto;
+    bottom: auto;
+    width: clamp(3.2rem, 11vw, 4.2rem);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    z-index: 6;
+    box-shadow:
+      0 0.4rem 1.2rem -0.2rem rgb(74 55 41 / 0.25),
+      0 0 0 1px rgb(252 251 248 / 0.6);
+  }
+
+  /* ── CAMPAIGN PLATE (luxury photographic card below text) ── */
   .hero__plate {
-    width: 72vw;
-    height: 58vh;
+    position: relative;
     top: auto;
-    bottom: 0;
-    right: 0;
+    bottom: auto;
+    left: auto;
+    right: auto;
+    width: 100%;
+    height: clamp(38vh, 44vh, 48vh);
+    margin-top: 1rem;
     z-index: 2;
+    border-radius: 20px 80px 20px 80px;
+    overflow: hidden;
+    box-shadow: 0 1.5rem 3rem -1rem rgb(74 55 41 / 0.25);
+  }
+
+  .hero__plate-inner {
+    width: 100%;
+    height: 100%;
   }
 
   .hero__plate-img {
-    object-fit: contain;
-    object-position: 55% 70%;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 28%;
   }
 
   .hero__plate-veil {
     background: linear-gradient(
-      to right,
-      var(--color-ivory) 0%,
-      transparent 20%
+      to bottom,
+      rgb(247 244 238 / 0.35) 0%,
+      transparent 25%
     );
   }
 
-  /* ── vignette sits to the right of the CTA, above the photo ── */
-  .hero__vignette {
-    left: auto;
-    right: 1.4rem;
-    bottom: 56vh;
-    width: clamp(3.4rem, 9vw, 5rem);
-    z-index: 4;
-  }
-
+  .hero__side--l,
   .hero__side--r {
     display: none;
   }
 
   .hero__bottle-float {
-    right: 10vw;
-    top: 50vh;
-    width: min(32vw, 11rem);
+    right: 8vw;
+    top: 52vh;
+    width: min(34vw, 10rem);
   }
 
   .hero__cue {
-    bottom: 1.2rem;
+    bottom: 0.8rem;
     z-index: 5;
   }
 
@@ -465,29 +515,18 @@
    SMALL MOBILE — 430px and below
    ================================================================ */
 @media (max-width: 430px) {
-  .hero__type {
-    top: 3.6rem;
-    left: 1.2rem;
-    right: 1.2rem;
+  .hero__display {
+    font-size: clamp(2.1rem, 9vw, 2.7rem);
   }
 
-  .hero__display {
-    font-size: clamp(2.2rem, 11vw, 3rem);
+  .hero__sub {
+    font-size: 0.8125rem;
+    margin-top: 0.6rem;
   }
 
   .hero__plate {
-    width: 78vw;
-    height: 52vh;
-  }
-
-  .hero__plate-img {
-    object-position: 52% 68%;
-  }
-
-  .hero__vignette {
-    right: 1.2rem;
-    bottom: 54vh;
-    width: clamp(3rem, 8vw, 4.2rem);
+    height: clamp(34vh, 40vh, 44vh);
+    margin-top: 0.8rem;
   }
 }
 
