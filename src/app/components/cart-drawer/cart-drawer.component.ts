@@ -32,7 +32,7 @@ import { ProductArtComponent } from "../../art/product-art/product-art.component
 
         @if (cart.lines().length === 0) {
           <div class="drawer__empty">
-            <img class="drawer__emblem" src="assets/brand/bdp-logo.png" alt="BEAUX DE PARIS emblem" width="96" height="96" />
+            <img class="drawer__emblem" src="assets/brand/bdp-logo.png" alt="PARADISA emblem" width="96" height="96" />
             <p class="serif-i drawer__empty-line">Your bag is empty —</p>
             <p class="t-caption drawer__empty-sub">the collection is waiting.</p>
             <a class="link-line drawer__empty-cta" href="#collection" (click)="explore($event)">

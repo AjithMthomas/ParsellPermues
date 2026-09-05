@@ -19,7 +19,7 @@ interface PageHit {
 }
 
 const PAGES: PageHit[] = [
-  { id: "maison", target: "maison", title: "The House of Beaux de Paris", kind: "Our story" },
+  { id: "maison", target: "maison", title: "The House of Paradisa", kind: "Our story" },
   { id: "collection", target: "collection", title: "The collection", kind: "Shop" },
   { id: "journal", target: "journal", title: "From the journal", kind: "Journal" },
   { id: "contact", target: "contact", title: "Contact the maison", kind: "Contact" },
@@ -32,7 +32,7 @@ const PAGES: PageHit[] = [
     @if (ui.searchOpen()) {
       <div class="search" role="dialog" aria-modal="true" aria-label="Search the house">
         <header class="search__head">
-          <span class="label-thin">Search — Beaux de Paris</span>
+          <span class="label-thin">Search — Paradisa</span>
           <button class="search__close" type="button" (click)="close()" aria-label="Close search">Close</button>
         </header>
 

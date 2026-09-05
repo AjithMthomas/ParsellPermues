@@ -27,17 +27,17 @@ interface Droplet {
   max: number;
   wob: number;
   wobSpeed: number;
+  kind: "droplet" | "microbead" | "cloud";
 }
 
-const MAX_DROPS = 560;
-const GRAVITY = 26; // px/s² — fine mist barely falls
+const MAX_DROPS = 1600;
+const LIQUID_GRAVITY = 180; // realistic gravity for liquid water drop parabolic arcs
 
 /**
- * SCENE V — THE MIST.
- * The flacon floats in daylight. Scrolling drives the atomiser: each scroll
- * movement fires a burst of fine droplets from the nozzle into an upward cone,
- * and the mist drifts, glistens and dissolves into the light — a real
- * perfume-spray feel, not a videogame particle effect.
+ * THE MIST — PARADISA.
+ * Water droplets spraying simulation. Flacon floats in daylight.
+ * Scrolling drives the atomizer: gold nozzle fires glistening liquid water droplets,
+ * fine water micro-beads, and a soft ambient vapor cloud across the screen.
  */
 @Component({
   selector: "bdp-act-mist",
@@ -96,7 +96,6 @@ export class ActMistComponent {
     const updateOrigin = () => {
       const b = bottle.getBoundingClientRect();
       const s = stage.getBoundingClientRect();
-      // the nozzle sits at the top-centre of the flacon cutout
       this.origin = {
         x: b.left - s.left + b.width / 2,
         y: b.top - s.top + Math.max(2, b.height * 0.03),
@@ -122,46 +121,55 @@ export class ActMistComponent {
         trigger: sec,
         start: "top top",
         end: "bottom bottom",
-        scrub: 0.6,
+        scrub: 0.5,
         onUpdate: (st: ScrollTrigger) => {
           const p = st.progress;
           const delta = Math.abs(p - this.prevProgress);
           this.prevProgress = p;
-          this.spraying = p > 0.14 && p < 0.62;
-          // each scroll movement re-presses the atomiser
-          if (this.spraying) this.power = Math.min(240, this.power + delta * 340);
+
+          // Spray active only in middle phase (0.12 -> 0.52)
+          this.spraying = p > 0.12 && p < 0.52;
+          if (this.spraying) {
+            this.power = Math.min(800, this.power + delta * 1100);
+          } else if (p >= 0.68) {
+            // Force immediate purge of lingering particles once departure phase completes
+            this.power = 0;
+            this.drops = [];
+          }
           updateOrigin();
         },
       },
     });
 
-    // arrival
+    // 0.00 -> 0.15: Arrival
     tl.fromTo(
       bottle,
-      { y: this.isMobile ? 60 : 90, scale: 0.94, opacity: 0 },
-      { y: 0, scale: 1, opacity: 1, duration: 0.16, ease: "power2.out" },
+      { y: this.isMobile ? 50 : 80, scale: 0.94, opacity: 0 },
+      { y: 0, scale: 1, opacity: 1, duration: 0.15, ease: "power2.out" },
       0,
     );
-    tl.fromTo(shadow, { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.16 }, 0.02);
+    tl.fromTo(shadow, { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, duration: 0.15 }, 0.02);
     tl.fromTo(
       typeBlock,
       { opacity: 0, y: 30 },
-      { opacity: 1, y: 0, duration: 0.16, ease: "power2.out" },
-      0.1,
+      { opacity: 1, y: 0, duration: 0.15, ease: "power2.out" },
+      0.08,
     );
-    tl.fromTo(glint, { opacity: 0, scale: 0.4 }, { opacity: 0.9, scale: 1, duration: 0.12 }, 0.16);
-    tl.to(glint, { opacity: 0, duration: 0.08 }, 0.34);
-    tl.to(veilEl, { opacity: 1, duration: 0.06 }, 0.2);
-    tl.to(veilEl, { opacity: 0, duration: 0.06 }, 0.5);
+    tl.fromTo(glint, { opacity: 0, scale: 0.4 }, { opacity: 0.9, scale: 1, duration: 0.10 }, 0.14);
+    tl.to(glint, { opacity: 0, duration: 0.08 }, 0.30);
+    tl.to(veilEl, { opacity: 1, duration: 0.10 }, 0.16);
+    tl.to(veilEl, { opacity: 0, duration: 0.14 }, 0.48);
 
-    // the room brightens
-    tl.to(bright, { opacity: 1, duration: 0.3 }, 0.38);
-    tl.to(typeBlock, { opacity: 0.35, y: -14, duration: 0.2 }, 0.62);
+    // 0.20 -> 0.48: Ambient full screen mist bloom
+    tl.to(bright, { opacity: 1, duration: 0.28 }, 0.22);
+    tl.to(typeBlock, { opacity: 0.35, y: -12, duration: 0.18 }, 0.45);
 
-    // the fragrance leaves
-    tl.to(bottle, { y: this.isMobile ? 130 : 190, opacity: 0, duration: 0.22, ease: "power2.in" }, 0.76);
-    tl.to(shadow, { opacity: 0, duration: 0.18 }, 0.78);
-    tl.to(bright, { opacity: 1, duration: 0.2 }, 0.76);
+    // 0.50 -> 0.68: Complete Departure — bottle, type, spray canvas, and glow fade out to 0
+    tl.to(bottle, { y: this.isMobile ? -40 : -60, opacity: 0, duration: 0.18, ease: "power2.in" }, 0.50);
+    tl.to(shadow, { opacity: 0, duration: 0.14 }, 0.50);
+    tl.to(typeBlock, { opacity: 0, y: -35, duration: 0.16 }, 0.50);
+    tl.to(bright, { opacity: 0, duration: 0.18, ease: "power1.out" }, 0.50);
+    tl.to(canvas, { opacity: 0, duration: 0.18, ease: "power1.out" }, 0.50);
 
     // ---------- particle loop ----------
     this.raf = requestAnimationFrame((t) => this.loop(t));
@@ -177,54 +185,138 @@ export class ActMistComponent {
     const ctx = this.sprayCtx;
     if (!ctx) return;
     if (!this.lastT) this.lastT = t;
-    const dt = Math.min(0.05, (t - this.lastT) / 1000); // seconds, clamp tab-switch
+    const dt = Math.min(0.05, (t - this.lastT) / 1000);
     this.lastT = t;
 
     ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
     ctx.clearRect(0, 0, this.cssW, this.cssH);
 
-    // --- emit: continuous soft mist + scroll-driven press bursts ---
-    if (this.spraying) {
-      const base = this.isMobile ? 2 : 4;
-      for (let i = 0; i < base; i++) this.emit();
-      // burst energy: 60 fps × dt ≈ frames
-      const burst = Math.min(18, Math.ceil(this.power * dt * 22));
-      for (let i = 0; i < burst; i++) this.emit(true);
-      this.power *= Math.pow(0.2, dt); // fast decay when scrolling stops
-      this.drawPlume();
+    // If progress is in departure buffer zone, skip rendering
+    if (this.prevProgress >= 0.68) {
+      this.drops = [];
+      return;
     }
 
-    // --- step droplets ---
+    // --- emit continuous water droplets & spray burst ---
+    if (this.spraying) {
+      const baseCount = this.isMobile ? 12 : 26;
+      for (let i = 0; i < baseCount; i++) {
+        const rand = Math.random();
+        if (rand < 0.5) this.emit("droplet");
+        else if (rand < 0.85) this.emit("microbead");
+        else this.emit("cloud");
+      }
+
+      const burst = Math.min(80, Math.ceil(this.power * dt * 85));
+      for (let i = 0; i < burst; i++) {
+        this.emit(Math.random() < 0.6 ? "droplet" : "microbead", true);
+      }
+      this.power *= Math.pow(0.12, dt);
+
+      this.drawVolumetricGlow();
+    }
+
+    // --- step & render water droplets ---
     const keep: Droplet[] = [];
     for (const d of this.drops) {
       d.life -= dt;
       if (d.life <= 0) continue;
 
+      const ageRatio = 1 - d.life / d.max;
       d.wob += d.wobSpeed * dt;
-      const drag = Math.pow(0.86, dt * 60);
-      d.vx *= drag;
-      d.vy = d.vy * drag + GRAVITY * dt;
 
-      // fine mist drifts sideways as it travels
-      d.x += (d.vx + Math.sin(d.wob) * 14) * dt;
+      // Water droplet physics: air drag + natural gravity arc
+      const drag = Math.pow(d.kind === "droplet" ? 0.94 : 0.88, dt * 60);
+      d.vx *= drag;
+      d.vy = d.vy * drag + LIQUID_GRAVITY * dt;
+
+      // Slight wobble
+      d.x += d.vx * dt + Math.sin(d.wob) * 12 * dt;
       d.y += d.vy * dt;
 
-      const fade = Math.min(1, d.life / (d.max * 0.55));
-      const a = Math.max(0, Math.min(1, fade)) * d.alpha;
-      const r = Math.max(0.15, d.r * (0.35 + 0.65 * Math.min(1, d.life / d.max)));
+      // Opacity bell curve
+      let fade = 1;
+      if (ageRatio < 0.08) {
+        fade = ageRatio / 0.08;
+      } else {
+        fade = Math.pow(1 - (ageRatio - 0.08) / 0.92, 1.5);
+      }
 
-      // visible droplet on ivory: soft champagne halo + bright core
-      const halo = 2.4 * r;
-      const g = ctx.createRadialGradient(d.x, d.y, 0, d.x, d.y, halo);
-      const tint = d.hue;
-      g.addColorStop(0, `rgba(255, 252, 242, ${a.toFixed(3)})`);
-      g.addColorStop(0.45, `rgba(${255 - tint * 26}, ${248 - tint * 34}, ${224 - tint * 40}, ${(a * 0.85).toFixed(3)})`);
-      g.addColorStop(1, "rgba(200, 178, 132, 0)");
-      ctx.globalAlpha = 1;
-      ctx.fillStyle = g;
-      ctx.beginPath();
-      ctx.arc(d.x, d.y, halo, 0, Math.PI * 2);
-      ctx.fill();
+      const a = Math.max(0, Math.min(1, fade)) * d.alpha;
+      if (a <= 0.001) continue;
+
+      if (d.kind === "droplet") {
+        // --- REALISTIC TRANSLUCENT WATER DROPLET WITH SPECULAR LIGHT REFLECTION ---
+        const speed = Math.hypot(d.vx, d.vy);
+        const stretch = Math.min(1.8, 1 + speed * 0.0012);
+        const angle = Math.atan2(d.vy, d.vx);
+
+        ctx.save();
+        ctx.translate(d.x, d.y);
+        ctx.rotate(angle);
+
+        const rx = d.r * stretch;
+        const ry = d.r / Math.sqrt(stretch);
+
+        // 1. Soft water drop outer refraction shadow/glow
+        const dropGrad = ctx.createRadialGradient(0, 0, 0, 0, 0, rx * 1.6);
+        dropGrad.addColorStop(0, `rgba(255, 255, 255, ${(a * 0.95).toFixed(3)})`);
+        dropGrad.addColorStop(0.5, `rgba(235, 245, 255, ${(a * 0.65).toFixed(3)})`);
+        dropGrad.addColorStop(0.85, `rgba(215, 230, 248, ${(a * 0.25).toFixed(3)})`);
+        dropGrad.addColorStop(1, "rgba(215, 230, 248, 0)");
+
+        ctx.fillStyle = dropGrad;
+        ctx.beginPath();
+        ctx.ellipse(0, 0, rx * 1.6, ry * 1.6, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // 2. Liquid rim outline
+        ctx.strokeStyle = `rgba(255, 255, 255, ${(a * 0.8).toFixed(3)})`;
+        ctx.lineWidth = 0.6;
+        ctx.beginPath();
+        ctx.ellipse(0, 0, rx, ry, 0, 0, Math.PI * 2);
+        ctx.stroke();
+
+        // 3. Crisp Specular Highlight Dot (Sunlight reflection on top-left of droplet)
+        const hlX = -rx * 0.35;
+        const hlY = -ry * 0.35;
+        const hlR = Math.max(0.6, rx * 0.3);
+
+        ctx.fillStyle = `rgba(255, 255, 255, ${(a * 0.98).toFixed(3)})`;
+        ctx.beginPath();
+        ctx.arc(hlX, hlY, hlR, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.restore();
+      } else if (d.kind === "microbead") {
+        // --- FINE WATER SPRAY BEAD ---
+        ctx.fillStyle = `rgba(255, 255, 255, ${(a * 0.90).toFixed(3)})`;
+        ctx.beginPath();
+        ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Glistening specular core for microbeads
+        ctx.fillStyle = `rgba(255, 255, 255, ${(a * 0.95).toFixed(3)})`;
+        ctx.beginPath();
+        ctx.arc(d.x - d.r * 0.3, d.y - d.r * 0.3, Math.max(0.4, d.r * 0.35), 0, Math.PI * 2);
+        ctx.fill();
+      } else {
+        // --- SOFT AMBIENT VAPOR FOG BEHIND THE WATER DROPLETS ---
+        const cloudRadius = d.r * (1 + ageRatio * 6.5);
+        const halo = 3.5 * cloudRadius;
+        const g = ctx.createRadialGradient(d.x, d.y, 0, d.x, d.y, halo);
+        const tint = d.hue;
+
+        g.addColorStop(0, `rgba(255, 255, 253, ${(a * 0.45).toFixed(3)})`);
+        g.addColorStop(0.3, `rgba(${255 - tint * 8}, ${250 - tint * 14}, ${240 - tint * 22}, ${(a * 0.28).toFixed(3)})`);
+        g.addColorStop(0.7, `rgba(248, 238, 214, ${(a * 0.10).toFixed(3)})`);
+        g.addColorStop(1, "rgba(248, 238, 214, 0)");
+
+        ctx.fillStyle = g;
+        ctx.beginPath();
+        ctx.arc(d.x, d.y, halo, 0, Math.PI * 2);
+        ctx.fill();
+      }
 
       keep.push(d);
     }
@@ -233,63 +325,73 @@ export class ActMistComponent {
     this.raf = requestAnimationFrame((nt) => this.loop(nt));
   };
 
-  /** Draw the visible mist cone that leaves the nozzle while spraying. */
-  private drawPlume(): void {
+  /** Draw ambient light glow behind the water spray. */
+  private drawVolumetricGlow(): void {
     const ctx = this.sprayCtx;
     const { x, y } = this.origin;
-    const strength = this.isMobile ? 0.2 : 0.3;
-    const cone = Math.min(150, 60 + this.power * 0.55);
+    const strength = this.isMobile ? 0.30 : 0.48;
 
-    const g = ctx.createRadialGradient(x, y - cone * 0.2, 4, x, y - cone, cone * 0.9);
-    g.addColorStop(0, `rgba(255, 252, 240, ${strength.toFixed(3)})`);
-    g.addColorStop(0.6, `rgba(250, 244, 224, ${(strength * 0.5).toFixed(3)})`);
-    g.addColorStop(1, "rgba(250, 244, 224, 0)");
-    ctx.globalAlpha = 1;
-    ctx.fillStyle = g;
-    // an upward fan from the nozzle
-    ctx.beginPath();
-    ctx.moveTo(x - cone * 0.42, y - cone * 0.15);
-    ctx.quadraticCurveTo(x, y - cone, x + cone * 0.42, y - cone * 0.15);
-    ctx.closePath();
-    ctx.fill();
+    const coreGrad = ctx.createRadialGradient(x, y, 0, x, y, 80);
+    coreGrad.addColorStop(0, `rgba(255, 255, 255, ${(strength + 0.3).toFixed(3)})`);
+    coreGrad.addColorStop(0.4, `rgba(252, 248, 236, ${(strength * 0.6).toFixed(3)})`);
+    coreGrad.addColorStop(1, "rgba(252, 248, 236, 0)");
 
-    // bright nozzle glow
-    const n = ctx.createRadialGradient(x, y, 0, x, y, 26);
-    n.addColorStop(0, `rgba(255, 254, 248, ${(strength + 0.15).toFixed(3)})`);
-    n.addColorStop(1, "rgba(255, 254, 248, 0)");
-    ctx.fillStyle = n;
+    ctx.fillStyle = coreGrad;
     ctx.beginPath();
-    ctx.arc(x, y, 26, 0, Math.PI * 2);
+    ctx.arc(x, y, 80, 0, Math.PI * 2);
     ctx.fill();
   }
 
   /**
-   * Emit one droplet. Burst droplets are heavier & brighter, the ambient ones
-   * are finer. The cone is narrow and travels upward, then softens into mist.
+   * Emit one water droplet or micro-bead with realistic ballistic cone velocity.
    */
-  private emit(burst = false): void {
+  private emit(kind: "droplet" | "microbead" | "cloud" = "droplet", burst = false): void {
     if (this.drops.length >= MAX_DROPS) return;
     const { x, y } = this.origin;
-    // narrow upward cone (± ~18°) with a whisper of outward lean
-    const spread = (Math.random() - 0.5) * (burst ? 0.62 : 0.5);
-    const tilt = this.isMobile ? 0.06 : 0.1; // slightly toward the camera side
-    const speed =
-      (this.isMobile ? 60 : 90) + Math.random() * (this.isMobile ? 60 : 110) + (burst ? 46 : 0);
+
+    // Atomizer spray cone angle (-65° to +65°)
+    const angle = (Math.random() - 0.5) * (burst ? 2.6 : 2.0);
+
+    let speed = 0;
+    let r = 0;
+    let alpha = 0;
+    let life = 0;
+
+    if (kind === "droplet") {
+      // Primary liquid water drops
+      speed = (this.isMobile ? 300 : 480) + Math.random() * (this.isMobile ? 260 : 420) + (burst ? 200 : 0);
+      r = 1.8 + Math.random() * (burst ? 3.2 : 2.2);
+      alpha = 0.80 + Math.random() * 0.20;
+      life = 1.2 + Math.random() * 1.4;
+    } else if (kind === "microbead") {
+      // Micro water spray beads
+      speed = (this.isMobile ? 200 : 340) + Math.random() * (this.isMobile ? 220 : 340);
+      r = 0.8 + Math.random() * 1.2;
+      alpha = 0.70 + Math.random() * 0.30;
+      life = 1.0 + Math.random() * 1.5;
+    } else {
+      // Background ambient vapor cloud
+      speed = 100 + Math.random() * 180;
+      r = 2.5 + Math.random() * 5.0;
+      alpha = 0.35 + Math.random() * 0.40;
+      life = 2.0 + Math.random() * 2.0;
+    }
 
     this.drops.push({
-      x: x + (Math.random() - 0.5) * 4,
-      y: y + (Math.random() - 0.5) * 3,
-      vx: Math.sin(spread) * speed + Math.sin(tilt) * speed,
-      vy: -Math.cos(spread - tilt) * speed,
-      r: burst
-        ? 1.1 + Math.random() * 2.2
-        : 0.5 + Math.random() * 1.5,
-      hue: burst ? Math.random() * 0.5 : Math.random(),
-      alpha: burst ? 0.5 + Math.random() * 0.4 : 0.3 + Math.random() * 0.35,
-      life: (burst ? 1.1 : 0.8) + Math.random() * 0.8,
-      max: 1.6,
+      x: x + (Math.random() - 0.5) * 8,
+      y: y + (Math.random() - 0.5) * 4,
+      vx: Math.sin(angle) * speed,
+      vy: -Math.cos(angle) * speed * 0.94,
+      r,
+      hue: Math.random() * 0.3,
+      alpha,
+      life,
+      max: life,
       wob: Math.random() * Math.PI * 2,
-      wobSpeed: 2 + Math.random() * 5,
+      wobSpeed: 2.0 + Math.random() * 6.0,
+      kind,
     });
   }
 }
+
+

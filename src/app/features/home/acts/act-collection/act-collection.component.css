@@ -36,20 +36,26 @@
 
 .world--l .world__copy {
   grid-column: 1 / 6;
+  grid-row: 1;
+  align-self: center;
   padding-right: clamp(1.5rem, 3vw, 3.5rem);
 }
 .world--l .world__scene-wrap {
   grid-column: 6 / 13;
+  grid-row: 1;
+  align-self: center;
 }
 .world--r .world__copy {
   grid-column: 8 / 13;
   grid-row: 1;
+  align-self: center;
   text-align: right;
   padding-left: clamp(1.5rem, 3vw, 3.5rem);
 }
 .world--r .world__scene-wrap {
   grid-column: 1 / 8;
   grid-row: 1;
+  align-self: center;
 }
 .world--r .world__copy .world__notes-row {
   flex-direction: row-reverse;
@@ -76,11 +82,9 @@
   position: relative;
   width: 100%;
 }
-.world--l .world__scene-wrap {
-  align-items: flex-start;
-}
+.world--l .world__scene-wrap,
 .world--r .world__scene-wrap {
-  align-items: flex-end;
+  align-items: center;
 }
 .world__scene-glow {
   position: absolute;

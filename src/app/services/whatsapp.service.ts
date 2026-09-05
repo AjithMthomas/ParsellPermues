@@ -28,7 +28,7 @@ export class WhatsAppService {
   order(f: Fragrance, volume = 100, qty = 1): string {
     const price = f.price * qty;
     return [
-      "Hello BEAUX DE PARIS — I would like to order:",
+      "Hello PARADISA — I would like to order:",
       "",
       `• ${f.code} — ${f.name}`,
       `  ${volume} ml · Quantity ${qty}`,
@@ -41,7 +41,7 @@ export class WhatsAppService {
   /** Full bag order — every line with name, volume, quantity, and subtotal. */
   bag(lines: CartLine[], subtotal: number): string {
     const parts: string[] = [
-      "Hello BEAUX DE PARIS — I would like to place an order:",
+      "Hello PARADISA — I would like to place an order:",
       "",
     ];
     lines.forEach((line, i) => {
@@ -60,7 +60,7 @@ export class WhatsAppService {
   /** Boutique / atelier enquiry from the contact page. */
   enquiry(name: string, subject: string, message: string): string {
     const lines = [
-      `Hello BEAUX DE PARIS — ${subject || "an enquiry"} — ${name}`,
+      `Hello PARADISA — ${subject || "an enquiry"} — ${name}`,
       "",
       message,
       "",

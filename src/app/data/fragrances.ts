@@ -1,5 +1,5 @@
 /**
- * BEAUX DE PARIS — product data model.
+ * PARADISA — product data model.
  * Structured so a real backend can replace this file later without touching views.
  * The flacon artwork stays identical across every "photograph"; only `liquid`
  * (liquid colour) and `world` (its artistic environment) change per fragrance.

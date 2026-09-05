@@ -33,10 +33,10 @@ import { QuoteComponent } from "./quote/quote.component";
       <bdp-act-hero />
       <bdp-act-notes />
       <bdp-act-mist />
-      <bdp-quote [lines]="['A scent', 'becomes', 'a memory.']" kicker="Interlude — I" />
+      <bdp-quote [lines]="['A scent', 'becomes', 'a memory.']" kicker="Interlude I" />
       <bdp-act-collection />
       <bdp-act-signature />
-      <bdp-quote [lines]="['Elegance', 'leaves', 'a trace.']" kicker="Interlude — II" />
+      <bdp-quote [lines]="['Elegance', 'leaves', 'a trace.']" kicker="Interlude II" />
       <bdp-act-editorial />
       <bdp-act-culture />
       <bdp-act-final />

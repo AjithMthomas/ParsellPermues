@@ -18,7 +18,7 @@ import { CapabilitiesService } from "../../core/capabilities.service";
     @if (ui.menuOpen()) {
       <div class="menu" role="dialog" aria-modal="true" aria-label="Site menu">
         <div class="menu__top">
-          <span class="menu__word label-thin">BEAUX DE PARIS — Menu</span>
+          <span class="menu__word label-thin">PARADISA — Menu</span>
           <button class="menu__close" type="button" (click)="ui.closeMenu()" aria-label="Close the menu">
             <span>Close</span>
           </button>
@@ -38,11 +38,11 @@ import { CapabilitiesService } from "../../core/capabilities.service";
         </nav>
 
         <div class="menu__foot">
-          <a class="menu__foot-link" href="mailto:hello@beauxdeparis.fr">hello@beauxdeparis.fr</a>
+          <a class="menu__foot-link" href="mailto:hello@paradisa.fr">hello@paradisa.fr</a>
           <a class="menu__foot-link" href="tel:+33142604444">+33 1 42 60 44 44</a>
           <a
             class="menu__foot-link"
-            href="https://instagram.com/beauxdeparis"
+            href="https://instagram.com/paradisa"
             target="_blank"
             rel="noreferrer"
           >Instagram</a>

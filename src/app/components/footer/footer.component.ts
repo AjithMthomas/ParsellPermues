@@ -7,7 +7,7 @@ import { ScrollService } from "../../core/scroll.service";
   template: `
     <footer class="footer" data-nav="ink" aria-label="Footer">
       <div class="footer__statement">
-        <p class="label footer__kicker">BEAUX DE PARIS — The scent of elegance</p>
+        <p class="label footer__kicker">PARADISA — The scent of elegance</p>
         <h2 class="footer__big" aria-label="Leave a trace">
           <span class="mask-line"><span>LEAVE</span></span>
           <span class="mask-line"><span>A</span></span>
@@ -25,8 +25,8 @@ import { ScrollService } from "../../core/scroll.service";
         <div class="footer__col">
           <p class="label footer__col-title">Maison</p>
           <a class="footer__link" href="https://wa.me/918075265863" target="_blank" rel="noreferrer">WhatsApp — +91 8075 265 863</a>
-          <a class="footer__link" href="mailto:hello@beauxdeparis.fr">hello@beauxdeparis.fr</a>
-          <a class="footer__link" href="https://instagram.com/beauxdeparis" target="_blank" rel="noreferrer">Instagram</a>
+          <a class="footer__link" href="mailto:hello@paradisa.fr">hello@paradisa.fr</a>
+          <a class="footer__link" href="https://instagram.com/paradisa" target="_blank" rel="noreferrer">Instagram</a>
         </div>
         <div class="footer__col">
           <p class="label footer__col-title">Client care</p>
@@ -36,12 +36,12 @@ import { ScrollService } from "../../core/scroll.service";
           <span class="footer__muted">Terms</span>
         </div>
         <div class="footer__emblem">
-          <img src="assets/brand/bdp-logo.png" alt="BEAUX DE PARIS emblem" width="120" height="120" />
+          <img src="assets/brand/bdp-logo.png" alt="PARADISA emblem" width="120" height="120" />
         </div>
       </div>
 
       <div class="footer__bottom">
-        <p class="footer__muted">© MMXXVI Maison Beaux de Paris — Paris</p>
+        <p class="footer__muted">© MMXXVI Maison Paradisa</p>
         <p class="footer__muted">Composed in Grasse · Bottled at 8 Rue Royale</p>
       </div>
     </footer>

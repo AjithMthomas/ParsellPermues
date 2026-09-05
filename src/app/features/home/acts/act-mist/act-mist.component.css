@@ -143,7 +143,7 @@
   margin-left: -6.5vw;
 }
 
-/* spray particle canvas — realistic mist from the nozzle */
+/* spray particle canvas — realistic water droplets and mist from nozzle */
 .mist-spray {
   position: absolute;
   inset: 0;
