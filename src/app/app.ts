@@ -8,6 +8,7 @@ import { SearchOverlayComponent } from "./components/search-overlay/search-overl
 import { FinderOverlayComponent } from "./components/finder-overlay/finder-overlay.component";
 import { CursorComponent } from "./components/cursor/cursor.component";
 import { FooterComponent } from "./components/footer/footer.component";
+import { AudioToggleComponent } from "./components/audio-toggle/audio-toggle.component";
 
 @Component({
   selector: "app-root",
@@ -20,6 +21,7 @@ import { FooterComponent } from "./components/footer/footer.component";
     FinderOverlayComponent,
     CursorComponent,
     FooterComponent,
+    AudioToggleComponent,
   ],
   templateUrl: "./app.html",
   styleUrl: "./app.css",

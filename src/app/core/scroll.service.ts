@@ -3,6 +3,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
 import { CapabilitiesService } from "./capabilities.service";
+import { AudioService } from "./audio.service";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -14,7 +15,10 @@ gsap.registerPlugin(ScrollTrigger);
 export class ScrollService {
   private lenis?: Lenis;
 
-  constructor(private caps: CapabilitiesService) {
+  constructor(
+    private caps: CapabilitiesService,
+    private audio: AudioService
+  ) {
     if (typeof window === "undefined") return;
     // Smooth wheel scrolling is a luxury; under reduced-motion we keep native.
     if (this.caps.rm) return;
@@ -42,12 +46,20 @@ export class ScrollService {
       syncTouch: false,
     });
 
-    // Belt and braces: keep ScrollTrigger in sync from native scroll events too
-    // (Lenis drives wheel scroll; direct API scrolls otherwise may coalesce).
-    this.lenis.on("scroll", ScrollTrigger.update);
-    window.addEventListener("scroll", ScrollTrigger.update as EventListener, {
-      passive: true,
+    // Belt and braces: keep ScrollTrigger and AudioService in sync
+    this.lenis.on("scroll", (e: { velocity?: number }) => {
+      ScrollTrigger.update();
+      this.audio.onScroll(e?.velocity ?? 1);
     });
+
+    window.addEventListener(
+      "scroll",
+      () => {
+        ScrollTrigger.update();
+        this.audio.onScroll(1);
+      },
+      { passive: true }
+    );
 
     gsap.ticker.add((time) => {
       this.lenis?.raf(time * 1000);
