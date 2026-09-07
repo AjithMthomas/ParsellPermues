@@ -20,6 +20,13 @@ export class ScrollService {
     private audio: AudioService
   ) {
     if (typeof window === "undefined") return;
+
+    // Prevent browser from restoring scroll position on reload
+    if ("scrollRestoration" in history) {
+      history.scrollRestoration = "manual";
+    }
+    window.scrollTo(0, 0);
+
     // Smooth wheel scrolling is a luxury; under reduced-motion we keep native.
     if (this.caps.rm) return;
 
@@ -44,6 +51,11 @@ export class ScrollService {
       touchMultiplier: 1.35,
       // native touch scrolling keeps momentum without interception
       syncTouch: false,
+    });
+
+    this.lenis.scrollTo(0, { immediate: true });
+    window.addEventListener("beforeunload", () => {
+      window.scrollTo(0, 0);
     });
 
     // Belt and braces: keep ScrollTrigger and AudioService in sync
