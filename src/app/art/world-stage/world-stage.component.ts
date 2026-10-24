@@ -10,6 +10,10 @@ const WORLD: Record<
   string,
   { ped: PedestalKind; bot: BotanicalKind[]; bot2: BotanicalKind }
 > = {
+  symphony: { ped: "rock", bot: ["branch", "sprig"], bot2: "grass" },
+  obsidian: { ped: "basalt", bot: ["buds", "iris"], bot2: "figleaf" },
+  "elin-lush": { ped: "moon", bot: ["moonflower", "sprig"], bot2: "grass" },
+  iris: { ped: "marble", bot: ["iris", "sprig"], bot2: "buds" },
   aube: { ped: "rock", bot: ["branch", "sprig"], bot2: "grass" },
   velours: { ped: "basalt", bot: ["buds", "iris"], bot2: "figleaf" },
   lune: { ped: "moon", bot: ["moonflower", "sprig"], bot2: "grass" },
@@ -67,6 +71,7 @@ const WORLD: Record<
     }
     /* darker worlds need lighter botanical strokes */
     :host-context(.world--velours),
+    :host-context(.world--obsidian),
     :host-context(.final-scene) {
       color: rgb(252 251 248 / 0.45);
     }
@@ -210,6 +215,7 @@ export class WorldStageComponent {
   }
 
   world(): { ped: PedestalKind; bot: BotanicalKind[]; bot2: BotanicalKind } {
-    return WORLD[this.fragrance()?.world ?? "aube"];
+    const key = this.fragrance()?.world ?? "symphony";
+    return WORLD[key] ?? WORLD["symphony"];
   }
 }

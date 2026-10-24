@@ -2,22 +2,42 @@
   class="film-sec film-sec--signature"
   #sec
   data-nav="ink"
-  aria-label="The signature — Nº1 L'Aube on its marble pedestal"
+  aria-label="The signature — Pura Symphony"
 >
   <div class="film-stage sig-stage">
     <div class="sig-glow" aria-hidden="true"></div>
     <bdp-dust class="sig-dust" [density]="20" />
 
     <div class="sig-copy">
-      <p class="label sig-kicker rule">The signature</p>
+      <p class="label sig-kicker rule">The signature — Nature Meets Luxury</p>
       <h2 class="t-display sig-title">
-        Nº1 — <em>L'Aube</em>
+        Nº1 — <em>Pura Symphony</em>
       </h2>
       <p class="serif-i sig-line">{{ no1.line }}</p>
       <p class="t-body sig-desc">{{ no1.intro }}</p>
       <p class="sig-trio label-thin">{{ join(no1.topNotes) }} — {{ join(no1.heartNotes) }} — {{ join(no1.baseNotes) }}</p>
+
+      <!-- Volume selector -->
+      <div class="sig-vol-section">
+        <p class="label-thin sig-vol-label">Choose Volume</p>
+        <div class="sig-vol-pills" role="radiogroup" aria-label="Available volumes">
+          @for (opt of volumeOptions; track opt.volume) {
+            <button
+              type="button"
+              class="sig-vol-pill"
+              [class.is-active]="selectedVolume() === opt.volume"
+              (click)="selectVolume(opt.volume)"
+              [attr.aria-pressed]="selectedVolume() === opt.volume"
+            >
+              <span class="sig-vol-ml">{{ opt.label }}</span>
+              <span class="sig-vol-inr">₹{{ opt.price }}</span>
+            </button>
+          }
+        </div>
+      </div>
+
       <div class="sig-action">
-        <span class="sig-price">{{ price() }} <em>— 100 ml</em></span>
+        <span class="sig-price">{{ currentPrice() }} <em>— {{ selectedVolume() }} ml</em></span>
         <button class="btn-editorial" type="button" (click)="addToBag()">
           @if (added()) {
             <span class="sig-added">Added to your bag</span>
@@ -26,23 +46,40 @@
           }
         </button>
       </div>
+
       <button class="link-line sig-wa" type="button" (click)="orderOnWhatsApp()">
         Order on WhatsApp — {{ wa.display }}
       </button>
       <p class="sig-hint label-thin" aria-hidden="true">Move your light across the glass</p>
     </div>
 
-    <!-- the still: bottle settling on its marble pedestal -->
-    <div class="sig-stage-art" aria-hidden="true">
-      <div class="sig-ped">
-        <bdp-pedestal kind="marble" />
+    <!-- Visual area: The attached Master Cover Card & Sculptural Flacon -->
+    <div class="sig-stage-visual">
+      <!-- Master Cover Card Plate -->
+      <div class="sig-card-wrapper" aria-label="Pura Symphony Cover Artwork">
+        <div class="sig-card-border">
+          <img
+            class="sig-card-img"
+            src="/assets/products/pura-symphony/cover.png"
+            alt="Pura Symphony — Nature Meets Luxury Cover"
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
       </div>
-      <div class="sig-bottle">
-        <bdp-product-art [fragrance]="no1" alt="" />
-      </div>
-      <div class="sig-shadow"></div>
-      <div class="sig-plant">
-        <bdp-botanical kind="sprig" />
+
+      <!-- Still on marble with interactive pointer lighting -->
+      <div class="sig-stage-art" aria-hidden="true">
+        <div class="sig-ped">
+          <bdp-pedestal kind="marble" />
+        </div>
+        <div class="sig-bottle">
+          <bdp-product-art [fragrance]="no1" alt="" />
+        </div>
+        <div class="sig-shadow"></div>
+        <div class="sig-plant">
+          <bdp-botanical kind="sprig" />
+        </div>
       </div>
     </div>
 

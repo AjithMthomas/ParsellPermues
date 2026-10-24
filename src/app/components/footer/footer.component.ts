@@ -7,7 +7,7 @@ import { ScrollService } from "../../core/scroll.service";
   template: `
     <footer class="footer" data-nav="ink" aria-label="Footer">
       <div class="footer__statement">
-        <p class="label footer__kicker">PARADISA — The scent of elegance</p>
+        <p class="label footer__kicker">PURA PERFUMES — Nature Meets Luxury</p>
         <h2 class="footer__big" aria-label="Leave a trace">
           <span class="mask-line"><span>LEAVE</span></span>
           <span class="mask-line"><span>A</span></span>
@@ -25,24 +25,24 @@ import { ScrollService } from "../../core/scroll.service";
         <div class="footer__col">
           <p class="label footer__col-title">Maison</p>
           <a class="footer__link" href="https://wa.me/918075265863" target="_blank" rel="noreferrer">WhatsApp — +91 8075 265 863</a>
-          <a class="footer__link" href="mailto:hello@paradisa.fr">hello@paradisa.fr</a>
-          <a class="footer__link" href="https://instagram.com/paradisa" target="_blank" rel="noreferrer">Instagram</a>
+          <a class="footer__link" href="mailto:hello@puraperfumes.com">hello@puraperfumes.com</a>
+          <a class="footer__link" href="https://instagram.com/puraperfumes" target="_blank" rel="noreferrer">Instagram — @puraperfumes</a>
         </div>
         <div class="footer__col">
           <p class="label footer__col-title">Client care</p>
-          <span class="footer__muted">Shipping — worldwide</span>
-          <span class="footer__muted">Returns — 30 days</span>
-          <span class="footer__muted">Privacy</span>
-          <span class="footer__muted">Terms</span>
+          <span class="footer__muted">Shipping — nationwide delivery</span>
+          <span class="footer__muted">Available in 8ml · 30ml · 50ml · 100ml</span>
+          <span class="footer__muted">Artisanal hand-bottled</span>
+          <span class="footer__muted">Nature Meets Luxury</span>
         </div>
         <div class="footer__emblem">
-          <img src="assets/brand/bdp-logo.png" alt="PARADISA emblem" width="120" height="120" />
+          <img src="assets/brand/bdp-logo.png" alt="Maison emblem" width="120" height="120" />
         </div>
       </div>
 
       <div class="footer__bottom">
-        <p class="footer__muted">© MMXXVI Maison Paradisa</p>
-        <p class="footer__muted">Composed in Grasse · Bottled at 8 Rue Royale</p>
+        <p class="footer__muted">© MMXXVI Pura Perfumes</p>
+        <p class="footer__muted">Nº1 Pura Symphony · Nº2 Pura Obsidian · Nº3 Pura Elin Lush · Nº4 Pura Iris</p>
       </div>
     </footer>
   `,
@@ -120,7 +120,7 @@ import { ScrollService } from "../../core/scroll.service";
         justify-content: center;
       }
       .footer__emblem img {
-        width: clamp(84px, 9vw, 120px);
+        width: clamp(100px, 12vw, 140px);
         height: auto;
         object-fit: contain;
         opacity: 0.92;

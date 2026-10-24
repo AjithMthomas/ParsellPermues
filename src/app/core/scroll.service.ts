@@ -58,10 +58,9 @@ export class ScrollService {
       window.scrollTo(0, 0);
     });
 
-    // Belt and braces: keep ScrollTrigger and AudioService in sync
-    this.lenis.on("scroll", (e: { velocity?: number }) => {
+    // Keep ScrollTrigger in sync
+    this.lenis.on("scroll", () => {
       ScrollTrigger.update();
-      this.audio.onScroll(e?.velocity ?? 1);
     });
 
     window.addEventListener(

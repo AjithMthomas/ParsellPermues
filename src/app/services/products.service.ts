@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { FRAGRANCES, Fragrance, fragranceBySlug } from "../data/fragrances";
+import { FRAGRANCES, Fragrance, fragranceBySlug, priceForVolume } from "../data/fragrances";
 
 export interface FinderAnswers {
   mood: string;
@@ -7,28 +7,28 @@ export interface FinderAnswers {
   impression: string;
 }
 
-/** Option → preferred fragrance slug. A simple, predictable recommendation. */
+/** Option → preferred fragrance slug across the 4 master creations. */
 const MOOD: Record<string, string[]> = {
-  FRESH: ["laube", "jardin-de-lune", "le-velours"],
-  ELEGANT: ["laube", "jardin-de-lune", "le-velours"],
-  SENSUAL: ["le-velours", "laube", "jardin-de-lune"],
-  WARM: ["le-velours", "jardin-de-lune", "laube"],
-  MYSTERIOUS: ["jardin-de-lune", "le-velours", "laube"],
+  FRESH: ["pura-elin-lush", "pura-symphony", "pura-iris", "pura-obsidian"],
+  ELEGANT: ["pura-symphony", "pura-iris", "pura-obsidian", "pura-elin-lush"],
+  SENSUAL: ["pura-obsidian", "pura-symphony", "pura-iris", "pura-elin-lush"],
+  WARM: ["pura-obsidian", "pura-symphony", "pura-iris", "pura-elin-lush"],
+  MYSTERIOUS: ["pura-obsidian", "pura-elin-lush", "pura-iris", "pura-symphony"],
 };
 
 const ATMOSPHERE: Record<string, string[]> = {
-  DAYLIGHT: ["laube", "jardin-de-lune", "le-velours"],
-  NIGHT: ["le-velours", "jardin-de-lune", "laube"],
-  NATURE: ["jardin-de-lune", "laube", "le-velours"],
-  CITY: ["laube", "le-velours", "jardin-de-lune"],
-  VELVET: ["le-velours", "jardin-de-lune", "laube"],
+  DAYLIGHT: ["pura-symphony", "pura-elin-lush", "pura-iris", "pura-obsidian"],
+  NIGHT: ["pura-obsidian", "pura-iris", "pura-symphony", "pura-elin-lush"],
+  NATURE: ["pura-elin-lush", "pura-symphony", "pura-iris", "pura-obsidian"],
+  CITY: ["pura-symphony", "pura-obsidian", "pura-iris", "pura-elin-lush"],
+  VELVET: ["pura-obsidian", "pura-iris", "pura-symphony", "pura-elin-lush"],
 };
 
 const IMPRESSION: Record<string, string[]> = {
-  SUBTLE: ["laube", "jardin-de-lune", "le-velours"],
-  MEMORABLE: ["jardin-de-lune", "le-velours", "laube"],
-  BOLD: ["le-velours", "jardin-de-lune", "laube"],
-  ROMANTIC: ["laube", "le-velours", "jardin-de-lune"],
+  SUBTLE: ["pura-iris", "pura-elin-lush", "pura-symphony", "pura-obsidian"],
+  MEMORABLE: ["pura-symphony", "pura-obsidian", "pura-iris", "pura-elin-lush"],
+  BOLD: ["pura-obsidian", "pura-symphony", "pura-elin-lush", "pura-iris"],
+  ROMANTIC: ["pura-iris", "pura-symphony", "pura-obsidian", "pura-elin-lush"],
 };
 
 @Injectable({ providedIn: "root" })
@@ -47,11 +47,15 @@ export class ProductsService {
     }).format(price);
   }
 
+  priceFor(volume: number): number {
+    return priceForVolume(volume);
+  }
+
   recommend(a: FinderAnswers): Fragrance {
     const votes = new Map<string, number>();
     const cast = (list: string[]) => {
       list.forEach((slug, i) => {
-        votes.set(slug, (votes.get(slug) ?? 0) + (3 - i));
+        votes.set(slug, (votes.get(slug) ?? 0) + (4 - i));
       });
     };
     cast(MOOD[a.mood] ?? MOOD["ELEGANT"]);

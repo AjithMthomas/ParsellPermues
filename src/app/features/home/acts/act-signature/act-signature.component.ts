@@ -1,10 +1,17 @@
-import { Component, inject, signal, ElementRef, viewChild, afterNextRender } from "@angular/core";
+import {
+  Component,
+  inject,
+  signal,
+  ElementRef,
+  viewChild,
+  afterNextRender,
+} from "@angular/core";
 import { gsap } from "gsap";
 import { ProductArtComponent } from "../../../../art/product-art/product-art.component";
 import { PedestalComponent } from "../../../../art/pedestal/pedestal.component";
 import { BotanicalComponent } from "../../../../art/botanical/botanical.component";
 import { DustComponent } from "../../../../art/dust/dust.component";
-import { FRAGRANCES } from "../../../../data/fragrances";
+import { FRAGRANCES, VOLUME_OPTIONS, priceForVolume } from "../../../../data/fragrances";
 import { CartService } from "../../../../services/cart.service";
 import { ProductsService } from "../../../../services/products.service";
 import { WhatsAppService } from "../../../../services/whatsapp.service";
@@ -13,9 +20,10 @@ import { CapabilitiesService } from "../../../../core/capabilities.service";
 const NO1 = FRAGRANCES[0];
 
 /**
- * SCENE VIII — THE SIGNATURE.
- * The hero edition returns and settles on its marble pedestal. On fine-pointer
- * devices the visitor's cursor becomes the studio light.
+ * SCENE VIII — THE SIGNATURE — PURA SYMPHONY.
+ * Nature Meets Luxury.
+ * Showcases the master cover image with gold frame botanical theme,
+ * full volume selections (8ml, 30ml, 50ml, 100ml), and marble pedestal.
  */
 @Component({
   selector: "bdp-act-signature",
@@ -26,6 +34,8 @@ const NO1 = FRAGRANCES[0];
 export class ActSignatureComponent {
   protected no1 = NO1;
   protected added = signal(false);
+  protected selectedVolume = signal<number>(100);
+  protected readonly volumeOptions = VOLUME_OPTIONS;
 
   protected readonly wa = inject(WhatsAppService);
   private readonly cart = inject(CartService);
@@ -33,10 +43,13 @@ export class ActSignatureComponent {
   private readonly caps = inject(CapabilitiesService);
   private readonly el = inject(ElementRef);
   private readonly secEl = viewChild<ElementRef<HTMLElement>>("sec");
-  private kill?: () => void;
 
-  protected price(): string {
-    return this.products.format(this.no1.price);
+  protected currentPrice(): string {
+    return this.products.format(priceForVolume(this.selectedVolume()));
+  }
+
+  protected selectVolume(vol: number): void {
+    this.selectedVolume.set(vol);
   }
 
   protected join(notes: string[]): string {
@@ -44,13 +57,13 @@ export class ActSignatureComponent {
   }
 
   protected addToBag(): void {
-    this.cart.add(this.no1, 100, 1);
+    this.cart.add(this.no1, this.selectedVolume(), 1);
     this.added.set(true);
     setTimeout(() => this.added.set(false), 2400);
   }
 
   protected orderOnWhatsApp(): void {
-    this.wa.open(this.wa.order(this.no1, 100, 1));
+    this.wa.open(this.wa.order(this.no1, this.selectedVolume(), 1));
   }
 
   constructor() {
@@ -73,30 +86,30 @@ export class ActSignatureComponent {
       light.style.setProperty("--lx", `${x}px`);
       light.style.setProperty("--ly", `${y}px`);
       gsap.to([bottle, ped], {
-        x: (x / r.width - 0.5) * 14,
-        y: (y / r.height - 0.5) * 10,
-        duration: 1.2,
+        rotateY: ((x / r.width) - 0.5) * 8,
+        rotateX: -((y / r.height) - 0.5) * 6,
+        duration: 0.8,
         ease: "power2.out",
         overwrite: "auto",
       });
-      if (bottle) bottle.style.setProperty("--bdx", `${(x / r.width - 0.5) * 22}px`);
-      if (bottle) bottle.style.setProperty("--bdy", `${(y / r.height - 0.5) * 16}px`);
     };
-    const leave = () => {
-      gsap.to([bottle, ped], { x: 0, y: 0, duration: 1.4, ease: "power3.out" });
-      light.style.opacity = "0";
-    };
+
     const enter = () => {
       light.style.opacity = "1";
     };
 
-    sec.addEventListener("pointermove", move);
+    const leave = () => {
+      light.style.opacity = "0";
+      gsap.to([bottle, ped], {
+        rotateY: 0,
+        rotateX: 0,
+        duration: 1.2,
+        ease: "power3.out",
+      });
+    };
+
+    sec.addEventListener("pointermove", move as EventListener);
     sec.addEventListener("pointerenter", enter);
     sec.addEventListener("pointerleave", leave);
-    this.kill = () => {
-      sec.removeEventListener("pointermove", move);
-      sec.removeEventListener("pointerenter", enter);
-      sec.removeEventListener("pointerleave", leave);
-    };
   }
 }

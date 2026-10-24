@@ -3,27 +3,34 @@
 }
 
 .film-sec--signature {
-  height: calc(100svh + 55vh);
-}
-@media (max-width: 767px) {
-  .film-sec--signature {
-    height: auto;
-  }
+  min-height: 100vh;
+  position: relative;
+  background: var(--color-ivory);
+  overflow: hidden;
+  padding: clamp(5rem, 10vh, 8rem) 0;
 }
 
 .sig-stage {
-  background: var(--color-ivory);
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+  position: relative;
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: clamp(2.5rem, 5vw, 6rem);
+  align-items: center;
+  min-height: 80vh;
 }
 
 .sig-glow {
   position: absolute;
-  right: 6vw;
-  top: 6vh;
+  right: 10vw;
+  top: 10vh;
   width: 46vw;
   height: 46vw;
   border-radius: 50%;
-  filter: blur(70px);
-  background: radial-gradient(circle, rgb(247 234 204 / 0.85), transparent 70%);
+  filter: blur(80px);
+  background: radial-gradient(circle, rgb(247 234 204 / 0.8), transparent 70%);
   pointer-events: none;
 }
 
@@ -33,20 +40,16 @@
 
 /* ---------- copy ---------- */
 .sig-copy {
-  position: absolute;
+  position: relative;
   z-index: 4;
-  left: var(--gutter);
-  top: 50%;
-  transform: translateY(-50%);
-  width: min(36vw, 34rem);
 }
 .sig-kicker {
   color: var(--color-champagne);
 }
 .sig-title {
-  margin-top: 1.4rem;
+  margin-top: 1.2rem;
   color: var(--color-ink);
-  font-size: clamp(3rem, 6vw, 6rem);
+  font-size: clamp(2.8rem, 5.2vw, 5.4rem);
   line-height: 0.98;
 }
 .sig-title em {
@@ -54,24 +57,78 @@
   color: var(--color-champagne);
 }
 .sig-line {
-  margin-top: 1.2rem;
-  font-size: clamp(1.15rem, 1.5vw, 1.5rem);
+  margin-top: 1.1rem;
+  font-size: clamp(1.1rem, 1.4vw, 1.4rem);
   color: var(--color-mocha);
 }
 .sig-desc {
-  margin-top: 1.2rem;
+  margin-top: 1.1rem;
   color: var(--color-mocha);
-  max-width: 30rem;
+  max-width: 32rem;
+  line-height: 1.8;
 }
 .sig-trio {
-  margin-top: 1.8rem;
+  margin-top: 1.6rem;
   color: var(--color-champagne);
-  letter-spacing: 0.24em;
-  line-height: 2;
+  letter-spacing: 0.22em;
+  line-height: 1.9;
+  font-size: 0.65rem;
+}
+
+/* ---------- volume pills ---------- */
+.sig-vol-section {
+  margin-top: 2rem;
+  padding-top: 1.6rem;
+  border-top: 1px solid var(--hairline);
+}
+.sig-vol-label {
+  color: var(--color-taupe);
+  margin-bottom: 0.8rem;
+  display: block;
+}
+.sig-vol-pills {
+  display: flex;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+}
+.sig-vol-pill {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  padding: 0.6rem 1.1rem;
+  background: var(--color-porcelain);
+  border: 1px solid rgb(48 36 29 / 0.16);
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.4s var(--ease-luxe);
+}
+.sig-vol-pill:hover {
+  border-color: var(--color-champagne);
+  background: #fffdf9;
+  transform: translateY(-2px);
+}
+.sig-vol-pill.is-active {
+  background: #fbf7ee;
+  border-color: var(--color-champagne);
+  box-shadow: 0 4px 14px -3px rgb(184 148 82 / 0.28);
+}
+.sig-vol-ml {
+  font-family: var(--font-body);
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-ink);
+}
+.sig-vol-inr {
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  color: var(--color-champagne);
 }
 
 .sig-action {
-  margin-top: 2.4rem;
+  margin-top: 2rem;
   display: flex;
   align-items: center;
   gap: 2rem;
@@ -79,7 +136,7 @@
 }
 .sig-price {
   font-family: var(--font-display);
-  font-size: 1.6rem;
+  font-size: 1.8rem;
   color: var(--color-ink);
 }
 .sig-price em {
@@ -95,7 +152,7 @@
   color: var(--color-champagne);
 }
 .sig-wa {
-  margin-top: 1.1rem;
+  margin-top: 1.2rem;
   color: var(--color-mocha);
   font-size: 0.625rem;
 }
@@ -103,7 +160,7 @@
   color: var(--color-champagne);
 }
 .sig-hint {
-  margin-top: 2rem;
+  margin-top: 1.8rem;
   color: var(--color-taupe);
   display: inline-flex;
   align-items: center;
@@ -117,14 +174,59 @@
   opacity: 0.5;
 }
 
-/* ---------- the still on marble ---------- */
+/* ---------- visual area (card + flacon) ---------- */
+.sig-stage-visual {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 480px;
+}
+
+/* Attached Master Cover Card Frame: Nature Meets Luxury */
+.sig-card-wrapper {
+  position: relative;
+  width: min(32vw, 24rem);
+  aspect-ratio: 3 / 4.4;
+  background: #ffffff;
+  padding: 8px;
+  border: 1px solid rgb(184 148 82 / 0.4);
+  box-shadow:
+    0 2rem 4rem -1.5rem rgb(48 36 29 / 0.22),
+    0 0 0 1px rgb(252 251 248 / 0.8);
+  border-radius: 4px;
+  transition: transform 0.6s var(--ease-luxe), box-shadow 0.6s var(--ease-luxe);
+  z-index: 2;
+}
+.sig-card-wrapper:hover {
+  transform: translateY(-4px) scale(1.01);
+  box-shadow:
+    0 2.5rem 5rem -1.8rem rgb(48 36 29 / 0.28),
+    0 0 0 1px rgb(201 162 77 / 0.6);
+}
+.sig-card-border {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border: 1px solid rgb(184 148 82 / 0.25);
+}
+.sig-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* still on marble */
 .sig-stage-art {
   position: absolute;
-  z-index: 3;
-  right: 4vw;
-  bottom: -4vh;
-  width: min(24vw, 21rem);
+  right: -2rem;
+  bottom: -2rem;
+  width: min(18vw, 15rem);
   aspect-ratio: 200 / 340;
+  z-index: 3;
+  pointer-events: none;
 }
 .sig-ped {
   position: absolute;
@@ -179,45 +281,33 @@
 /* ---------- responsive ---------- */
 @media (max-width: 1023px) {
   .sig-stage {
-    position: relative;
-    overflow: hidden;
-    padding-top: 5rem;
+    grid-template-columns: 1fr;
+    gap: 3.5rem;
   }
   .sig-copy {
-    position: relative;
-    top: auto;
-    left: auto;
-    transform: none;
-    width: 88vw;
-    margin: 0 auto;
-    padding-top: 2rem;
+    width: 100%;
+  }
+  .sig-card-wrapper {
+    width: min(65vw, 22rem);
   }
   .sig-stage-art {
-    position: relative;
-    right: auto;
-    bottom: auto;
-    margin: 3rem auto 0;
-    width: min(52vw, 22rem);
-  }
-  .sig-glow {
-    width: 90vw;
-    height: 90vw;
-    right: -10vw;
-    top: 20vh;
+    right: 5%;
+    width: min(28vw, 13rem);
   }
 }
 
 @media (max-width: 767px) {
   .film-sec--signature {
-    height: auto;
+    padding: 4rem 0;
   }
-  .sig-stage {
-    padding-bottom: 0;
-    overflow: hidden;
+  .sig-stage-visual {
+    min-height: 380px;
+  }
+  .sig-card-wrapper {
+    width: 84vw;
   }
   .sig-stage-art {
-    width: 78vw;
-    margin-top: 2.4rem;
+    display: none;
   }
   .sig-hint {
     display: none;

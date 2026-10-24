@@ -1,5 +1,5 @@
 import { Component, inject, signal } from "@angular/core";
-import { FRAGRANCES, Fragrance } from "../../../../data/fragrances";
+import { FRAGRANCES, Fragrance, VOLUME_OPTIONS, priceForVolume } from "../../../../data/fragrances";
 import { WorldStageComponent } from "../../../../art/world-stage/world-stage.component";
 import { CartService } from "../../../../services/cart.service";
 import { ProductsService } from "../../../../services/products.service";
@@ -13,21 +13,45 @@ interface WorldStyle {
 }
 
 const STYLE: Record<string, WorldStyle> = {
+  symphony: {
+    vars:
+      "--w-bg:#FDFCF8;--w-ink:#2D251D;--w-mut:#5A4A3B;--w-line:rgb(201 162 77 / 0.28);",
+    nav: "ink",
+    side: "l",
+  },
+  obsidian: {
+    vars:
+      "--w-bg:#181614;--w-ink:#FAF7F2;--w-mut:#C8B9A6;--w-line:rgb(201 162 77 / 0.32);",
+    nav: "ivory",
+    side: "r",
+  },
+  "elin-lush": {
+    vars:
+      "--w-bg:#F2F6ED;--w-ink:#25301F;--w-mut:#4C5840;--w-line:rgb(74 88 62 / 0.24);",
+    nav: "ink",
+    side: "l",
+  },
+  iris: {
+    vars:
+      "--w-bg:#F8F4F9;--w-ink:#2A212E;--w-mut:#57485E;--w-line:rgb(168 132 184 / 0.28);",
+    nav: "ink",
+    side: "r",
+  },
   aube: {
     vars:
-      "--w-bg:#F7F4EE;--w-ink:#30241D;--w-mut:#4A3729;--w-line:rgb(48 36 29 / 0.14);",
+      "--w-bg:#FDFCF8;--w-ink:#2D251D;--w-mut:#5A4A3B;--w-line:rgb(201 162 77 / 0.28);",
     nav: "ink",
     side: "l",
   },
   velours: {
     vars:
-      "--w-bg:#251B13;--w-ink:#F4EFE6;--w-mut:#C9B9A4;--w-line:rgb(244 239 230 / 0.16);",
+      "--w-bg:#181614;--w-ink:#FAF7F2;--w-mut:#C8B9A6;--w-line:rgb(201 162 77 / 0.32);",
     nav: "ivory",
     side: "r",
   },
   lune: {
     vars:
-      "--w-bg:#E9EBDD;--w-ink:#33371F;--w-mut:#4c5236;--w-line:rgb(51 55 31 / 0.15);",
+      "--w-bg:#F2F6ED;--w-ink:#25301F;--w-mut:#4C5840;--w-line:rgb(74 88 62 / 0.24);",
     nav: "ink",
     side: "l",
   },
@@ -35,46 +59,64 @@ const STYLE: Record<string, WorldStyle> = {
 
 @Component({
   selector: "bdp-act-collection",
-  imports: [WorldStageComponent, RevealDirective],
+  imports: [RevealDirective],
   templateUrl: "./act-collection.component.html",
   styleUrl: "./act-collection.component.css",
 })
 export class ActCollectionComponent {
   protected fragrances = FRAGRANCES;
-  protected styleOf = (f: Fragrance): string => STYLE[f.world].vars;
-  protected navOf = (f: Fragrance): string => STYLE[f.world].nav;
-  protected sideOf = (f: Fragrance): "l" | "r" => STYLE[f.world].side;
+  protected readonly volumeOptions = VOLUME_OPTIONS;
+  protected selectedVolumes = signal<Record<string, number>>({});
+  protected activeViews = signal<Record<string, string>>({});
   protected added = signal<string[]>([]);
 
   private readonly cart = inject(CartService);
   private readonly products = inject(ProductsService);
   private readonly wa = inject(WhatsAppService);
 
+  protected styleOf = (f: Fragrance): string => {
+    return (STYLE[f.world] ?? STYLE["symphony"]).vars;
+  };
+  protected navOf = (f: Fragrance): "ink" | "ivory" => {
+    return (STYLE[f.world] ?? STYLE["symphony"]).nav;
+  };
+  protected sideOf = (f: Fragrance): "l" | "r" => {
+    return (STYLE[f.world] ?? STYLE["symphony"]).side;
+  };
+
+  protected getVolume(f: Fragrance): number {
+    return this.selectedVolumes()[f.slug] ?? 100;
+  }
+
+  protected setVolume(f: Fragrance, vol: number): void {
+    this.selectedVolumes.update((m) => ({ ...m, [f.slug]: vol }));
+  }
+
   protected price(f: Fragrance): string {
-    return this.products.format(f.price);
+    const vol = this.getVolume(f);
+    return this.products.format(priceForVolume(vol));
   }
 
   protected join(notes: string[]): string {
     return notes.join(" · ");
   }
 
-  protected pad(n: number): string {
-    return String(n).padStart(2, "0");
+  protected activeImg(f: Fragrance): string {
+    const view = this.activeViews()[f.slug] || "scene";
+    if (view === "cover" && f.images?.cover) return f.images.cover;
+    if (view === "ad" && f.images?.ad) return f.images.ad;
+    if (view === "poster" && f.images?.poster) return f.images.poster;
+    if (view === "bottle8ml" && f.images?.bottle8ml) return f.images.bottle8ml;
+    return f.images?.scene || `/assets/products/${f.slug}/scene.png`;
   }
 
-  protected material(f: Fragrance): string {
-    switch (f.world) {
-      case "velours":
-        return "basalt";
-      case "lune":
-        return "moonstone";
-      default:
-        return "natural stone";
-    }
+  protected setView(f: Fragrance, viewKey: string): void {
+    this.activeViews.update((m) => ({ ...m, [f.slug]: viewKey }));
   }
 
   protected addToBag(f: Fragrance): void {
-    this.cart.add(f, 100, 1);
+    const vol = this.getVolume(f);
+    this.cart.add(f, vol, 1);
     const slug = f.slug;
     this.added.update((a) => [...a, slug]);
     setTimeout(() => {
@@ -83,6 +125,7 @@ export class ActCollectionComponent {
   }
 
   protected orderOnWhatsApp(f: Fragrance): void {
-    this.wa.open(this.wa.order(f, 100, 1));
+    const vol = this.getVolume(f);
+    this.wa.open(this.wa.order(f, vol, 1));
   }
 }

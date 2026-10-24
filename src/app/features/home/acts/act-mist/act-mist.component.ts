@@ -13,7 +13,7 @@ import { DustComponent } from "../../../../art/dust/dust.component";
 import { FRAGRANCES } from "../../../../data/fragrances";
 import { CapabilitiesService } from "../../../../core/capabilities.service";
 
-const NO1 = FRAGRANCES[0];
+const NO1 = { ...FRAGRANCES[0], slug: "laube" };
 
 interface Droplet {
   x: number;

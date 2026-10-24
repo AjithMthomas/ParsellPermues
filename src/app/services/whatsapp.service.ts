@@ -1,11 +1,11 @@
 import { Injectable } from "@angular/core";
 import { ProductsService } from "./products.service";
 import { CartLine } from "./cart.service";
-import { Fragrance } from "../data/fragrances";
+import { Fragrance, priceForVolume } from "../data/fragrances";
 
 /**
- * WhatsApp commerce — every enquiry and every order opens a chat with the
- * maison's boutique line, carrying the product name, volume, quantity and
+ * WhatsApp commerce — every enquiry and every order opens a chat with
+ * Pura Perfumes, carrying the product name, volume, quantity and
  * totals so the atelier can confirm the order in one reply.
  */
 @Injectable({ providedIn: "root" })
@@ -26,41 +26,43 @@ export class WhatsAppService {
 
   /** A single fragrance order — product name, volume, quantity, price. */
   order(f: Fragrance, volume = 100, qty = 1): string {
-    const price = f.price * qty;
+    const unitPrice = priceForVolume(volume);
+    const price = unitPrice * qty;
     return [
-      "Hello PARADISA — I would like to order:",
+      "Hello Pura Perfumes — I would like to order:",
       "",
       `• ${f.code} — ${f.name}`,
-      `  ${volume} ml · Quantity ${qty}`,
-      `  ${this.products.format(price)}`,
+      `  Volume: ${volume} ml · Quantity: ${qty}`,
+      `  Price: ${this.products.format(price)}`,
       "",
-      "Please confirm availability and payment details. Merci.",
+      "Please confirm availability and dispatch details. Thank you.",
     ].join("\n");
   }
 
   /** Full bag order — every line with name, volume, quantity, and subtotal. */
   bag(lines: CartLine[], subtotal: number): string {
     const parts: string[] = [
-      "Hello PARADISA — I would like to place an order:",
+      "Hello Pura Perfumes — I would like to place an order:",
       "",
     ];
     lines.forEach((line, i) => {
       const f = this.products.bySlug(line.fragranceId);
       if (!f) return;
+      const unitPrice = priceForVolume(line.volume);
       parts.push(
         `${i + 1}. ${f.code} — ${f.name} · ${line.volume} ml · Qty ${line.qty}`,
-        `   ${this.products.format(f.price * line.qty)}`,
+        `   ${this.products.format(unitPrice * line.qty)}`,
       );
     });
-    parts.push("", `Subtotal: ${this.products.format(subtotal)}`, "");
-    parts.push("Please confirm availability and payment details. Merci.");
+    parts.push("", `Total Amount: ${this.products.format(subtotal)}`, "");
+    parts.push("Please confirm availability and dispatch details. Thank you.");
     return parts.join("\n");
   }
 
   /** Boutique / atelier enquiry from the contact page. */
   enquiry(name: string, subject: string, message: string): string {
     const lines = [
-      `Hello PARADISA — ${subject || "an enquiry"} — ${name}`,
+      `Hello Pura Perfumes — ${subject || "Fragrance Enquiry"} — ${name}`,
       "",
       message,
       "",

@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" fill="none">
+  <defs>
+    <linearGradient id="emblemGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#C9A24D" />
+      <stop offset="50%" stop-color="#E8D196" />
+      <stop offset="100%" stop-color="#B88E3E" />
+    </linearGradient>
+  </defs>
+  <!-- Outer luxury botanical border ring -->
+  <circle cx="80" cy="80" r="74" stroke="url(#emblemGold)" stroke-width="1" opacity="0.6" stroke-dasharray="3 4" />
+  <circle cx="80" cy="80" r="69" stroke="url(#emblemGold)" stroke-width="0.6" opacity="0.4" />
+  
+  <!-- Botanical leaves -->
+  <path d="M80 18 C78 28 72 34 64 36 C70 42 76 44 80 50 C84 44 90 42 96 36 C88 34 82 28 80 18 Z" fill="url(#emblemGold)" opacity="0.8" />
+  <path d="M80 142 C78 132 72 126 64 124 C70 118 76 116 80 110 C84 116 90 118 96 124 C88 126 82 132 80 142 Z" fill="url(#emblemGold)" opacity="0.8" />
+
+  <!-- Center typography -->
+  <text x="80" y="85" text-anchor="middle" font-family="'Cormorant Garamond', Georgia, serif" font-size="44" font-weight="400" letter-spacing="2" fill="url(#emblemGold)">pura</text>
+  <text x="80" y="103" text-anchor="middle" font-family="'Montserrat', sans-serif" font-size="6.5" font-weight="500" letter-spacing="4.5" fill="#8C7352">PERFUMES</text>
+</svg>

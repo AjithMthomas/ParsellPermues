@@ -7,18 +7,25 @@
 }
 
 .collection__head {
-  padding: clamp(8rem, 18vh, 13rem) var(--gutter) clamp(3rem, 7vh, 6rem);
-  max-width: 62rem;
+  padding: clamp(6rem, 14vh, 10rem) var(--gutter) clamp(3rem, 6vh, 5rem);
+  max-width: 68rem;
 }
 .collection__kicker {
   color: var(--color-champagne);
 }
 .collection__title {
-  margin-top: 1.6rem;
+  margin-top: 1.4rem;
+  font-size: clamp(2.8rem, 5.6vw, 5.8rem);
 }
 .collection__title em {
   font-style: italic;
   color: var(--color-champagne);
+}
+.collection__sub {
+  margin-top: 1.4rem;
+  color: var(--color-mocha);
+  max-width: 48rem;
+  line-height: 1.8;
 }
 
 /* ---------- one fragrance = one world ---------- */
@@ -27,11 +34,12 @@
   display: grid;
   grid-template-columns: repeat(12, 1fr);
   align-items: center;
-  min-height: 112vh;
-  padding: clamp(4rem, 9vh, 8rem) var(--gutter);
+  min-height: 105vh;
+  padding: clamp(4rem, 8vh, 7rem) var(--gutter);
   background: var(--w-bg);
   color: var(--w-ink);
   overflow: hidden;
+  border-bottom: 1px solid var(--w-line);
 }
 
 .world--l .world__copy {
@@ -63,6 +71,9 @@
 .world--r .world__action {
   justify-content: flex-end;
 }
+.world--r .world__vol-pills {
+  justify-content: flex-end;
+}
 
 .world__scene-wrap {
   position: relative;
@@ -70,39 +81,114 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  width: 100%;
 }
-.world__fig {
-  margin-top: 1.6rem;
-  color: var(--w-mut);
-  opacity: 0.65;
-  font-size: 0.6rem;
-  letter-spacing: 0.3em;
-}
+
 .world__scene {
   position: relative;
   width: 100%;
+  display: flex;
+  justify-content: center;
 }
-.world--l .world__scene-wrap,
-.world--r .world__scene-wrap {
-  align-items: center;
-}
+
 .world__scene-glow {
   position: absolute;
-  left: 6%;
-  top: -4%;
-  width: 88%;
-  aspect-ratio: 1.1;
+  left: 10%;
+  top: 0;
+  width: 80%;
+  aspect-ratio: 1;
   border-radius: 50%;
-  filter: blur(56px);
-  opacity: 0.8;
+  filter: blur(64px);
+  opacity: 0.65;
   pointer-events: none;
   background: radial-gradient(
     circle,
-    var(--w-glow, rgb(248 238 208 / 0.9)),
+    var(--w-glow, rgb(238 218 178 / 0.7)),
     transparent 70%
   );
 }
 
+/* Campaign photographic plate presentation */
+.world__plate-wrap {
+  position: relative;
+  width: min(34vw, 28rem);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.2rem;
+  z-index: 2;
+}
+
+.world__plate-box {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  border-radius: 20px 120px 20px 120px;
+  border: 1px solid var(--w-line);
+  box-shadow: 0 2.5rem 5rem -2rem rgb(48 36 29 / 0.3);
+  background: rgb(244 240 230);
+  transition: transform 0.6s var(--ease-luxe), box-shadow 0.6s var(--ease-luxe);
+}
+.world__plate-box:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 3rem 6rem -2.5rem rgb(48 36 29 / 0.38);
+}
+
+.world__plate-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transition: transform 0.8s var(--ease-luxe);
+}
+.world__plate-box:hover .world__plate-img {
+  transform: scale(1.03);
+}
+
+.world__plate-veil {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  box-shadow:
+    inset 0 0 0 1px rgb(252 251 248 / 0.3),
+    inset 0 -3rem 5rem -2rem rgb(48 36 29 / 0.3);
+}
+
+/* Thumbnail switcher tabs */
+.world__view-tabs {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.world__view-tab {
+  font-family: var(--font-body);
+  font-size: 0.58rem;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  padding: 0.35rem 0.85rem;
+  border: 1px solid var(--w-line);
+  background: transparent;
+  color: var(--w-mut);
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.4s var(--ease-luxe);
+}
+.world__view-tab:hover {
+  border-color: var(--color-champagne);
+  color: var(--w-ink);
+}
+.world__view-tab.is-active {
+  background: var(--w-ink);
+  color: var(--w-bg);
+  border-color: var(--w-ink);
+}
+
+/* Copy column */
 .world__copy {
   position: relative;
   z-index: 2;
@@ -118,26 +204,28 @@
 .world__name {
   margin-top: 1.1rem;
   color: var(--w-ink);
-  font-size: clamp(3rem, 6.4vw, 6.6rem);
-  line-height: 0.95;
+  font-size: clamp(2.8rem, 5.2vw, 5.6rem);
+  line-height: 0.96;
 }
 .world__line {
   margin-top: 1.1rem;
   color: var(--w-mut);
-  font-size: clamp(1.2rem, 1.6vw, 1.55rem);
+  font-size: clamp(1.15rem, 1.5vw, 1.45rem);
 }
 .world__desc {
-  margin-top: 1.5rem;
-  max-width: 30rem;
+  margin-top: 1.4rem;
+  max-width: 32rem;
   color: var(--w-mut);
+  line-height: 1.8;
 }
 .world--r .world__desc {
   margin-left: auto;
 }
 
+/* Olfactory pyramid */
 .world__notes {
-  margin-top: 2.6rem;
-  max-width: 26rem;
+  margin-top: 2.2rem;
+  max-width: 28rem;
   border-top: 1px solid var(--w-line);
 }
 .world--r .world__notes {
@@ -147,37 +235,96 @@
   display: flex;
   align-items: baseline;
   gap: 1.2rem;
-  padding: 0.72rem 0.1rem;
+  padding: 0.65rem 0.1rem;
   border-bottom: 1px solid var(--w-line);
 }
 .world__notes-key {
   color: var(--color-champagne);
-  min-width: 3.6rem;
+  min-width: 3.4rem;
+  font-size: 0.6rem;
 }
 .world__notes-val {
   font-family: var(--font-display);
   font-weight: 400;
-  font-size: clamp(0.95rem, 1.1vw, 1.08rem);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+  font-size: clamp(0.92rem, 1.05vw, 1.02rem);
+  letter-spacing: 0.05em;
   color: var(--w-mut);
 }
 
+/* Volume selection buttons */
+.world__vol-wrap {
+  margin-top: 1.8rem;
+}
+.world__vol-heading {
+  color: var(--w-mut);
+  opacity: 0.75;
+  display: block;
+  margin-bottom: 0.6rem;
+}
+.world__vol-pills {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+.world__vol-btn {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+  padding: 0.5rem 0.95rem;
+  background: rgb(255 255 255 / 0.4);
+  border: 1px solid var(--w-line);
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.35s var(--ease-luxe);
+}
+.world__vol-btn:hover {
+  border-color: var(--color-champagne);
+  transform: translateY(-2px);
+}
+.world__vol-btn.is-active {
+  background: var(--w-ink);
+  border-color: var(--w-ink);
+  box-shadow: 0 4px 12px -3px rgb(0 0 0 / 0.2);
+}
+.vol-btn__label {
+  font-family: var(--font-body);
+  font-size: 0.625rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--w-ink);
+  transition: color 0.35s;
+}
+.vol-btn__price {
+  font-family: var(--font-display);
+  font-size: 0.88rem;
+  color: var(--color-champagne);
+  transition: color 0.35s;
+}
+.world__vol-btn.is-active .vol-btn__label {
+  color: var(--w-bg);
+}
+.world__vol-btn.is-active .vol-btn__price {
+  color: #eed59b;
+}
+
+/* Commerce action */
 .world__action {
-  margin-top: 2.6rem;
+  margin-top: 2.2rem;
   display: flex;
   align-items: center;
-  gap: 2.2rem;
+  gap: 2rem;
   flex-wrap: wrap;
 }
 .world__price {
   font-family: var(--font-display);
-  font-size: 1.5rem;
+  font-size: 1.6rem;
   letter-spacing: 0.02em;
   color: var(--w-ink);
 }
 .world__price em {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   font-style: normal;
   font-family: var(--font-body);
   letter-spacing: 0.14em;
@@ -187,6 +334,12 @@
 }
 .world__add {
   border-color: var(--w-line);
+  color: var(--w-ink);
+}
+.world__add:hover {
+  background: var(--w-ink);
+  color: var(--w-bg);
+  border-color: var(--w-ink);
 }
 .world__added {
   color: var(--color-champagne);
@@ -202,71 +355,77 @@
 .world__order-wa:hover {
   color: var(--color-champagne);
 }
-
 .world__vol {
-  display: block;
-  margin-top: 1.1rem;
+  margin-top: 1.6rem;
   color: var(--w-mut);
-  opacity: 0.75;
+  opacity: 0.7;
 }
 
-/* world-specific atmospheres */
-.world--velours {
-  --w-glow: rgb(122 74 35 / 0.5);
+/* Theme variations */
+.world--obsidian {
+  --w-glow: rgb(184 148 82 / 0.16);
 }
-.world--velours .world__numeral {
-  color: var(--color-softgold);
+.world--obsidian .world__vol-btn {
+  background: rgb(255 255 255 / 0.06);
 }
-.world--aube {
-  --w-glow: rgb(250 238 205 / 1);
+.world--obsidian .world__vol-btn.is-active {
+  background: #fcfbf8;
+  border-color: #fcfbf8;
 }
-.world--lune {
-  --w-glow: rgb(228 231 196 / 0.95);
+.world--obsidian .world__vol-btn.is-active .vol-btn__label {
+  color: #181614;
 }
-.world--lune .world__numeral {
-  color: #8a9366;
+.world--obsidian .world__vol-btn.is-active .vol-btn__price {
+  color: #8a6522;
 }
 
 /* ---------- responsive ---------- */
 @media (max-width: 1023px) {
   .world {
-    display: block;
+    grid-template-columns: 1fr;
+    gap: 3.5rem;
     min-height: auto;
-    padding: 6rem 1.6rem;
+    padding: 5rem var(--gutter);
   }
-  .world__scene-wrap {
-    margin: 0 auto 3.5rem;
-    width: min(88vw, 40rem);
-  }
+  .world--l .world__copy,
   .world--r .world__copy {
+    grid-column: 1;
+    grid-row: 2;
+    padding: 0;
     text-align: left;
+  }
+  .world--l .world__scene-wrap,
+  .world--r .world__scene-wrap {
+    grid-column: 1;
+    grid-row: 1;
   }
   .world--r .world__copy .world__notes-row {
     flex-direction: row;
+  }
+  .world--r .world__action,
+  .world--r .world__vol-pills {
+    justify-content: flex-start;
   }
   .world--r .world__desc,
   .world--r .world__notes {
     margin-left: 0;
   }
-  .world--r .world__action {
-    justify-content: flex-start;
-  }
-  .world--r .world__copy {
-    text-align: left;
+  .world__plate-wrap {
+    width: min(68vw, 24rem);
   }
 }
 
 @media (max-width: 767px) {
   .collection__head {
-    padding: 6rem 1.4rem 3rem;
+    padding: 4.5rem var(--gutter) 2.5rem;
   }
   .world {
-    padding: 5rem 1.4rem;
+    padding: 3.5rem var(--gutter);
   }
-  .world__scene {
-    width: 100%;
+  .world__plate-wrap {
+    width: 82vw;
   }
-  .world__fig {
-    margin-top: 1rem;
+  .world__name {
+    font-size: clamp(2.4rem, 10vw, 3.6rem);
   }
 }

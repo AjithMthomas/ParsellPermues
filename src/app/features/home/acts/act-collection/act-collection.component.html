@@ -1,9 +1,12 @@
-<section id="collection" class="collection" aria-label="The PARADISA collection">
+<section id="collection" class="collection" aria-label="The PURA PERFUMES collection">
   <header class="collection__head" bdpReveal="rise">
-    <p class="label collection__kicker">The collection</p>
+    <p class="label collection__kicker rule">The collection — Haute Parfumerie</p>
     <h2 class="t-display collection__title">
-      Three fragrances. <em>One house.</em>
+      Four fragrances. <em>One philosophy — Nature Meets Luxury.</em>
     </h2>
+    <p class="t-lead collection__sub">
+      Distilled from botanical blossoms, rare woods, and precious resins. Each creation available in our four signature editions: 8ml (₹150), 30ml (₹600), 50ml (₹780), and 100ml (₹1,100).
+    </p>
   </header>
 
   @for (f of fragrances; track f.slug) {
@@ -17,7 +20,77 @@
       <div class="world__scene-wrap">
         <div class="world__scene">
           <div class="world__scene-glow" aria-hidden="true"></div>
-          <bdp-world-stage [fragrance]="f" [plate]="true" />
+          
+          <!-- Campaign plate display with dynamic view switcher -->
+          <div class="world__plate-wrap">
+            <div class="world__plate-box">
+              <img
+                class="world__plate-img"
+                [src]="activeImg(f)"
+                [alt]="f.name + ' display plate'"
+                loading="lazy"
+                decoding="async"
+              />
+              <div class="world__plate-veil"></div>
+            </div>
+
+            <!-- Image thumbnail switchers if fragrance has multiple images -->
+            <div class="world__view-tabs" role="tablist" aria-label="Alternate views">
+              <button
+                type="button"
+                class="world__view-tab"
+                [class.is-active]="(activeViews()[f.slug] || 'scene') === 'scene'"
+                (click)="setView(f, 'scene')"
+                aria-label="View campaign display"
+              >
+                Campaign
+              </button>
+              @if (f.images.cover) {
+                <button
+                  type="button"
+                  class="world__view-tab"
+                  [class.is-active]="activeViews()[f.slug] === 'cover'"
+                  (click)="setView(f, 'cover')"
+                  aria-label="View cover art"
+                >
+                  Cover Art
+                </button>
+              }
+              @if (f.images.bottle8ml) {
+                <button
+                  type="button"
+                  class="world__view-tab"
+                  [class.is-active]="activeViews()[f.slug] === 'bottle8ml'"
+                  (click)="setView(f, 'bottle8ml')"
+                  aria-label="View 8ml edition"
+                >
+                  8ml Edition
+                </button>
+              }
+              @if (f.images.ad) {
+                <button
+                  type="button"
+                  class="world__view-tab"
+                  [class.is-active]="activeViews()[f.slug] === 'ad'"
+                  (click)="setView(f, 'ad')"
+                  aria-label="View advertisement"
+                >
+                  Art Ad
+                </button>
+              }
+              @if (f.images.poster) {
+                <button
+                  type="button"
+                  class="world__view-tab"
+                  [class.is-active]="activeViews()[f.slug] === 'poster'"
+                  (click)="setView(f, 'poster')"
+                  aria-label="View luxury poster"
+                >
+                  Poster
+                </button>
+              }
+            </div>
+          </div>
         </div>
       </div>
 
@@ -30,6 +103,7 @@
         <p class="serif-i world__line">{{ f.line }}</p>
         <p class="t-body world__desc">{{ f.intro }}</p>
 
+        <!-- Olfactory notes pyramid -->
         <div class="world__notes" aria-label="Olfactory pyramid">
           <div class="world__notes-row">
             <span class="label world__notes-key">Top</span>
@@ -45,8 +119,27 @@
           </div>
         </div>
 
+        <!-- Volume selection pills -->
+        <div class="world__vol-wrap">
+          <span class="label-thin world__vol-heading">Available Sizes</span>
+          <div class="world__vol-pills" role="radiogroup">
+            @for (opt of volumeOptions; track opt.volume) {
+              <button
+                type="button"
+                class="world__vol-btn"
+                [class.is-active]="getVolume(f) === opt.volume"
+                (click)="setVolume(f, opt.volume)"
+                [attr.aria-pressed]="getVolume(f) === opt.volume"
+              >
+                <span class="vol-btn__label">{{ opt.label }}</span>
+                <span class="vol-btn__price">₹{{ opt.price }}</span>
+              </button>
+            }
+          </div>
+        </div>
+
         <div class="world__action">
-          <span class="world__price">{{ price(f) }} <em>— 100 ml</em></span>
+          <span class="world__price">{{ price(f) }} <em>— {{ getVolume(f) }} ml</em></span>
           <button
             class="btn-editorial world__add"
             type="button"
@@ -60,12 +153,13 @@
             }
           </button>
         </div>
+
         <div class="world__order">
           <button class="link-line world__order-wa" type="button" (click)="orderOnWhatsApp(f)">
-            Order on WhatsApp
+            Order on WhatsApp — {{ getVolume(f) }} ml
           </button>
         </div>
-        <p class="world__vol label-thin">50 ml · 100 ml — Complimentary delivery</p>
+        <p class="world__vol label-thin">8 ml · 30 ml · 50 ml · 100 ml — Nature Meets Luxury</p>
       </div>
     </article>
   }

@@ -19,7 +19,7 @@ interface PageHit {
 }
 
 const PAGES: PageHit[] = [
-  { id: "maison", target: "maison", title: "The House of Paradisa", kind: "Our story" },
+  { id: "maison", target: "maison", title: "The House of Pura Perfumes", kind: "Our story" },
   { id: "collection", target: "collection", title: "The collection", kind: "Shop" },
   { id: "journal", target: "journal", title: "From the journal", kind: "Journal" },
   { id: "contact", target: "contact", title: "Contact the maison", kind: "Contact" },
@@ -32,7 +32,7 @@ const PAGES: PageHit[] = [
     @if (ui.searchOpen()) {
       <div class="search" role="dialog" aria-modal="true" aria-label="Search the house">
         <header class="search__head">
-          <span class="label-thin">Search — Paradisa</span>
+          <span class="label-thin">Search — Pura Perfumes</span>
           <button class="search__close" type="button" (click)="close()" aria-label="Close search">Close</button>
         </header>
 
@@ -83,7 +83,7 @@ const PAGES: PageHit[] = [
             @if (query()) {
               Press escape to return to the house
             } @else {
-              Discover Nº1 L'Aube · Nº2 Le Velours · Nº3 Jardin de Lune
+              Discover Nº1 Pura Symphony · Nº2 Pura Obsidian · Nº3 Pura Elin Lush · Nº4 Pura Iris
             }
           </p>
         </div>

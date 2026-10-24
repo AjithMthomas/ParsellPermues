@@ -32,7 +32,7 @@ import { ProductArtComponent } from "../../art/product-art/product-art.component
 
         @if (cart.lines().length === 0) {
           <div class="drawer__empty">
-            <img class="drawer__emblem" src="assets/brand/bdp-logo.png" alt="PARADISA emblem" width="96" height="96" />
+            <img class="drawer__emblem" src="assets/brand/pura-logo.svg" alt="PURA PERFUMES emblem" width="130" height="52" />
             <p class="serif-i drawer__empty-line">Your bag is empty —</p>
             <p class="t-caption drawer__empty-sub">the collection is waiting.</p>
             <a class="link-line drawer__empty-cta" href="#collection" (click)="explore($event)">
@@ -50,7 +50,7 @@ import { ProductArtComponent } from "../../art/product-art/product-art.component
                   <div class="line__info">
                     <p class="line__code label-thin">{{ f.code }} — {{ f.name }}</p>
                     <p class="line__vol t-caption">{{ line.volume }} ml — Eau de parfum</p>
-                    <p class="line__price label-num">{{ fmt(f.price) }}</p>
+                    <p class="line__price label-num">{{ fmt(linePrice(line)) }}</p>
                     <div class="line__qty" aria-label="Quantity for {{ f.name }}">
                       <button type="button" (click)="cart.setQty(line.fragranceId, line.volume, line.qty - 1)" [attr.aria-label]="'Decrease quantity of ' + f.name">−</button>
                       <span class="label-num">{{ line.qty }}</span>
@@ -272,6 +272,10 @@ export class CartDrawerComponent {
 
   protected fmt(price: number): string {
     return this.products.format(price);
+  }
+
+  protected linePrice(line: { fragranceId: string; volume: number; qty: number }): number {
+    return this.cart.unitPrice(line as any) * line.qty;
   }
 
   protected lineFrag(line: { fragranceId: string }): ReturnType<ProductsService["bySlug"]> {

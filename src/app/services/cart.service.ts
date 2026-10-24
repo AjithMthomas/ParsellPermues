@@ -1,5 +1,5 @@
 import { Injectable, signal, computed, effect } from "@angular/core";
-import { FRAGRANCES, Fragrance, fragranceBySlug } from "../data/fragrances";
+import { FRAGRANCES, Fragrance, fragranceBySlug, priceForVolume } from "../data/fragrances";
 
 export interface CartLine {
   fragranceId: string;
@@ -7,7 +7,7 @@ export interface CartLine {
   qty: number;
 }
 
-const KEY = "bdp-cart-v1";
+const KEY = "pura-cart-v1";
 
 function load(): CartLine[] {
   try {
@@ -32,7 +32,8 @@ export class CartService {
   readonly subtotal = computed(() =>
     this.lines().reduce((sum, l) => {
       const f = fragranceBySlug(l.fragranceId);
-      return sum + (f ? f.price : 0) * l.qty;
+      const unitPrice = priceForVolume(l.volume);
+      return sum + (f ? unitPrice : 0) * l.qty;
     }, 0),
   );
 
@@ -89,6 +90,10 @@ export class CartService {
 
   fragranceOf(line: CartLine): Fragrance | undefined {
     return fragranceBySlug(line.fragranceId);
+  }
+
+  unitPrice(line: CartLine): number {
+    return priceForVolume(line.volume);
   }
 
   all(): Fragrance[] {
