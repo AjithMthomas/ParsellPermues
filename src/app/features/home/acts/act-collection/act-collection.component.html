@@ -5,7 +5,7 @@
       Four fragrances. <em>One philosophy — Nature Meets Luxury.</em>
     </h2>
     <p class="t-lead collection__sub">
-      Distilled from botanical blossoms, rare woods, and precious resins. Each creation available in our four signature editions: 8ml (₹150), 30ml (₹600), 50ml (₹780), and 100ml (₹1,100).
+      Distilled from botanical blossoms, rare woods, and precious resins. Each creation available in our signature editions: 8ml (3 Nos · ₹299), 30ml (₹999), 50ml (₹1,199), and 100ml (₹1,599).
     </p>
   </header>
 
@@ -13,6 +13,7 @@
     <article
       [id]="'world-' + f.slug"
       class="world world--{{ f.world }} world--{{ sideOf(f) }}"
+      [class.world--flagship]="f.slug === 'pura-symphony'"
       [style]="styleOf(f)"
       [attr.data-nav]="navOf(f)"
       [attr.aria-label]="f.code + ' — ' + f.name"
@@ -32,6 +33,9 @@
                 decoding="async"
               />
               <div class="world__plate-veil"></div>
+              @if (f.slug === 'pura-symphony') {
+                <div class="world__plate-flagship-tag">Maison Flagship</div>
+              }
             </div>
 
             <!-- Image thumbnail switchers if fragrance has multiple images -->
@@ -95,6 +99,13 @@
       </div>
 
       <div class="world__copy">
+        @if (f.slug === 'pura-symphony') {
+          <div class="flagship-crest">
+            <span class="flagship-crest__star">★</span>
+            <span class="flagship-crest__text">Maison Flagship · The Signature Creation</span>
+          </div>
+        }
+
         <p class="label world__kicker">
           <span class="numeral world__numeral">{{ f.code }}</span>
           &nbsp;·&nbsp; {{ f.descriptor }}
@@ -102,6 +113,15 @@
         <h3 class="t-display world__name">{{ f.name }}</h3>
         <p class="serif-i world__line">{{ f.line }}</p>
         <p class="t-body world__desc">{{ f.intro }}</p>
+
+        @if (f.slug === 'pura-symphony') {
+          <div class="flagship-highlights">
+            <span class="flagship-chip">No. 1 Bestseller</span>
+            <span class="flagship-chip">14-Hour Longevity</span>
+            <span class="flagship-chip">Calabrian Bergamot</span>
+            <span class="flagship-chip">Golden Amber</span>
+          </div>
+        }
 
         <!-- Olfactory notes pyramid -->
         <div class="world__notes" aria-label="Olfactory pyramid">
@@ -131,7 +151,7 @@
                 (click)="setVolume(f, opt.volume)"
                 [attr.aria-pressed]="getVolume(f) === opt.volume"
               >
-                <span class="vol-btn__label">{{ opt.label }}</span>
+                <span class="vol-btn__label">{{ opt.volume === 8 ? '8 ml (3 pcs)' : opt.label }}</span>
                 <span class="vol-btn__price">₹{{ opt.price }}</span>
               </button>
             }
@@ -139,9 +159,10 @@
         </div>
 
         <div class="world__action">
-          <span class="world__price">{{ price(f) }} <em>— {{ getVolume(f) }} ml</em></span>
+          <span class="world__price">{{ price(f) }} <em>— {{ getVolume(f) === 8 ? '8 ml (Set of 3 nos)' : getVolume(f) + ' ml' }}</em></span>
           <button
             class="btn-editorial world__add"
+            [class.btn-editorial--flagship]="f.slug === 'pura-symphony'"
             type="button"
             (click)="addToBag(f)"
             [attr.data-cursor]="added().includes(f.slug) ? '' : 'ADD'"
@@ -149,17 +170,17 @@
             @if (added().includes(f.slug)) {
               <span class="world__added">Added to your bag</span>
             } @else {
-              Add to bag
+              {{ f.slug === 'pura-symphony' ? 'Add Flagship to Bag' : 'Add to bag' }}
             }
           </button>
         </div>
 
         <div class="world__order">
           <button class="link-line world__order-wa" type="button" (click)="orderOnWhatsApp(f)">
-            Order on WhatsApp — {{ getVolume(f) }} ml
+            Order on WhatsApp — {{ getVolume(f) === 8 ? '8 ml (Set of 3 nos)' : getVolume(f) + ' ml' }}
           </button>
         </div>
-        <p class="world__vol label-thin">8 ml · 30 ml · 50 ml · 100 ml — Nature Meets Luxury</p>
+        <p class="world__vol label-thin">8 ml (3 nos · ₹299) · 30 ml (₹999) · 50 ml (₹1,199) · 100 ml (₹1,599) — Nature Meets Luxury</p>
       </div>
     </article>
   }

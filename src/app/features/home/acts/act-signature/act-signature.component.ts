@@ -19,12 +19,61 @@ import { CapabilitiesService } from "../../../../core/capabilities.service";
 
 const NO1 = FRAGRANCES[0];
 
-/**
- * SCENE VIII — THE SIGNATURE — PURA SYMPHONY.
- * Nature Meets Luxury.
- * Showcases the master cover image with gold frame botanical theme,
- * full volume selections (8ml, 30ml, 50ml, 100ml), and marble pedestal.
- */
+export interface EditionCard {
+  volume: number;
+  label: string;
+  qtyLabel: string;
+  badge?: string;
+  name: string;
+  desc: string;
+  price: number;
+  unitPriceNote?: string;
+  viewKey: "cover" | "scene" | "bottle8ml" | "display";
+}
+
+export const SYMPHONY_EDITIONS: EditionCard[] = [
+  {
+    volume: 8,
+    label: "8 ml",
+    qtyLabel: "3 Nos Pack",
+    badge: "Discovery Trio",
+    name: "Discovery Trio",
+    desc: "Three 8ml portable flacons — perfect for discovery & travel.",
+    price: 299,
+    unitPriceNote: "Only ₹99 / bottle",
+    viewKey: "bottle8ml",
+  },
+  {
+    volume: 30,
+    label: "30 ml",
+    qtyLabel: "1 No",
+    name: "Travel Flacon",
+    desc: "Compact personal edition for everyday refinement.",
+    price: 999,
+    viewKey: "scene",
+  },
+  {
+    volume: 50,
+    label: "50 ml",
+    qtyLabel: "1 No",
+    name: "Classic Edition",
+    desc: "The quintessential atelier flacon for home and vanity.",
+    price: 1199,
+    viewKey: "display",
+  },
+  {
+    volume: 100,
+    label: "100 ml",
+    qtyLabel: "1 No",
+    badge: "Flagship Choice",
+    name: "Grand Master Flacon",
+    desc: "The complete haute parfumerie statement in full presentation.",
+    price: 1599,
+    unitPriceNote: "Best value per ml",
+    viewKey: "cover",
+  },
+];
+
 @Component({
   selector: "bdp-act-signature",
   imports: [ProductArtComponent, PedestalComponent, BotanicalComponent, DustComponent],
@@ -35,6 +84,8 @@ export class ActSignatureComponent {
   protected no1 = NO1;
   protected added = signal(false);
   protected selectedVolume = signal<number>(100);
+  protected activeView = signal<"cover" | "scene" | "bottle8ml" | "display">("cover");
+  protected readonly editions = SYMPHONY_EDITIONS;
   protected readonly volumeOptions = VOLUME_OPTIONS;
 
   protected readonly wa = inject(WhatsAppService);
@@ -44,12 +95,32 @@ export class ActSignatureComponent {
   private readonly el = inject(ElementRef);
   private readonly secEl = viewChild<ElementRef<HTMLElement>>("sec");
 
+  protected currentEdition(): EditionCard {
+    return this.editions.find((e) => e.volume === this.selectedVolume()) ?? this.editions[3];
+  }
+
   protected currentPrice(): string {
     return this.products.format(priceForVolume(this.selectedVolume()));
   }
 
   protected selectVolume(vol: number): void {
     this.selectedVolume.set(vol);
+    const ed = this.editions.find((e) => e.volume === vol);
+    if (ed) {
+      this.activeView.set(ed.viewKey);
+    }
+  }
+
+  protected setView(view: "cover" | "scene" | "bottle8ml" | "display"): void {
+    this.activeView.set(view);
+  }
+
+  protected activeImageUrl(): string {
+    const v = this.activeView();
+    if (v === "bottle8ml") return "/assets/products/pura-symphony/bottle-8ml.png";
+    if (v === "scene") return "/assets/products/pura-symphony/scene.png";
+    if (v === "display") return "/assets/products/pura-symphony/display-square.png";
+    return "/assets/products/pura-symphony/cover.png";
   }
 
   protected join(notes: string[]): string {

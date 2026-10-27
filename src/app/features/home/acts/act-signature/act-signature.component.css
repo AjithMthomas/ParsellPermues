@@ -5,162 +5,384 @@
 .film-sec--signature {
   min-height: 100vh;
   position: relative;
-  background: var(--color-ivory);
+  background: radial-gradient(ellipse 100% 70% at 50% 30%, #fffdf8 0%, #faf4e6 55%, #f4ebd6 100%);
   overflow: hidden;
-  padding: clamp(5rem, 10vh, 8rem) 0;
+  padding: 0 0 clamp(5rem, 10vh, 8rem);
+  border-top: 1px solid rgb(184 148 82 / 0.35);
+  border-bottom: 1px solid rgb(184 148 82 / 0.35);
 }
 
+/* ---------- top header banner ---------- */
+.sig-header-banner {
+  background: linear-gradient(90deg, #1b1612 0%, #3a2b1e 50%, #1b1612 100%);
+  border-bottom: 1px solid rgb(184 148 82 / 0.4);
+  padding: 0.65rem var(--gutter);
+  text-align: center;
+  box-shadow: 0 2px 10px rgb(0 0 0 / 0.15);
+}
+.sig-banner-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #eed59b;
+}
+.sig-banner-sparkle {
+  color: var(--color-champagne);
+  font-size: 0.75rem;
+}
+.sig-banner-title {
+  color: #ffffff;
+  font-weight: 600;
+}
+.sig-banner-divider {
+  opacity: 0.4;
+}
+.sig-banner-sub {
+  color: #c9b384;
+}
+
+/* ---------- stage grid ---------- */
 .sig-stage {
   max-width: var(--container);
   margin: 0 auto;
-  padding: 0 var(--gutter);
+  padding: clamp(3rem, 6vh, 5rem) var(--gutter) 0;
   position: relative;
   display: grid;
-  grid-template-columns: 1.1fr 1fr;
-  gap: clamp(2.5rem, 5vw, 6rem);
-  align-items: center;
-  min-height: 80vh;
+  grid-template-columns: 1.15fr 0.95fr;
+  gap: clamp(2.5rem, 5vw, 5.5rem);
+  align-items: start;
 }
 
 .sig-glow {
   position: absolute;
-  right: 10vw;
+  right: 5vw;
   top: 10vh;
-  width: 46vw;
-  height: 46vw;
+  width: 50vw;
+  height: 50vw;
   border-radius: 50%;
-  filter: blur(80px);
-  background: radial-gradient(circle, rgb(247 234 204 / 0.8), transparent 70%);
+  filter: blur(90px);
+  background: radial-gradient(circle, rgb(247 228 178 / 0.85) 0%, rgb(224 186 112 / 0.25) 50%, transparent 70%);
   pointer-events: none;
 }
 
 .sig-dust {
-  opacity: 0.5;
+  opacity: 0.55;
 }
 
-/* ---------- copy ---------- */
+/* ---------- copy column ---------- */
 .sig-copy {
   position: relative;
   z-index: 4;
 }
+.sig-crown-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-family: var(--font-body);
+  font-size: 0.64rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #5c4115;
+  background: linear-gradient(135deg, rgb(184 148 82 / 0.18), rgb(250 236 202 / 0.45));
+  border: 1px solid rgb(184 148 82 / 0.45);
+  border-radius: 20px;
+  padding: 0.42rem 1.1rem;
+  margin-bottom: 1.2rem;
+  box-shadow: 0 4px 14px -3px rgb(184 148 82 / 0.25);
+}
+.sig-crown-star {
+  color: var(--color-champagne);
+  font-size: 0.8rem;
+}
 .sig-kicker {
   color: var(--color-champagne);
+  font-size: 0.65rem;
+  letter-spacing: 0.22em;
 }
 .sig-title {
-  margin-top: 1.2rem;
+  margin-top: 1rem;
   color: var(--color-ink);
-  font-size: clamp(2.8rem, 5.2vw, 5.4rem);
-  line-height: 0.98;
+  font-size: clamp(3rem, 5.4vw, 5.6rem);
+  line-height: 0.96;
 }
 .sig-title em {
   font-style: italic;
   color: var(--color-champagne);
 }
 .sig-line {
-  margin-top: 1.1rem;
-  font-size: clamp(1.1rem, 1.4vw, 1.4rem);
+  margin-top: 1rem;
+  font-size: clamp(1.15rem, 1.4vw, 1.45rem);
   color: var(--color-mocha);
 }
 .sig-desc {
-  margin-top: 1.1rem;
+  margin-top: 1rem;
   color: var(--color-mocha);
-  max-width: 32rem;
-  line-height: 1.8;
-}
-.sig-trio {
-  margin-top: 1.6rem;
-  color: var(--color-champagne);
-  letter-spacing: 0.22em;
-  line-height: 1.9;
-  font-size: 0.65rem;
+  max-width: 36rem;
+  line-height: 1.85;
 }
 
-/* ---------- volume pills ---------- */
-.sig-vol-section {
-  margin-top: 2rem;
-  padding-top: 1.6rem;
-  border-top: 1px solid var(--hairline);
+/* Olfactory Pyramid Matrix */
+.sig-pyramid {
+  margin-top: 1.8rem;
+  border-top: 1px solid rgb(184 148 82 / 0.25);
+  border-bottom: 1px solid rgb(184 148 82 / 0.25);
+  padding: 0.5rem 0;
+  max-width: 36rem;
 }
-.sig-vol-label {
-  color: var(--color-taupe);
-  margin-bottom: 0.8rem;
-  display: block;
-}
-.sig-vol-pills {
+.sig-pyramid-row {
   display: flex;
-  gap: 0.8rem;
-  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 1.2rem;
+  padding: 0.45rem 0;
 }
-.sig-vol-pill {
-  display: inline-flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.2rem;
-  padding: 0.6rem 1.1rem;
-  background: var(--color-porcelain);
-  border: 1px solid rgb(48 36 29 / 0.16);
-  border-radius: 2px;
+.sig-pyramid-tag {
+  color: var(--color-champagne);
+  font-family: var(--font-body);
+  font-size: 0.58rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  min-width: 3.2rem;
+}
+.sig-pyramid-notes {
+  font-family: var(--font-display);
+  font-size: 0.98rem;
+  letter-spacing: 0.04em;
+  color: var(--color-mocha);
+}
+
+/* ---------- interactive edition selection cards ---------- */
+.sig-editions-section {
+  margin-top: 2.2rem;
+}
+.sig-editions-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 0.9rem;
+}
+.sig-editions-heading {
+  font-size: 0.65rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-ink);
+  font-weight: 600;
+}
+.sig-editions-sub {
+  font-family: var(--font-body);
+  font-size: 0.6rem;
+  color: var(--color-taupe);
+  letter-spacing: 0.06em;
+}
+
+.sig-edition-cards {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.85rem;
+}
+
+.sig-edition-card {
+  position: relative;
+  background: #ffffff;
+  border: 1px solid rgb(184 148 82 / 0.26);
+  border-radius: 4px;
+  padding: 1rem 1.15rem;
   cursor: pointer;
-  transition: all 0.4s var(--ease-luxe);
+  transition: all 0.35s var(--ease-luxe);
+  outline: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 130px;
 }
-.sig-vol-pill:hover {
+.sig-edition-card:hover {
   border-color: var(--color-champagne);
-  background: #fffdf9;
   transform: translateY(-2px);
+  box-shadow: 0 8px 20px -6px rgb(184 148 82 / 0.25);
 }
-.sig-vol-pill.is-active {
-  background: #fbf7ee;
+.sig-edition-card.is-selected {
+  background: #fdfaf2;
   border-color: var(--color-champagne);
-  box-shadow: 0 4px 14px -3px rgb(184 148 82 / 0.28);
+  border-width: 1.5px;
+  box-shadow:
+    0 8px 24px -6px rgb(184 148 82 / 0.32),
+    inset 0 0 0 1px var(--color-champagne);
 }
-.sig-vol-ml {
+
+.sig-edition-badge {
+  position: absolute;
+  top: -8px;
+  right: 12px;
+  background: var(--color-ink);
+  color: #f7e7be;
+  font-family: var(--font-body);
+  font-size: 0.52rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.2rem 0.55rem;
+  border-radius: 12px;
+  border: 1px solid rgb(184 148 82 / 0.4);
+  box-shadow: 0 2px 6px rgb(0 0 0 / 0.2);
+}
+.sig-edition-card.is-selected .sig-edition-badge {
+  background: var(--color-champagne);
+  color: #fff;
+}
+
+.sig-edition-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+.sig-edition-vol {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: var(--color-ink);
+}
+.sig-edition-qty {
+  font-family: var(--font-body);
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-champagne);
+}
+.sig-edition-name {
   font-family: var(--font-body);
   font-size: 0.68rem;
   font-weight: 500;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-mocha);
+  margin-top: 0.25rem;
+}
+.sig-edition-desc {
+  font-size: 0.68rem;
+  color: var(--color-taupe);
+  line-height: 1.4;
+  margin-top: 0.3rem;
+}
+.sig-edition-bottom {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-top: 0.8rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid rgb(184 148 82 / 0.15);
+}
+.sig-edition-price {
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 500;
   color: var(--color-ink);
 }
-.sig-vol-inr {
-  font-family: var(--font-display);
-  font-size: 0.95rem;
+.sig-edition-unit {
+  font-family: var(--font-body);
+  font-size: 0.58rem;
+  letter-spacing: 0.06em;
   color: var(--color-champagne);
+  font-weight: 500;
 }
 
-.sig-action {
+/* ---------- dynamic price & action bar ---------- */
+.sig-action-bar {
   margin-top: 2rem;
+  padding: 1.4rem 1.6rem;
+  background: #ffffff;
+  border: 1px solid rgb(184 148 82 / 0.3);
+  border-radius: 4px;
+  box-shadow: 0 10px 30px -10px rgb(48 36 29 / 0.12);
   display: flex;
-  align-items: center;
-  gap: 2rem;
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 1.2rem;
 }
-.sig-price {
+.sig-price-block {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+.sig-current-price {
   font-family: var(--font-display);
-  font-size: 1.8rem;
+  font-size: 2.2rem;
+  font-weight: 500;
   color: var(--color-ink);
 }
-.sig-price em {
+.sig-current-edition {
   font-family: var(--font-body);
-  font-size: 0.68rem;
-  font-style: normal;
-  letter-spacing: 0.16em;
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--color-mocha);
-  margin-left: 0.4rem;
+}
+
+.sig-buttons {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.btn-editorial--flagship {
+  background: var(--color-ink);
+  color: var(--color-porcelain);
+  border-color: var(--color-ink);
+  box-shadow: 0 8px 24px -6px rgb(48 36 29 / 0.35);
+  flex: 1.2;
+  justify-content: center;
+}
+.btn-editorial--flagship:hover {
+  background: #463426;
+  border-color: #463426;
+  color: #fffdf8;
+  transform: translateY(-2px);
+}
+.btn-editorial--outline {
+  border-color: rgb(184 148 82 / 0.45);
+  color: var(--color-ink);
+  background: transparent;
+  flex: 1;
+  justify-content: center;
+}
+.btn-editorial--outline:hover {
+  border-color: var(--color-ink);
+  background: var(--color-ink);
+  color: var(--color-porcelain);
 }
 .sig-added {
   color: var(--color-champagne);
 }
-.sig-wa {
-  margin-top: 1.2rem;
-  color: var(--color-mocha);
-  font-size: 0.625rem;
+
+/* Perks */
+.sig-perks {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  margin-top: 1.4rem;
 }
-.sig-wa:hover {
+.sig-perk {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  color: var(--color-mocha);
+}
+.sig-perk-icon {
+  width: 14px;
+  height: 14px;
   color: var(--color-champagne);
 }
+
 .sig-hint {
-  margin-top: 1.8rem;
+  margin-top: 1.6rem;
   color: var(--color-taupe);
   display: inline-flex;
   align-items: center;
@@ -174,51 +396,118 @@
   opacity: 0.5;
 }
 
-/* ---------- visual area (card + flacon) ---------- */
+/* ---------- visual area (showcase card + flacon) ---------- */
 .sig-stage-visual {
   position: relative;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  min-height: 480px;
+  gap: 2rem;
 }
 
-/* Attached Master Cover Card Frame: Nature Meets Luxury */
-.sig-card-wrapper {
+/* Master Artwork Showcase Box */
+.sig-showcase-box {
   position: relative;
-  width: min(32vw, 24rem);
-  aspect-ratio: 3 / 4.4;
-  background: #ffffff;
-  padding: 8px;
-  border: 1px solid rgb(184 148 82 / 0.4);
-  box-shadow:
-    0 2rem 4rem -1.5rem rgb(48 36 29 / 0.22),
-    0 0 0 1px rgb(252 251 248 / 0.8);
-  border-radius: 4px;
-  transition: transform 0.6s var(--ease-luxe), box-shadow 0.6s var(--ease-luxe);
+  width: min(34vw, 25rem);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.2rem;
   z-index: 2;
 }
-.sig-card-wrapper:hover {
-  transform: translateY(-4px) scale(1.01);
-  box-shadow:
-    0 2.5rem 5rem -1.8rem rgb(48 36 29 / 0.28),
-    0 0 0 1px rgb(201 162 77 / 0.6);
-}
-.sig-card-border {
+
+.sig-showcase-frame {
   position: relative;
   width: 100%;
-  height: 100%;
+  aspect-ratio: 3 / 4.1;
+  background: #ffffff;
+  padding: 8px;
+  border: 1px solid rgb(184 148 82 / 0.45);
+  border-radius: 4px;
+  box-shadow:
+    0 2.5rem 5rem -1.8rem rgb(48 36 29 / 0.28),
+    0 0 30px rgb(248 226 168 / 0.35);
   overflow: hidden;
-  border: 1px solid rgb(184 148 82 / 0.25);
+  transition: transform 0.6s var(--ease-luxe), box-shadow 0.6s var(--ease-luxe);
 }
-.sig-card-img {
+.sig-showcase-frame:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    0 3rem 6rem -2rem rgb(48 36 29 / 0.35),
+    0 0 45px rgb(248 226 168 / 0.5);
+}
+
+.sig-showcase-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center;
   display: block;
+  transition: transform 0.8s var(--ease-luxe);
+}
+.sig-showcase-frame:hover .sig-showcase-img {
+  transform: scale(1.02);
 }
 
-/* still on marble */
+.sig-showcase-veil {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  box-shadow:
+    inset 0 0 0 1px rgb(252 251 248 / 0.4),
+    inset 0 -3rem 5rem -2rem rgb(48 36 29 / 0.3);
+}
+
+.sig-showcase-caption {
+  position: absolute;
+  bottom: 14px;
+  left: 14px;
+  background: rgb(27 22 18 / 0.75);
+  color: #f7e7be;
+  font-family: var(--font-body);
+  font-size: 0.58rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  padding: 0.3rem 0.75rem;
+  border-radius: 20px;
+  backdrop-filter: blur(8px);
+  border: 1px solid rgb(184 148 82 / 0.3);
+}
+
+/* Gallery View Switcher Tabs */
+.sig-view-tabs {
+  display: flex;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.sig-view-btn {
+  font-family: var(--font-body);
+  font-size: 0.58rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 0.38rem 0.85rem;
+  border: 1px solid rgb(184 148 82 / 0.35);
+  background: rgb(255 255 255 / 0.6);
+  color: var(--color-mocha);
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.35s var(--ease-luxe);
+}
+.sig-view-btn:hover {
+  border-color: var(--color-champagne);
+  color: var(--color-ink);
+  background: #ffffff;
+}
+.sig-view-btn.is-active {
+  background: var(--color-ink);
+  color: #f7e7be;
+  border-color: var(--color-ink);
+  box-shadow: 0 4px 12px -2px rgb(0 0 0 / 0.2);
+}
+
+/* 3D Marble Pedestal Still */
 .sig-stage-art {
   position: absolute;
   right: -2rem;
@@ -262,7 +551,7 @@
   z-index: 1;
 }
 
-/* visitor light */
+/* Visitor interactive light */
 .sig-light {
   position: absolute;
   inset: 0;
@@ -282,13 +571,13 @@
 @media (max-width: 1023px) {
   .sig-stage {
     grid-template-columns: 1fr;
-    gap: 3.5rem;
+    gap: 4rem;
   }
   .sig-copy {
     width: 100%;
   }
-  .sig-card-wrapper {
-    width: min(65vw, 22rem);
+  .sig-showcase-box {
+    width: min(72vw, 24rem);
   }
   .sig-stage-art {
     right: 5%;
@@ -298,13 +587,29 @@
 
 @media (max-width: 767px) {
   .film-sec--signature {
-    padding: 4rem 0;
+    padding-bottom: 4rem;
   }
-  .sig-stage-visual {
-    min-height: 380px;
+  .sig-banner-inner {
+    font-size: 0.58rem;
+    flex-wrap: wrap;
   }
-  .sig-card-wrapper {
-    width: 84vw;
+  .sig-title {
+    font-size: clamp(2.6rem, 10vw, 3.8rem);
+  }
+  .sig-edition-cards {
+    grid-template-columns: 1fr;
+  }
+  .sig-action-bar {
+    padding: 1.2rem;
+  }
+  .sig-buttons {
+    flex-direction: column;
+  }
+  .sig-buttons button {
+    width: 100%;
+  }
+  .sig-showcase-box {
+    width: 88vw;
   }
   .sig-stage-art {
     display: none;

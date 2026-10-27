@@ -1,74 +1,193 @@
 <section
   class="film-sec film-sec--signature"
   #sec
+  id="signature"
   data-nav="ink"
-  aria-label="The signature — Pura Symphony"
+  aria-label="Maison Flagship Spotlight — Nº1 Pura Symphony"
 >
+  <div class="sig-header-banner" aria-hidden="true">
+    <div class="sig-banner-inner">
+      <span class="sig-banner-sparkle">✦</span>
+      <span class="sig-banner-title">Maison Flagship Spotlight</span>
+      <span class="sig-banner-divider">·</span>
+      <span class="sig-banner-sub">The Master Creation — Nature Meets Luxury</span>
+    </div>
+  </div>
+
   <div class="film-stage sig-stage">
     <div class="sig-glow" aria-hidden="true"></div>
-    <bdp-dust class="sig-dust" [density]="20" />
+    <bdp-dust class="sig-dust" [density]="22" />
 
+    <!-- Left Column: Copy, Pyramid, Editions Selection & Commerce -->
     <div class="sig-copy">
-      <p class="label sig-kicker rule">The signature — Nature Meets Luxury</p>
+      <div class="sig-crown-badge">
+        <span class="sig-crown-star">★</span>
+        <span>Maison Signature · Nº1 Flagship Masterpiece</span>
+      </div>
+      
+      <p class="label sig-kicker rule">Haute Parfumerie — Grasse &amp; Paris</p>
+      
       <h2 class="t-display sig-title">
         Nº1 — <em>Pura Symphony</em>
       </h2>
+      
       <p class="serif-i sig-line">{{ no1.line }}</p>
       <p class="t-body sig-desc">{{ no1.intro }}</p>
-      <p class="sig-trio label-thin">{{ join(no1.topNotes) }} — {{ join(no1.heartNotes) }} — {{ join(no1.baseNotes) }}</p>
 
-      <!-- Volume selector -->
-      <div class="sig-vol-section">
-        <p class="label-thin sig-vol-label">Choose Volume</p>
-        <div class="sig-vol-pills" role="radiogroup" aria-label="Available volumes">
-          @for (opt of volumeOptions; track opt.volume) {
-            <button
-              type="button"
-              class="sig-vol-pill"
-              [class.is-active]="selectedVolume() === opt.volume"
-              (click)="selectVolume(opt.volume)"
-              [attr.aria-pressed]="selectedVolume() === opt.volume"
+      <!-- Olfactory Pyramid Pill Matrix -->
+      <div class="sig-pyramid" aria-label="Symphony Fragrance Architecture">
+        <div class="sig-pyramid-row">
+          <span class="sig-pyramid-tag">Top</span>
+          <span class="sig-pyramid-notes">{{ join(no1.topNotes) }}</span>
+        </div>
+        <div class="sig-pyramid-row">
+          <span class="sig-pyramid-tag">Heart</span>
+          <span class="sig-pyramid-notes">{{ join(no1.heartNotes) }}</span>
+        </div>
+        <div class="sig-pyramid-row">
+          <span class="sig-pyramid-tag">Base</span>
+          <span class="sig-pyramid-notes">{{ join(no1.baseNotes) }}</span>
+        </div>
+      </div>
+
+      <!-- Interactive Edition Selection Cards -->
+      <div class="sig-editions-section">
+        <div class="sig-editions-header">
+          <span class="label-thin sig-editions-heading">Choose Your Edition &amp; Rate</span>
+          <span class="sig-editions-sub">Select edition to view details</span>
+        </div>
+
+        <div class="sig-edition-cards" role="radiogroup" aria-label="Available editions">
+          @for (ed of editions; track ed.volume) {
+            <div
+              class="sig-edition-card"
+              [class.is-selected]="selectedVolume() === ed.volume"
+              (click)="selectVolume(ed.volume)"
+              tabindex="0"
+              role="radio"
+              [attr.aria-checked]="selectedVolume() === ed.volume"
             >
-              <span class="sig-vol-ml">{{ opt.label }}</span>
-              <span class="sig-vol-inr">₹{{ opt.price }}</span>
-            </button>
+              @if (ed.badge) {
+                <span class="sig-edition-badge">{{ ed.badge }}</span>
+              }
+              <div class="sig-edition-top">
+                <span class="sig-edition-vol">{{ ed.label }}</span>
+                <span class="sig-edition-qty">{{ ed.qtyLabel }}</span>
+              </div>
+              <p class="sig-edition-name">{{ ed.name }}</p>
+              <p class="sig-edition-desc">{{ ed.desc }}</p>
+              <div class="sig-edition-bottom">
+                <span class="sig-edition-price">₹{{ ed.price }}</span>
+                @if (ed.unitPriceNote) {
+                  <span class="sig-edition-unit">{{ ed.unitPriceNote }}</span>
+                }
+              </div>
+            </div>
           }
         </div>
       </div>
 
-      <div class="sig-action">
-        <span class="sig-price">{{ currentPrice() }} <em>— {{ selectedVolume() }} ml</em></span>
-        <button class="btn-editorial" type="button" (click)="addToBag()">
-          @if (added()) {
-            <span class="sig-added">Added to your bag</span>
-          } @else {
-            Add to bag
-          }
-        </button>
+      <!-- Dynamic Price & Action Bar -->
+      <div class="sig-action-bar">
+        <div class="sig-price-block">
+          <span class="sig-current-price">{{ currentPrice() }}</span>
+          <span class="sig-current-edition">
+            — {{ currentEdition().label }} ({{ currentEdition().qtyLabel }})
+          </span>
+        </div>
+
+        <div class="sig-buttons">
+          <button class="btn-editorial btn-editorial--flagship" type="button" (click)="addToBag()">
+            @if (added()) {
+              <span class="sig-added">Added to your bag — Merci</span>
+            } @else {
+              Add Nº1 Symphony to Bag
+            }
+          </button>
+
+          <button class="btn-editorial btn-editorial--outline" type="button" (click)="orderOnWhatsApp()">
+            Order on WhatsApp
+          </button>
+        </div>
       </div>
 
-      <button class="link-line sig-wa" type="button" (click)="orderOnWhatsApp()">
-        Order on WhatsApp — {{ wa.display }}
-      </button>
-      <p class="sig-hint label-thin" aria-hidden="true">Move your light across the glass</p>
+      <!-- Trust & Atelier Perks -->
+      <div class="sig-perks">
+        <span class="sig-perk">
+          <svg class="sig-perk-icon" viewBox="0 0 16 16" fill="none"><path d="M13.3 4.3L6 11.6 2.7 8.3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          14-Hour Lasting Sillage
+        </span>
+        <span class="sig-perk">
+          <svg class="sig-perk-icon" viewBox="0 0 16 16" fill="none"><path d="M13.3 4.3L6 11.6 2.7 8.3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          100% Pure Botanical Essences
+        </span>
+        <span class="sig-perk">
+          <svg class="sig-perk-icon" viewBox="0 0 16 16" fill="none"><path d="M13.3 4.3L6 11.6 2.7 8.3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Artisanal Small-Batch Bottling
+        </span>
+      </div>
+
+      <p class="sig-hint label-thin" aria-hidden="true">Interactive gallery · Move cursor to play with lighting</p>
     </div>
 
-    <!-- Visual area: The attached Master Cover Card & Sculptural Flacon -->
+    <!-- Right Column: Interactive Gallery & Sculptural Marble Staging -->
     <div class="sig-stage-visual">
-      <!-- Master Cover Card Plate -->
-      <div class="sig-card-wrapper" aria-label="Pura Symphony Cover Artwork">
-        <div class="sig-card-border">
+      <!-- Master Artwork Showcase Box -->
+      <div class="sig-showcase-box" aria-label="Pura Symphony Visual Exhibition">
+        <div class="sig-showcase-frame">
           <img
-            class="sig-card-img"
-            src="/assets/products/pura-symphony/cover.png"
-            alt="Pura Symphony — Nature Meets Luxury Cover"
+            class="sig-showcase-img"
+            [src]="activeImageUrl()"
+            alt="Pura Symphony Master Display"
             loading="lazy"
             decoding="async"
           />
+          <div class="sig-showcase-veil"></div>
+          <span class="sig-showcase-caption">{{ currentEdition().name }} ({{ currentEdition().label }})</span>
+        </div>
+
+        <!-- Interactive Gallery View Switcher Tabs -->
+        <div class="sig-view-tabs" role="tablist" aria-label="Symphony visual perspectives">
+          <button
+            type="button"
+            class="sig-view-btn"
+            [class.is-active]="activeView() === 'cover'"
+            (click)="setView('cover')"
+            aria-label="Master Cover Plate"
+          >
+            Cover Art
+          </button>
+          <button
+            type="button"
+            class="sig-view-btn"
+            [class.is-active]="activeView() === 'scene'"
+            (click)="setView('scene')"
+            aria-label="Editorial Campaign Scene"
+          >
+            Campaign Scene
+          </button>
+          <button
+            type="button"
+            class="sig-view-btn"
+            [class.is-active]="activeView() === 'bottle8ml'"
+            (click)="setView('bottle8ml')"
+            aria-label="8ml Discovery Trio Pack"
+          >
+            8ml Trio Pack (₹299)
+          </button>
+          <button
+            type="button"
+            class="sig-view-btn"
+            [class.is-active]="activeView() === 'display'"
+            (click)="setView('display')"
+            aria-label="Atelier Display Composition"
+          >
+            Atelier Display
+          </button>
         </div>
       </div>
 
-      <!-- Still on marble with interactive pointer lighting -->
+      <!-- Sculptural Flacon Staged on Marble Pedestal -->
       <div class="sig-stage-art" aria-hidden="true">
         <div class="sig-ped">
           <bdp-pedestal kind="marble" />
@@ -83,7 +202,7 @@
       </div>
     </div>
 
-    <!-- visitor light -->
+    <!-- Interactive Light Aura Layer -->
     <div class="sig-light" aria-hidden="true"></div>
   </div>
 </section>

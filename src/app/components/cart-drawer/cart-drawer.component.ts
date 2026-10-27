@@ -49,7 +49,7 @@ import { ProductArtComponent } from "../../art/product-art/product-art.component
                   </div>
                   <div class="line__info">
                     <p class="line__code label-thin">{{ f.code }} — {{ f.name }}</p>
-                    <p class="line__vol t-caption">{{ line.volume }} ml — Eau de parfum</p>
+                    <p class="line__vol t-caption">{{ line.volume === 8 ? '8 ml (Set of 3 nos)' : line.volume + ' ml' }} — Eau de parfum</p>
                     <p class="line__price label-num">{{ fmt(linePrice(line)) }}</p>
                     <div class="line__qty" aria-label="Quantity for {{ f.name }}">
                       <button type="button" (click)="cart.setQty(line.fragranceId, line.volume, line.qty - 1)" [attr.aria-label]="'Decrease quantity of ' + f.name">−</button>

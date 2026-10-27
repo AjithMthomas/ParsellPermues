@@ -28,11 +28,12 @@ export class WhatsAppService {
   order(f: Fragrance, volume = 100, qty = 1): string {
     const unitPrice = priceForVolume(volume);
     const price = unitPrice * qty;
+    const volLabel = volume === 8 ? "8 ml (Set of 3 nos)" : `${volume} ml`;
     return [
       "Hello Pura Perfumes — I would like to order:",
       "",
       `• ${f.code} — ${f.name}`,
-      `  Volume: ${volume} ml · Quantity: ${qty}`,
+      `  Volume: ${volLabel} · Quantity: ${qty}`,
       `  Price: ${this.products.format(price)}`,
       "",
       "Please confirm availability and dispatch details. Thank you.",
@@ -49,8 +50,9 @@ export class WhatsAppService {
       const f = this.products.bySlug(line.fragranceId);
       if (!f) return;
       const unitPrice = priceForVolume(line.volume);
+      const volLabel = line.volume === 8 ? "8 ml (Set of 3 nos)" : `${line.volume} ml`;
       parts.push(
-        `${i + 1}. ${f.code} — ${f.name} · ${line.volume} ml · Qty ${line.qty}`,
+        `${i + 1}. ${f.code} — ${f.name} · ${volLabel} · Qty ${line.qty}`,
         `   ${this.products.format(unitPrice * line.qty)}`,
       );
     });

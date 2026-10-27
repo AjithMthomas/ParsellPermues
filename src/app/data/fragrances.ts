@@ -9,10 +9,10 @@
  *  4. Pura Iris (Nº4)
  *
  * Standard volumes & pricing:
- *   8 ml  — ₹150
- *  30 ml  — ₹600
- *  50 ml  — ₹780
- * 100 ml  — ₹1,100
+ *   8 ml  — ₹299 (Set of 3 nos)
+ *  30 ml  — ₹999 (1 no)
+ *  50 ml  — ₹1,199 (1 no)
+ * 100 ml  — ₹1,599 (1 no)
  */
 
 export type WorldKey = "symphony" | "obsidian" | "elin-lush" | "iris" | "aube" | "velours" | "lune";
@@ -21,24 +21,25 @@ export interface VolumeOption {
   volume: number;
   price: number;
   label: string;
+  countLabel?: string;
 }
 
 export const VOLUME_PRICES: Record<number, number> = {
-  8: 150,
-  30: 600,
-  50: 780,
-  100: 1100,
+  8: 299,
+  30: 999,
+  50: 1199,
+  100: 1599,
 };
 
 export const VOLUME_OPTIONS: VolumeOption[] = [
-  { volume: 8, price: 150, label: "8 ml" },
-  { volume: 30, price: 600, label: "30 ml" },
-  { volume: 50, price: 780, label: "50 ml" },
-  { volume: 100, price: 1100, label: "100 ml" },
+  { volume: 8, price: 299, label: "8 ml (3 pcs)", countLabel: "3 nos" },
+  { volume: 30, price: 999, label: "30 ml", countLabel: "1 no" },
+  { volume: 50, price: 1199, label: "50 ml", countLabel: "1 no" },
+  { volume: 100, price: 1599, label: "100 ml", countLabel: "1 no" },
 ];
 
 export function priceForVolume(volume: number): number {
-  return VOLUME_PRICES[volume] ?? 1100;
+  return VOLUME_PRICES[volume] ?? 1599;
 }
 
 export interface FragranceImageSet {
@@ -83,7 +84,7 @@ export const FRAGRANCES: Fragrance[] = [
     name: "Pura Symphony",
     shortName: "Symphony",
     slug: "pura-symphony",
-    price: 1100,
+    price: 1599,
     prices: VOLUME_PRICES,
     volumes: [8, 30, 50, 100],
     category: ["bestseller", "signature"],
@@ -122,7 +123,7 @@ export const FRAGRANCES: Fragrance[] = [
     name: "Pura Obsidian",
     shortName: "Obsidian",
     slug: "pura-obsidian",
-    price: 1100,
+    price: 1599,
     prices: VOLUME_PRICES,
     volumes: [8, 30, 50, 100],
     category: ["bestseller"],
@@ -160,7 +161,7 @@ export const FRAGRANCES: Fragrance[] = [
     name: "Pura Elin Lush",
     shortName: "Elin Lush",
     slug: "pura-elin-lush",
-    price: 1100,
+    price: 1599,
     prices: VOLUME_PRICES,
     volumes: [8, 30, 50, 100],
     category: ["new", "botanical"],
@@ -198,7 +199,7 @@ export const FRAGRANCES: Fragrance[] = [
     name: "Pura Iris",
     shortName: "Iris",
     slug: "pura-iris",
-    price: 1100,
+    price: 1599,
     prices: VOLUME_PRICES,
     volumes: [8, 30, 50, 100],
     category: ["new", "haute"],

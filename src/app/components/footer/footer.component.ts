@@ -31,7 +31,7 @@ import { ScrollService } from "../../core/scroll.service";
         <div class="footer__col">
           <p class="label footer__col-title">Client care</p>
           <span class="footer__muted">Shipping — nationwide delivery</span>
-          <span class="footer__muted">Available in 8ml · 30ml · 50ml · 100ml</span>
+          <span class="footer__muted">Available in 8ml (3 nos · ₹299) · 30ml · 50ml · 100ml</span>
           <span class="footer__muted">Artisanal hand-bottled</span>
           <span class="footer__muted">Nature Meets Luxury</span>
         </div>
