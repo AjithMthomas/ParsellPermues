@@ -42,7 +42,7 @@ import { CapabilitiesService } from "../../core/capabilities.service";
           <a class="menu__foot-link" href="https://wa.me/918075265863" target="_blank" rel="noreferrer">+91 8075 265 863</a>
           <a
             class="menu__foot-link"
-            href="https://instagram.com/puraperfumes"
+            href="https://www.instagram.com/parsell.in/"
             target="_blank"
             rel="noreferrer"
           >Instagram</a>

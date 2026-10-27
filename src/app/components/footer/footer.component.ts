@@ -26,7 +26,7 @@ import { ScrollService } from "../../core/scroll.service";
           <p class="label footer__col-title">Maison</p>
           <a class="footer__link" href="https://wa.me/918075265863" target="_blank" rel="noreferrer">WhatsApp — +91 8075 265 863</a>
           <a class="footer__link" href="mailto:hello@puraperfumes.com">hello@puraperfumes.com</a>
-          <a class="footer__link" href="https://instagram.com/puraperfumes" target="_blank" rel="noreferrer">Instagram — @puraperfumes</a>
+          <a class="footer__link" href="https://www.instagram.com/parsell.in/" target="_blank" rel="noreferrer">Instagram — @parsell.in</a>
         </div>
         <div class="footer__col">
           <p class="label footer__col-title">Client care</p>
