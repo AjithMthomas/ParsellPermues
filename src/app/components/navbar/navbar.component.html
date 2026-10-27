@@ -1,6 +1,7 @@
 <header
   class="nav"
   [class.nav--ivory]="ui.navTheme() === 'ivory'"
+  [class.nav--raised]="isRaised()"
   [attr.aria-label]="'Site navigation'"
 >
   <div class="nav__inner">

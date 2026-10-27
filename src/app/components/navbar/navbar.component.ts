@@ -1,6 +1,7 @@
 import {
   Component,
   inject,
+  signal,
   ElementRef,
   viewChild,
   afterNextRender,
@@ -31,6 +32,7 @@ export class NavbarComponent implements OnDestroy {
     { label: "Contact", target: "contact" },
   ];
 
+  protected isRaised = signal(false);
   protected readonly ui = inject(UiService);
   protected readonly cart = inject(CartService);
   private readonly scroll = inject(ScrollService);
@@ -89,9 +91,10 @@ export class NavbarComponent implements OnDestroy {
       this.lastTheme = theme;
       this.ui.navTheme.set(theme);
     }
-    const raised = window.scrollY > 30;
+    const raised = window.scrollY > 15;
     if (raised !== this.lastRaised) {
       this.lastRaised = raised;
+      this.isRaised.set(raised);
       this.ui.navHidden.set(false);
       this.el.nativeElement.classList.toggle("nav--raised", raised);
     }

@@ -8,7 +8,8 @@
 .nav {
   pointer-events: auto;
   color: var(--color-ink);
-  transition: color 0.6s var(--ease-luxe);
+  transition: color 0.4s var(--ease-luxe);
+  width: 100%;
 }
 .nav--ivory {
   color: var(--color-porcelain);
@@ -20,20 +21,32 @@
   justify-content: space-between;
   gap: 2rem;
   padding: 1.4rem var(--gutter) 1rem;
-  transition: padding 0.5s var(--ease-luxe), background-color 0.5s var(--ease-luxe),
-    box-shadow 0.5s var(--ease-luxe);
+  background: transparent;
+  transition: padding 0.35s var(--ease-luxe), background 0.35s var(--ease-luxe),
+    box-shadow 0.35s var(--ease-luxe), border-color 0.35s var(--ease-luxe);
 }
-.nav--raised .nav__inner {
-  padding-top: 0.9rem;
-  padding-bottom: 0.9rem;
-  background: rgb(247 244 238 / 0.82);
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
-  box-shadow: 0 1px 0 rgb(48 36 29 / 0.06);
+
+/* Opaque frosted backdrop when scrolling (raised) so content never bleeds or collapses into header */
+.nav.nav--raised .nav__inner,
+.nav--raised .nav__inner,
+:host(.nav--raised) .nav__inner {
+  padding-top: 0.85rem;
+  padding-bottom: 0.85rem;
+  background: #f7f4ee;
+  background: rgba(247, 244, 238, 0.98);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(48, 36, 29, 0.08);
+  box-shadow: 0 4px 24px -4px rgba(48, 36, 29, 0.1);
 }
-.nav--ivory.nav--raised .nav__inner {
-  background: rgb(27 18 11 / 0.55);
-  box-shadow: 0 1px 0 rgb(252 251 248 / 0.1);
+
+.nav.nav--ivory.nav--raised .nav__inner,
+.nav--ivory.nav--raised .nav__inner,
+:host(.nav--raised) .nav--ivory .nav__inner {
+  background: #181614;
+  background: rgba(24, 22, 20, 0.98);
+  border-bottom: 1px solid rgba(252, 251, 248, 0.08);
+  box-shadow: 0 4px 24px -4px rgba(0, 0, 0, 0.5);
 }
 
 /* brand */
@@ -157,6 +170,12 @@
   }
   .nav__inner {
     padding: 1.1rem 1.4rem;
+  }
+  .nav.nav--raised .nav__inner,
+  .nav--raised .nav__inner,
+  :host(.nav--raised) .nav__inner {
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
   }
   .nav__brand-sub {
     display: none;

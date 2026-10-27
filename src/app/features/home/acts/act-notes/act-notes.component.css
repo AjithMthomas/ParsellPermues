@@ -6,7 +6,7 @@
 }
 
 .notes {
-  padding: clamp(3.5rem, 8vh, 6rem) var(--gutter) 0;
+  padding: clamp(5.5rem, 11vh, 8.5rem) var(--gutter) 0;
 }
 
 .notes__head {
