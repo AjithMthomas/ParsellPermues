@@ -89,8 +89,8 @@ export class ActCollectionComponent {
   protected activeViews = signal<Record<string, string>>({});
   protected added = signal<string[]>([]);
 
-  /** Horizontal reel state (false → vertical fallback). */
-  protected readonly reelMode = signal(false);
+  /** Horizontal reel state (always true so reel scrolls horizontally on all screens). */
+  protected readonly reelMode = signal(true);
   protected readonly activeIndex = signal(0);
   protected readonly navLive = signal(false);
 
@@ -108,12 +108,9 @@ export class ActCollectionComponent {
   private st?: ScrollTrigger;
 
   constructor() {
-    const shortViewport =
-      typeof window !== "undefined" &&
-      window.matchMedia("(max-height: 640px)").matches;
-    this.reelMode.set(!this.caps.rm && !shortViewport);
+    this.reelMode.set(true);
     afterNextRender(() => {
-      if (this.reelMode()) this.setupReel();
+      this.setupReel();
     });
   }
 
@@ -201,7 +198,7 @@ export class ActCollectionComponent {
     if (!reel || !viewport || !track) return;
 
     const count = this.fragrances.length;
-    const distance = () => Math.max(0, track.scrollWidth - viewport.clientWidth);
+    const distance = () => Math.max(0, (count - 1) * viewport.clientWidth);
 
     // the section's height is exactly how far the reel has to travel
     const sizeReel = () => {
@@ -221,6 +218,7 @@ export class ActCollectionComponent {
       trigger: reel,
       start: "top top",
       end: "bottom bottom",
+      scrub: true,
       invalidateOnRefresh: true,
       onRefresh: () => paint(this.st?.progress ?? 0),
       onUpdate: (self) => {
@@ -234,15 +232,22 @@ export class ActCollectionComponent {
       onToggle: (self) => this.navLive.set(self.isActive),
     });
 
+    ScrollTrigger.refresh();
+
     // the reel's height is derived from the panel width, so re-measure and
     // refresh whenever the viewport itself changes size
+    let lastDistance = distance();
     let raf = 0;
     const ro = new ResizeObserver(() => {
       if (raf) return;
       raf = requestAnimationFrame(() => {
         raf = 0;
-        sizeReel();
-        ScrollTrigger.refresh();
+        const newDist = distance();
+        if (Math.abs(newDist - lastDistance) > 2) {
+          lastDistance = newDist;
+          sizeReel();
+          ScrollTrigger.refresh();
+        }
       });
     });
     ro.observe(viewport);

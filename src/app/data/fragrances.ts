@@ -110,7 +110,6 @@ export const FRAGRANCES: Fragrance[] = [
     liquid: ["#efd9a8", "#c7a263", "#8f6a33"],
     world: "symphony",
     images: {
-      cover: "/assets/products/pura-symphony/cover.png",
       scene: "/assets/products/pura-symphony/scene.png",
       bottle8ml: "/assets/products/pura-symphony/bottle-8ml.png",
       display: "/assets/products/pura-symphony/display-square.png",
