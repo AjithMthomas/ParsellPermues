@@ -387,6 +387,25 @@
 }
 
 /* ============================================================
+   add-to-bag flight — the plate that travels to the bag
+   (created by BagFeedbackService, appended to <body>)
+   ============================================================ */
+.bdp-fly {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 190;
+  border-radius: 50%;
+  background-color: var(--color-cream);
+  background-size: cover;
+  background-position: center;
+  border: 1px solid rgb(184 148 82 / 0.55);
+  box-shadow: 0 1.4rem 2.6rem -1rem rgb(48 36 29 / 0.45);
+  pointer-events: none;
+  will-change: left, top, transform, opacity;
+}
+
+/* ============================================================
    reduced motion — preserve the design, remove the drama
    ============================================================ */
 @media (prefers-reduced-motion: reduce) {

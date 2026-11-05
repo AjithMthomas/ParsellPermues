@@ -15,6 +15,7 @@ import { FRAGRANCES, VOLUME_OPTIONS, priceForVolume } from "../../../../data/fra
 import { CartService } from "../../../../services/cart.service";
 import { ProductsService } from "../../../../services/products.service";
 import { WhatsAppService } from "../../../../services/whatsapp.service";
+import { BagFeedbackService } from "../../../../services/bag-feedback.service";
 import { CapabilitiesService } from "../../../../core/capabilities.service";
 
 const NO1 = FRAGRANCES[0];
@@ -35,12 +36,11 @@ export const SYMPHONY_EDITIONS: EditionCard[] = [
   {
     volume: 8,
     label: "8 ml",
-    qtyLabel: "3 Nos Pack",
-    badge: "Discovery Trio",
-    name: "Discovery Trio",
-    desc: "Three 8ml portable flacons — perfect for discovery & travel.",
-    price: 299,
-    unitPriceNote: "Only ₹99 / bottle",
+    qtyLabel: "3 pcs",
+    badge: "Combo of 3",
+    name: "Combo Pack",
+    desc: "Three 8 ml flacons, sold together as one combo — perfect for discovery & travel.",
+    price: 899,
     viewKey: "bottle8ml",
   },
   {
@@ -89,6 +89,7 @@ export class ActSignatureComponent {
   protected readonly volumeOptions = VOLUME_OPTIONS;
 
   protected readonly wa = inject(WhatsAppService);
+  private readonly feedback = inject(BagFeedbackService);
   private readonly cart = inject(CartService);
   private readonly products = inject(ProductsService);
   private readonly caps = inject(CapabilitiesService);
@@ -128,7 +129,14 @@ export class ActSignatureComponent {
   }
 
   protected addToBag(): void {
-    this.cart.add(this.no1, this.selectedVolume(), 1);
+    const vol = this.selectedVolume();
+    this.cart.add(this.no1, vol, 1);
+    const host = this.el.nativeElement as HTMLElement;
+    this.feedback.added(
+      this.no1,
+      vol,
+      host.querySelector<HTMLElement>(".sig-showcase-box"),
+    );
     this.added.set(true);
     setTimeout(() => this.added.set(false), 2400);
   }

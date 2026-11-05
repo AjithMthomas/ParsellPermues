@@ -55,7 +55,7 @@ const QUESTIONS: Question[] = [
                 <p class="t-caption finder__result-notes">
                   {{ r.topNotes.join(' · ') }} — {{ r.heartNotes.join(' · ') }} — {{ r.baseNotes.join(' · ') }}
                 </p>
-                <p class="finder__result-price">Available in 8ml (3 Nos · ₹299) · 30ml (₹999) · 50ml (₹1,199) · 100ml (₹1,599)</p>
+                <p class="finder__result-price">Available in 8 ml Combo (3 pcs · ₹899) · 30 ml (₹999) · 50ml (₹1,199) · 100ml (₹1,599)</p>
 
                 @if (!added()) {
                   <button class="btn-editorial finder__add" type="button" (click)="add(r)">

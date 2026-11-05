@@ -133,6 +133,78 @@
   width: 1.05rem;
   height: 1.05rem;
 }
+/* the bag catching an added creation */
+.nav__action--bag .nav__icon {
+  transition: transform 0.6s var(--ease-luxe);
+}
+.nav__action--bag.is-caught .nav__icon {
+  animation: bag-catch 0.9s var(--ease-luxe);
+}
+.nav__action--bag.is-caught .nav__count {
+  animation: bag-count 0.9s var(--ease-luxe);
+}
+.nav__action--bag.is-caught::after {
+  content: "";
+  position: absolute;
+  right: -0.95rem;
+  top: 50%;
+  width: 2rem;
+  height: 2rem;
+  margin-top: -1rem;
+  border-radius: 50%;
+  border: 1px solid var(--color-champagne);
+  pointer-events: none;
+  animation: bag-ring 0.9s var(--ease-luxe) forwards;
+}
+@keyframes bag-catch {
+  0% {
+    transform: none;
+  }
+  22% {
+    transform: scale(1.22) rotate(-5deg);
+  }
+  52% {
+    transform: scale(0.93);
+  }
+  100% {
+    transform: none;
+  }
+}
+@keyframes bag-count {
+  0% {
+    transform: none;
+    box-shadow: 0 0 0 0 rgb(184 148 82 / 0.6);
+  }
+  35% {
+    transform: scale(1.32);
+  }
+  100% {
+    transform: none;
+    box-shadow: 0 0 0 0.5rem rgb(184 148 82 / 0);
+  }
+}
+@keyframes bag-ring {
+  0% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  30% {
+    opacity: 0.85;
+  }
+  100% {
+    transform: scale(1.55);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav__action--bag.is-caught .nav__icon,
+  .nav__action--bag.is-caught .nav__count,
+  .nav__action--bag.is-caught::after {
+    animation: none;
+  }
+}
+
 .nav__count {
   position: absolute;
   top: -0.5rem;

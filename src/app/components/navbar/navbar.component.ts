@@ -72,19 +72,27 @@ export class NavbarComponent implements OnDestroy {
     if (!this.els.length) return;
     const y = window.scrollY + Math.min(90, window.innerHeight * 0.14);
     let theme: "ink" | "ivory" = "ink";
-    for (const s of this.els) {
-      if (s.offsetTop <= y) {
-        theme = s.getAttribute("data-nav") === "ivory" ? "ivory" : "ink";
-      } else {
-        break;
+
+    // a pinned stage (e.g. the horizontal collection reel) owns the theme
+    // while it holds the viewport
+    const live = document.querySelector<HTMLElement>("[data-nav-live]");
+    if (live) {
+      theme = live.getAttribute("data-nav") === "ivory" ? "ivory" : "ink";
+    } else {
+      for (const s of this.els) {
+        if (s.offsetTop <= y) {
+          theme = s.getAttribute("data-nav") === "ivory" ? "ivory" : "ink";
+        } else {
+          break;
+        }
       }
-    }
-    // pinned (sticky) film stages: their section top sits far above; fall back
-    // to whatever is painted under the nav bar
-    if (theme === "ink" && this.caps.desktop) {
-      const probe = document.elementFromPoint(window.innerWidth - 12, 60);
-      const dark = probe?.closest("[data-dark]");
-      if (dark) theme = "ivory";
+      // pinned (sticky) film stages: their section top sits far above; fall back
+      // to whatever is painted under the nav bar
+      if (theme === "ink" && this.caps.desktop) {
+        const probe = document.elementFromPoint(window.innerWidth - 12, 60);
+        const dark = probe?.closest("[data-dark]");
+        if (dark) theme = "ivory";
+      }
     }
 
     if (theme !== this.lastTheme) {

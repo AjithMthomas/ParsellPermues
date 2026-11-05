@@ -85,6 +85,18 @@ export class ScrollService {
   }
 
   scrollToEl(el: HTMLElement, offset = 0): void {
+    // Deep links into a horizontal reel land on that creation's pan position.
+    const reel = el.closest<HTMLElement>("[data-h-reel]");
+    const reelIndex = el.getAttribute("data-reel-index");
+    if (reel && reelIndex !== null) {
+      const panels = reel.querySelectorAll("[data-reel-index]").length;
+      const span = Math.max(0, reel.offsetHeight - window.innerHeight);
+      const ratio = Number(reelIndex) / Math.max(1, panels - 1);
+      const top = reel.getBoundingClientRect().top + window.scrollY + ratio * span + offset;
+      this.scrollToY(top);
+      return;
+    }
+
     if (this.caps.rm || !this.lenis) {
       el.scrollIntoView({ behavior: "auto", block: "start" });
       return;
@@ -92,6 +104,17 @@ export class ScrollService {
     this.lenis.scrollTo(el, {
       offset,
       duration: 1.6,
+      easing: (t: number) => 1 - Math.pow(1 - t, 4),
+    });
+  }
+
+  scrollToY(y: number): void {
+    if (this.caps.rm || !this.lenis) {
+      window.scrollTo({ top: y });
+      return;
+    }
+    this.lenis.scrollTo(y, {
+      duration: 1.4,
       easing: (t: number) => 1 - Math.pow(1 - t, 4),
     });
   }

@@ -1,9 +1,20 @@
-import { Component, inject, signal } from "@angular/core";
+import {
+  Component,
+  DestroyRef,
+  ElementRef,
+  afterNextRender,
+  inject,
+  signal,
+  viewChild,
+} from "@angular/core";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { FRAGRANCES, Fragrance, VOLUME_OPTIONS, priceForVolume } from "../../../../data/fragrances";
-import { WorldStageComponent } from "../../../../art/world-stage/world-stage.component";
 import { CartService } from "../../../../services/cart.service";
 import { ProductsService } from "../../../../services/products.service";
 import { WhatsAppService } from "../../../../services/whatsapp.service";
+import { BagFeedbackService } from "../../../../services/bag-feedback.service";
+import { CapabilitiesService } from "../../../../core/capabilities.service";
+import { ScrollService } from "../../../../core/scroll.service";
 import { RevealDirective } from "../../../../core/reveal.directive";
 
 interface WorldStyle {
@@ -57,6 +68,14 @@ const STYLE: Record<string, WorldStyle> = {
   },
 };
 
+/**
+ * THE COLLECTION — four creations, travelled horizontally.
+ *
+ * The four fragrance worlds sit in one reel. The section pins while the four
+ * panels pan across; when the last creation has passed, the page releases and
+ * continues down the film. Very short viewports and reduced-motion users get
+ * the same four worlds as a calm vertical stack.
+ */
 @Component({
   selector: "bdp-act-collection",
   imports: [RevealDirective],
@@ -70,9 +89,33 @@ export class ActCollectionComponent {
   protected activeViews = signal<Record<string, string>>({});
   protected added = signal<string[]>([]);
 
+  /** Horizontal reel state (false → vertical fallback). */
+  protected readonly reelMode = signal(false);
+  protected readonly activeIndex = signal(0);
+  protected readonly navLive = signal(false);
+
   private readonly cart = inject(CartService);
   private readonly products = inject(ProductsService);
   private readonly wa = inject(WhatsAppService);
+  private readonly feedback = inject(BagFeedbackService);
+  private readonly caps = inject(CapabilitiesService);
+  private readonly scroll = inject(ScrollService);
+  private readonly destroyRef = inject(DestroyRef);
+
+  private readonly reelEl = viewChild<ElementRef<HTMLElement>>("reel");
+  private readonly viewportEl = viewChild<ElementRef<HTMLElement>>("viewport");
+  private readonly trackEl = viewChild<ElementRef<HTMLElement>>("track");
+  private st?: ScrollTrigger;
+
+  constructor() {
+    const shortViewport =
+      typeof window !== "undefined" &&
+      window.matchMedia("(max-height: 640px)").matches;
+    this.reelMode.set(!this.caps.rm && !shortViewport);
+    afterNextRender(() => {
+      if (this.reelMode()) this.setupReel();
+    });
+  }
 
   protected styleOf = (f: Fragrance): string => {
     return (STYLE[f.world] ?? STYLE["symphony"]).vars;
@@ -83,6 +126,11 @@ export class ActCollectionComponent {
   protected sideOf = (f: Fragrance): "l" | "r" => {
     return (STYLE[f.world] ?? STYLE["symphony"]).side;
   };
+
+  /** Nav theme of the creation currently under the viewport. */
+  protected panelNav(): "ink" | "ivory" {
+    return this.navOf(this.fragrances[this.activeIndex()] ?? this.fragrances[0]);
+  }
 
   protected getVolume(f: Fragrance): number {
     return this.selectedVolumes()[f.slug] ?? 100;
@@ -114,9 +162,11 @@ export class ActCollectionComponent {
     this.activeViews.update((m) => ({ ...m, [f.slug]: viewKey }));
   }
 
-  protected addToBag(f: Fragrance): void {
+  protected addToBag(f: Fragrance, ev?: Event): void {
     const vol = this.getVolume(f);
     this.cart.add(f, vol, 1);
+    const world = (ev?.currentTarget as HTMLElement | null)?.closest(".world");
+    this.feedback.added(f, vol, world as HTMLElement | null);
     const slug = f.slug;
     this.added.update((a) => [...a, slug]);
     setTimeout(() => {
@@ -127,5 +177,82 @@ export class ActCollectionComponent {
   protected orderOnWhatsApp(f: Fragrance): void {
     const vol = this.getVolume(f);
     this.wa.open(this.wa.order(f, vol, 1));
+  }
+
+  /** Jump the film to one creation — the HUD dots and deep links use this. */
+  protected goToPanel(index: number): void {
+    const y = this.panelTop(index);
+    if (y === null) return;
+    this.scroll.scrollToY(y);
+  }
+
+  private panelTop(index: number): number | null {
+    const reel = this.reelEl()?.nativeElement;
+    if (!reel) return null;
+    const span = Math.max(0, reel.offsetHeight - window.innerHeight);
+    const ratio = index / Math.max(1, this.fragrances.length - 1);
+    return reel.getBoundingClientRect().top + window.scrollY + ratio * span;
+  }
+
+  private setupReel(): void {
+    const reel = this.reelEl()?.nativeElement;
+    const viewport = this.viewportEl()?.nativeElement;
+    const track = this.trackEl()?.nativeElement;
+    if (!reel || !viewport || !track) return;
+
+    const count = this.fragrances.length;
+    const distance = () => Math.max(0, track.scrollWidth - viewport.clientWidth);
+
+    // the section's height is exactly how far the reel has to travel
+    const sizeReel = () => {
+      reel.style.setProperty("--reel-span", `${distance()}px`);
+    };
+
+    // one author for the pan: scroll progress → track offset
+    const paint = (progress: number) => {
+      const x = -distance() * progress;
+      track.style.transform = `translate3d(${x.toFixed(2)}px, 0, 0)`;
+    };
+
+    sizeReel();
+    paint(0);
+
+    this.st = ScrollTrigger.create({
+      trigger: reel,
+      start: "top top",
+      end: "bottom bottom",
+      invalidateOnRefresh: true,
+      onRefresh: () => paint(this.st?.progress ?? 0),
+      onUpdate: (self) => {
+        paint(self.progress);
+        const index = Math.min(
+          count - 1,
+          Math.round(self.progress * (count - 1)),
+        );
+        if (index !== this.activeIndex()) this.activeIndex.set(index);
+      },
+      onToggle: (self) => this.navLive.set(self.isActive),
+    });
+
+    // the reel's height is derived from the panel width, so re-measure and
+    // refresh whenever the viewport itself changes size
+    let raf = 0;
+    const ro = new ResizeObserver(() => {
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        raf = 0;
+        sizeReel();
+        ScrollTrigger.refresh();
+      });
+    });
+    ro.observe(viewport);
+
+    this.destroyRef.onDestroy(() => {
+      ro.disconnect();
+      if (raf) cancelAnimationFrame(raf);
+      this.st?.kill();
+      this.navLive.set(false);
+      track.style.transform = "";
+    });
   }
 }

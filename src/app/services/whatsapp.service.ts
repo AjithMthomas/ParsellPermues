@@ -14,6 +14,9 @@ export class WhatsAppService {
   readonly number = "918075265863";
   readonly display = "+91 8075 265 863";
 
+  /** Public storefront — appended to every order so the client can browse more. */
+  readonly site = "https://parsell.in";
+
   constructor(private readonly products: ProductsService) {}
 
   url(text: string): string {
@@ -28,7 +31,7 @@ export class WhatsAppService {
   order(f: Fragrance, volume = 100, qty = 1): string {
     const unitPrice = priceForVolume(volume);
     const price = unitPrice * qty;
-    const volLabel = volume === 8 ? "8 ml (Set of 3 nos)" : `${volume} ml`;
+    const volLabel = volume === 8 ? "8 ml Combo (3 pcs)" : `${volume} ml`;
     return [
       "Hello Pura Perfumes — I would like to order:",
       "",
@@ -37,6 +40,8 @@ export class WhatsAppService {
       `  Price: ${this.products.format(price)}`,
       "",
       "Please confirm availability and dispatch details. Thank you.",
+      "",
+      `Order more from the collection — ${this.site}`,
     ].join("\n");
   }
 
@@ -50,14 +55,15 @@ export class WhatsAppService {
       const f = this.products.bySlug(line.fragranceId);
       if (!f) return;
       const unitPrice = priceForVolume(line.volume);
-      const volLabel = line.volume === 8 ? "8 ml (Set of 3 nos)" : `${line.volume} ml`;
+      const volLabel = line.volume === 8 ? "8 ml Combo (3 pcs)" : `${line.volume} ml`;
       parts.push(
         `${i + 1}. ${f.code} — ${f.name} · ${volLabel} · Qty ${line.qty}`,
         `   ${this.products.format(unitPrice * line.qty)}`,
       );
     });
     parts.push("", `Total Amount: ${this.products.format(subtotal)}`, "");
-    parts.push("Please confirm availability and dispatch details. Thank you.");
+    parts.push("Please confirm availability and dispatch details. Thank you.", "");
+    parts.push(`Order more from the collection — ${this.site}`);
     return parts.join("\n");
   }
 

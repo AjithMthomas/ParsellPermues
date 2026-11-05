@@ -41,11 +41,12 @@
       </button>
 
       <button
-        class="nav__action"
+        class="nav__action nav__action--bag"
         type="button"
         (click)="openBag($event)"
         aria-label="Open your bag"
         aria-haspopup="dialog"
+        data-bag-target
       >
         <span class="nav__action-text">Bag</span>
         <svg class="nav__icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">

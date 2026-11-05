@@ -1,10 +1,11 @@
-import { Component, inject, signal } from "@angular/core";
+import { Component, ElementRef, inject, signal } from "@angular/core";
 import { WorldStageComponent } from "../../../../art/world-stage/world-stage.component";
 import { DustComponent } from "../../../../art/dust/dust.component";
 import { FRAGRANCES } from "../../../../data/fragrances";
 import { CartService } from "../../../../services/cart.service";
 import { ProductsService } from "../../../../services/products.service";
 import { WhatsAppService } from "../../../../services/whatsapp.service";
+import { BagFeedbackService } from "../../../../services/bag-feedback.service";
 import { RevealDirective } from "../../../../core/reveal.directive";
 import { ScrollService } from "../../../../core/scroll.service";
 
@@ -26,6 +27,8 @@ export class ActFinalComponent {
   protected added = signal(false);
 
   private readonly cart = inject(CartService);
+  private readonly feedback = inject(BagFeedbackService);
+  private readonly el = inject(ElementRef);
   private readonly products = inject(ProductsService);
   private readonly scroll = inject(ScrollService);
   private readonly wa = inject(WhatsAppService);
@@ -36,6 +39,8 @@ export class ActFinalComponent {
 
   protected addToBag(): void {
     this.cart.add(this.no1, 100, 1);
+    const host = this.el.nativeElement as HTMLElement;
+    this.feedback.added(this.no1, 100, host.querySelector<HTMLElement>(".final__stage"));
     this.added.set(true);
     setTimeout(() => this.added.set(false), 2400);
   }
