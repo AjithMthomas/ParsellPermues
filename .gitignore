@@ -44,3 +44,17 @@ __screenshots__/
 # System files
 .DS_Store
 Thumbs.db
+
+# Design tooling (skills, agents, local caches; skills-lock.json stays tracked)
+.claude/
+.impeccable/
+.taste-skill/
+
+# Next.js
+/.next/
+/out/
+next-env.d.ts
+*.tsbuildinfo
+# image pipeline scratch
+/art/build/
+__pycache__/
