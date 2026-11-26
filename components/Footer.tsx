@@ -1,61 +1,63 @@
-import Link from "next/link";
-import { Mail } from "lucide-react";
 import { site } from "@/lib/site";
-import { InstagramIcon, WhatsAppIcon } from "@/components/WhatsAppIcon";
 
+const arrow = (
+  <svg className="m-arrow" viewBox="0 0 12 12" aria-hidden="true">
+    <path className="m-arrow__stem" d="M1 6h8" />
+    <path className="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5" />
+  </svg>
+);
+
+/** footer.closing: the dealt close (close-type) and the directory (footer-columns) in one section. */
 export function Footer() {
   return (
-    <footer className="footer on-dark">
+    <footer className="footer closing" id="contact" aria-labelledby="close-h">
       <div className="wrap">
-        <div className="footer-grid">
-          <div className="grid gap-5 content-start">
-            <span className="logo" style={{ width: 128, background: "#d8bd8a" }} role="img" aria-label="Pura" />
-            <p className="m-0 max-w-[30ch] text-[15px] text-[rgba(233,223,210,0.75)]">
-              Eau de parfum for her and for him. {site.tagline}.
-            </p>
+        <div className="closing__cta close--type">
+          <div className="section-head">
+            <h2 id="close-h">Questions before you choose? Ask us.</h2>
+            <p>Write on WhatsApp and a person replies with notes, sizes and delivery for your city.</p>
           </div>
-          <div>
-            <h3>Shop</h3>
-            <ul>
-              <li><Link href="/shop/">All fragrances</Link></li>
-              <li><Link href="/shop/her/">For Her</Link></li>
-              <li><Link href="/shop/him/">For Him</Link></li>
-              <li><Link href="/fragrance/pura-symphony/">Pura Symphony</Link></li>
-            </ul>
-          </div>
-          <div>
-            <h3>Help</h3>
-            <ul>
-              <li><Link href="/#order">How to order</Link></li>
-              <li><Link href="/#sizes">Sizes and gifts</Link></li>
-              <li><Link href="/#finder">Find your scent</Link></li>
-              <li><Link href="/#faq">Questions</Link></li>
-            </ul>
-          </div>
-          <div>
-            <h3>Talk to us</h3>
-            <ul>
-              <li>
-                <a href={`https://wa.me/${site.whatsapp}`} target="_blank" rel="noreferrer">
-                  <WhatsAppIcon /> WhatsApp {site.whatsappDisplay}
-                </a>
-              </li>
-              <li>
-                <a href={`mailto:${site.email}`}>
-                  <Mail size={18} strokeWidth={1.4} /> {site.email}
-                </a>
-              </li>
-              <li>
-                <a href={site.instagram} target="_blank" rel="noreferrer">
-                  <InstagramIcon /> Instagram {site.instagramHandle}
-                </a>
-              </li>
-            </ul>
-          </div>
+          <a className="btn btn--primary btn--xl btn--wide" href={`https://wa.me/${site.whatsapp}`} target="_blank" rel="noreferrer">
+            Chat with Pura on WhatsApp{arrow}
+          </a>
         </div>
-        <div className="footer-base">
-          <span>© {new Date().getFullYear()} {site.legal}. All rights reserved.</span>
-          <span>Delivered across India</span>
+        <div className="closing__links">
+          <div className="grid">
+            <div className="span-4 stack-4">
+              <a className="nav__logo" href="/" aria-label="Pura, home">
+                <span className="logo-mark" aria-hidden="true" />
+              </a>
+              <p className="footer__lede">Eau de parfum for her and for him, delivered across India.</p>
+            </div>
+            <div className="span-2 footer__col">
+              <h3>Shop</h3>
+              <ul>
+                <li><a href="/shop/">All fragrances</a></li>
+                <li><a href="/shop/her/">For her</a></li>
+                <li><a href="/shop/him/">For him</a></li>
+                <li><a href="/shop/unisex/">For everyone</a></li>
+              </ul>
+            </div>
+            <div className="span-2 footer__col">
+              <h3>Help</h3>
+              <ul>
+                <li><a href="/#sizes">Sizes and gifts</a></li>
+                <li><a href="/#order">Ordering</a></li>
+                <li><a href="/#faq">Questions</a></li>
+              </ul>
+            </div>
+            <div className="span-4 footer__col">
+              <h3>Contact</h3>
+              <ul>
+                <li><a href={`https://wa.me/${site.whatsapp}`} target="_blank" rel="noreferrer">WhatsApp {site.whatsappDisplay}</a></li>
+                <li><a href={`mailto:${site.email}`}>{site.email}</a></li>
+                <li><a href={site.instagram} target="_blank" rel="noreferrer">Instagram {site.instagramHandle}</a></li>
+              </ul>
+            </div>
+          </div>
+          <div className="footer__legal">
+            <span>© {new Date().getFullYear()} {site.legal}</span>
+          </div>
         </div>
       </div>
     </footer>

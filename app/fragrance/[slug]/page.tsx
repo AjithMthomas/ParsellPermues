@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ChevronLeft } from "lucide-react";
 import { AUDIENCE_LABEL, PRODUCTS, inr, packSrc, productBySlug } from "@/data/products";
 import { site } from "@/lib/site";
 import { ProductBuy } from "@/components/ProductBuy";
@@ -19,7 +17,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { slug } = await params;
   const p = productBySlug(slug);
   if (!p) return {};
-  const description = `${p.name}, ${p.family.toLowerCase()} eau de parfum ${AUDIENCE_LABEL[p.audience].toLowerCase()}. ${p.line} 30 ml ${inr(p.prices["30"])}, 100 ml ${inr(p.prices["100"])}.`;
+  const description = `${p.name}: ${p.family.toLowerCase()} eau de parfum ${AUDIENCE_LABEL[p.audience].toLowerCase()}. 30 ml ${inr(p.prices["30"])}, 100 ml ${inr(p.prices["100"])}, delivered across India.`;
   return {
     title: p.name,
     description,
@@ -33,6 +31,7 @@ export default async function FragrancePage({ params }: Params) {
   const p = productBySlug(slug);
   if (!p) notFound();
   const related = PRODUCTS.filter((x) => x.slug !== p.slug && (x.audience === p.audience || x.audience === "unisex")).slice(0, 4);
+  const back = p.audience === "unisex" ? "/shop/unisex/" : `/shop/${p.audience}/`;
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Product",
@@ -44,7 +43,7 @@ export default async function FragrancePage({ params }: Params) {
     offers: {
       "@type": "AggregateOffer",
       priceCurrency: "INR",
-      lowPrice: p.prices["30"],
+      lowPrice: p.prices["8"],
       highPrice: p.prices["100"],
       offerCount: 4,
       availability: "https://schema.org/InStock",
@@ -54,78 +53,67 @@ export default async function FragrancePage({ params }: Params) {
 
   return (
     <>
-      <section className="pdp pb-16">
+      <div className="pdp">
         <div className="wrap">
-          <Link className="link mb-4" href={p.audience === "unisex" ? "/shop/unisex/" : `/shop/${p.audience}/`}>
-            <ChevronLeft size={16} /> {AUDIENCE_LABEL[p.audience]}
-          </Link>
+          <p style={{ margin: "0 0 var(--s-5)" }}>
+            <a className="link" href={back}>
+              {AUDIENCE_LABEL[p.audience]}
+            </a>
+          </p>
           <div className="pdp-grid">
             <div>
-              <div className="pdp-hero" style={{ background: `radial-gradient(90% 70% at 50% 35%, ${p.tone[0]} 0%, ${p.tone[1]} 100%)` }}>
+              <div className="pdp-hero" style={{ background: `radial-gradient(90% 75% at 50% 35%, ${p.tone[0]}, ${p.tone[1]})` }}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={`${packSrc(p.slug)}-900.webp`}
-                  srcSet={`${packSrc(p.slug)}-480.webp 480w, ${packSrc(p.slug)}-900.webp 900w`}
-                  sizes="(min-width: 1024px) 360px, 62vw"
-                  alt={`${p.name} eau de parfum bottle`}
-                  width={900}
-                  height={1760}
-                  fetchPriority="high"
-                />
+                <img src={`/images/bottle/${p.slug}-640.webp`} srcSet={`/images/bottle/${p.slug}-360.webp 360w, /images/bottle/${p.slug}-640.webp 640w`} sizes="(min-width: 1024px) 300px, 42vw" alt={`${p.name} eau de parfum bottle`} fetchPriority="high" />
               </div>
               {p.scenes && (
                 <div className="pdp-scenes">
                   {p.scenes.map((s) => (
                     // eslint-disable-next-line @next/next/no-img-element
-                    <img key={s} src={`/images/scenes/${s}-640.webp`} srcSet={`/images/scenes/${s}-640.webp 640w, /images/scenes/${s}-1024.webp 1024w`} sizes="(min-width: 1024px) 30vw, 50vw" alt={`${p.name} with its box`} loading="lazy" />
+                    <img key={s} src={`/images/scenes/${s}-${s.endsWith("trio") ? 720 : 640}.webp`} srcSet={s.endsWith("trio") ? `/images/scenes/${s}-720.webp 720w, /images/scenes/${s}-1200.webp 1200w` : `/images/scenes/${s}-640.webp 640w, /images/scenes/${s}-1024.webp 1024w`} sizes="(min-width: 1024px) 30vw, 50vw" alt={s.endsWith("trio") ? `${p.name} with two other Pura fragrances on satin` : `${p.name} with its box`} loading="lazy" />
                   ))}
                 </div>
               )}
             </div>
-            <div className="pdp-buy grid gap-6 content-start">
-              <div className="flex flex-wrap items-center gap-2">
-                {p.bestseller && <span className="badge">Bestseller</span>}
-                {p.premium && <span className="badge">Privé</span>}
-                {p.isNew && !p.premium && <span className="badge">New</span>}
-                <span className="eyebrow">
-                  {p.code} · {AUDIENCE_LABEL[p.audience]}
-                </span>
-              </div>
+            <div className="pdp-buy">
               <div>
-                <h1 className="display h2 m-0">{p.name}</h1>
-                <p className="eyebrow mt-3 mb-0 text-ink-2!">{p.family}</p>
+                <p className="muted" style={{ margin: "0 0 var(--s-2)" }}>
+                  {p.code} · {AUDIENCE_LABEL[p.audience]}
+                  {p.bestseller ? " · Our bestseller" : p.premium ? " · Privé" : p.isNew ? " · New" : ""}
+                </p>
+                <h1>{p.name}</h1>
+                <p className="muted" style={{ margin: "var(--s-2) 0 0" }}>
+                  {p.family}
+                </p>
               </div>
-              <p className="lede m-0">
+              <p className="t-lead" style={{ margin: 0 }}>
                 {p.line} {p.description}
               </p>
               <ProductBuy p={p} />
-              <div className="pyramid mt-2">
+              <dl className="notes">
                 {(["top", "heart", "base"] as const).map((k) => (
-                  <div key={k} className="tier">
-                    <span className="k">{k}</span>
-                    <span className="v">{p.notes[k].join(", ")}</span>
+                  <div key={k}>
+                    <dt>{k[0].toUpperCase() + k.slice(1)}</dt>
+                    <dd>{p.notes[k].join(", ")}</dd>
                   </div>
                 ))}
-              </div>
+              </dl>
+            </div>
+          </div>
+          <div style={{ marginTop: "var(--s-9)" }}>
+            <div className="section-head">
+              <h2>
+                More {p.audience === "unisex" ? "to share" : AUDIENCE_LABEL[p.audience].toLowerCase()}.
+              </h2>
+            </div>
+            <div className="tiles">
+              {related.map((r) => (
+                <ProductCard key={r.slug} p={r} />
+              ))}
             </div>
           </div>
         </div>
-      </section>
-      <section className="section bg-sand" aria-labelledby="related-title">
-        <div className="wrap">
-          <div className="section-head">
-            <p className="eyebrow rule">You may also like</p>
-            <h2 id="related-title" className="display h2 m-0">
-              More <span className="script">{p.audience === "unisex" ? "to share" : AUDIENCE_LABEL[p.audience].toLowerCase()}</span>
-            </h2>
-          </div>
-          <div className="grid-products">
-            {related.map((r) => (
-              <ProductCard key={r.slug} p={r} />
-            ))}
-          </div>
-        </div>
-      </section>
+      </div>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
     </>
   );

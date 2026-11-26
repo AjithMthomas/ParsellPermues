@@ -1,29 +1,19 @@
-import Link from "next/link";
-import { AUDIENCE_LABEL, fromPrice, inr, packSrc, type Product } from "@/data/products";
+import { AUDIENCE_LABEL, fromPrice, inr, type Product } from "@/data/products";
 
 export function ProductCard({ p }: { p: Product }) {
+  const flag = p.bestseller ? "Bestseller" : p.premium ? "Privé" : p.isNew ? "New" : null;
   return (
-    <Link href={`/fragrance/${p.slug}/`} className="pcard">
-      <div className="pic" style={{ background: `linear-gradient(160deg, ${p.tone[0]} 0%, ${p.tone[1]} 100%)` }}>
+    <a href={`/fragrance/${p.slug}/`} className="ptile">
+      <div className="pic" style={{ background: `linear-gradient(165deg, ${p.tone[0]}, ${p.tone[1]})` }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={`${packSrc(p.slug)}-480.webp`}
-          srcSet={`${packSrc(p.slug)}-480.webp 480w, ${packSrc(p.slug)}-900.webp 900w`}
-          sizes="(min-width: 1200px) 200px, (min-width: 900px) 25vw, 40vw"
-          alt={`${p.name} bottle`}
-          width={480}
-          height={939}
-          loading="lazy"
-        />
-        {p.bestseller ? <span className="badge">Bestseller</span> : p.premium ? <span className="badge">Privé</span> : p.isNew ? <span className="badge">New</span> : null}
+        <img src={`/images/bottle/${p.slug}-360.webp`} srcSet={`/images/bottle/${p.slug}-360.webp 360w, /images/bottle/${p.slug}-640.webp 640w`} sizes="(min-width: 1200px) 170px, 30vw" alt={`${p.name} bottle`} loading="lazy" />
+        {flag && <span className="flag">{flag}</span>}
       </div>
-      <div>
-        <h3>{p.name}</h3>
-        <div className="row mt-1">
-          <span>{AUDIENCE_LABEL[p.audience]}</span>
-          <span>from {inr(fromPrice(p))}</span>
-        </div>
+      <h3>{p.name}</h3>
+      <div className="meta">
+        <span>{AUDIENCE_LABEL[p.audience]}</span>
+        <span>from {inr(fromPrice(p))}</span>
       </div>
-    </Link>
+    </a>
   );
 }

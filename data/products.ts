@@ -69,7 +69,7 @@ export const PRODUCTS: Product[] = [
     mood: "floral",
     time: "day",
     bestseller: true,
-    scenes: ["symphony-wide", "symphony-display"],
+    scenes: ["symphony-wide", "her-trio"],
   },
   {
     slug: "pura-obsidian",
@@ -158,6 +158,7 @@ export const PRODUCTS: Product[] = [
     mood: "floral",
     time: "day",
     isNew: true,
+    scenes: ["her-trio"],
   },
   {
     slug: "pura-bloom",
@@ -224,6 +225,7 @@ export const PRODUCTS: Product[] = [
     mood: "fresh",
     time: "day",
     isNew: true,
+    scenes: ["him-trio"],
   },
   {
     slug: "pura-ember",
@@ -246,6 +248,7 @@ export const PRODUCTS: Product[] = [
     mood: "warm",
     time: "night",
     isNew: true,
+    scenes: ["him-trio"],
   },
   {
     slug: "pura-oud-royale",

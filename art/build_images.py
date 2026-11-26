@@ -489,6 +489,7 @@ def step_bottles():
         b.save(ROOT / "art" / "build" / f"{slug}.png") if (ROOT / "art" / "build").exists() else None
         pack = packshot(b)
         save_webp(pack, OUT / "pack" / f"{slug}.webp", [900, 480], quality=84)
+        save_webp(b, OUT / "bottle" / f"{slug}.webp", [640, 360], quality=86)
         thumb = b.resize((200, round(b.height * 200 / b.width)), Image.LANCZOS)
         save_webp(thumb, OUT / "thumb" / f"{slug}.webp", [200], quality=84)
 
@@ -504,11 +505,9 @@ SCENES = {
     "obsidian-wide": ("pura-obsidian/scene.png", (0, 500, 1024, 1268)),
     "elin-lush-wide": ("pura-elin-lush/scene.png", (0, 500, 1024, 1268)),
     "iris-wide": ("pura-iris/scene.png", (0, 500, 1024, 1268)),
-    "symphony-display": ("pura-symphony/display-square.png", None),
     "obsidian-alt": ("pura-obsidian/ad.png", (0, 500, 1024, 1268)),
-    "elin-lush-alt": ("pura-elin-lush/nature.png", (0, 500, 1024, 1268)),
+    "elin-lush-alt": ("pura-elin-lush/nature.png", (0, 560, 1024, 1268)),
     "iris-alt": ("pura-iris/ad-alt.png", (0, 500, 1024, 1268)),
-    "symphony-8ml": ("pura-symphony/bottle-8ml.png", (0, 380, 1024, 1268)),
 }
 
 
@@ -639,7 +638,45 @@ def step_meta():
         icon.save(ROOT / "app" / name)
 
 
-STEPS = {"bottles": step_bottles, "scenes": step_scenes, "brand": step_brand, "grounds": step_grounds, "meta": step_meta}
+def pedestal(w=1200, h=470, seed=3):
+    """A round marble plinth: cylindrical shading, soft veins, a polished top."""
+    rng = np.random.default_rng(seed)
+    yy, xx = np.mgrid[0:h, 0:w].astype(np.float32)
+    cx, rx, ry, top, bot = w / 2, w / 2 - 6, 64.0, 70.0, h - 74.0
+    # marble field
+    def noise(scale):
+        n = rng.normal(0, 1, (h // scale + 3, w // scale + 3)).astype(np.float32)
+        n = ndi.gaussian_filter(n, 1.2)
+        return np.asarray(Image.fromarray(n, "F").resize((w, h), Image.BICUBIC))
+    turb = noise(90) * 1.0 + noise(36) * 0.5 + noise(14) * 0.25
+    veins = np.abs(np.sin(xx * 0.010 + yy * 0.016 + turb * 3.2))
+    veins = 1 - (1 - smoothstep(veins, 0.0, 0.045)) * 0.13 - (1 - smoothstep(veins, 0.0, 0.16)) * 0.04
+    base = np.array([0.965, 0.93, 0.875], np.float32)
+    col = base[None, None] * veins[..., None]
+    nx = np.clip((xx - cx) / rx, -1, 1)
+    side_shade = 0.80 + 0.21 * np.cos(np.arcsin(nx) + 0.5)
+    top_e = ((xx - cx) / rx) ** 2 + ((yy - top) / ry) ** 2
+    bot_e = ((xx - cx) / rx) ** 2 + ((yy - bot) / ry) ** 2
+    body = (np.abs(xx - cx) <= rx) & (yy >= top) & ((yy <= bot) | (bot_e <= 1))
+    topm = top_e <= 1
+    shade = np.where(topm, 1.04 - 0.10 * smoothstep(top_e, 0.2, 1.0), side_shade * (1.0 - 0.07 * smoothstep(yy, top, bot + ry)))
+    rgb = np.clip(col * shade[..., None], 0, 1)
+    # polished rim highlight
+    rim = np.exp(-((np.sqrt(top_e) - 1) ** 2) / 0.0012) * (yy > top)
+    rgb = np.clip(rgb + rim[..., None] * 0.10, 0, 1)
+    alpha = (body | topm).astype(np.float32)
+    alpha = ndi.gaussian_filter(alpha, 0.8)
+    return to_img(np.concatenate([rgb, alpha[..., None]], -1))
+
+
+def step_hero():
+    print("hero")
+    sat = satin(2400, 1350, base=(0.95, 0.90, 0.83), sheen=(0.10, 0.08, 0.05), shadow=(0.80, 0.71, 0.61), seed=17, angle=-0.42)
+    save_webp(sat, OUT / "grounds" / "satin-hero.webp", [2400, 1280], quality=80)
+    save_webp(pedestal(), OUT / "hero" / "pedestal.webp", [1200, 640], quality=86)
+
+
+STEPS = {"bottles": step_bottles, "scenes": step_scenes, "brand": step_brand, "grounds": step_grounds, "meta": step_meta, "hero": step_hero}
 
 if __name__ == "__main__":
     wanted = sys.argv[1:] or list(STEPS)

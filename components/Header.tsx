@@ -1,111 +1,141 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { AnimatePresence, motion } from "motion/react";
-import { Menu, ShoppingBag, X } from "lucide-react";
+import { usePathname } from "next/navigation";
+import { ShoppingBag } from "lucide-react";
+import { PRODUCTS, fromPrice, inr } from "@/data/products";
 import { useCart } from "@/lib/cart";
-import { site } from "@/lib/site";
 
-const LINKS = [
-  { href: "/shop/", label: "Shop all" },
-  { href: "/shop/her/", label: "For Her" },
-  { href: "/shop/him/", label: "For Him" },
-  { href: "/fragrance/pura-symphony/", label: "Symphony" },
-  { href: "/#order", label: "How to order" },
+const chev = (
+  <svg className="chev" viewBox="0 0 12 12" aria-hidden="true">
+    <path d="M3 4.5l3 3 3-3" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+);
+
+const GROUPS = [
+  { label: "For her", key: "her" as const },
+  { label: "For him", key: "him" as const },
 ];
 
-export function Logo({ width = 92 }: { width?: number }) {
-  return <span className="logo" style={{ width }} role="img" aria-label="Pura" />;
-}
-
+/** The kit's nav (nav-mega): opaque bar, one hairline, plain words, the bag as the one button. */
 export function Header() {
-  const { count, setOpen, bump } = useCart();
-  const [scrolled, setScrolled] = useState(false);
-  const [menu, setMenu] = useState(false);
+  const { count, setOpen } = useCart();
+  const [open, setMenu] = useState(false);
   const path = usePathname();
 
+  const [scrolled, setScrolled] = useState(false);
+  const [dark, setDark] = useState(false);
+  useEffect(() => setMenu(false), [path]);
+  // clear over the hero; frosted once the page moves; light text over a dark section
   useEffect(() => {
-    const on = () => setScrolled(window.scrollY > 12);
-    on();
+    let raf = 0;
+    const read = () => {
+      raf = 0;
+      setScrolled(window.scrollY > 8);
+      const el = document.elementFromPoint(window.innerWidth / 2, 80);
+      setDark(!!el?.closest(".ground-inverse, footer.footer--dark"));
+    };
+    const on = () => {
+      if (!raf) raf = requestAnimationFrame(read);
+    };
+    read();
     window.addEventListener("scroll", on, { passive: true });
-    return () => window.removeEventListener("scroll", on);
-  }, []);
-
+    window.addEventListener("resize", on);
+    return () => {
+      window.removeEventListener("scroll", on);
+      window.removeEventListener("resize", on);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, [path]);
   useEffect(() => {
-    document.documentElement.style.overflow = menu ? "hidden" : "";
-  }, [menu]);
+    document.documentElement.style.overflow = open ? "hidden" : "";
+  }, [open]);
+
+  const close = () => setMenu(false);
 
   return (
-    <>
-      <header className={`header ${scrolled || path !== "/" ? "scrolled" : ""}`}>
-        <div className="wrap">
-          <Link href="/" aria-label="Pura, home" className="flex items-center min-h-11">
-            <Logo />
-          </Link>
-          <nav className="nav" aria-label="Main">
-            {LINKS.map((l) => (
-              <Link key={l.href} href={l.href} aria-current={path === l.href ? "page" : undefined}>
-                {l.label}
-              </Link>
-            ))}
-          </nav>
-          <div className="flex items-center gap-1">
-            <motion.button
-              key={bump}
-              className="icon-btn relative"
-              onClick={() => setOpen(true)}
-              aria-label={`Open bag, ${count} ${count === 1 ? "item" : "items"}`}
-              initial={bump ? { scale: 0.8 } : false}
-              animate={{ scale: 1 }}
-              transition={{ type: "spring", stiffness: 500, damping: 14 }}
-            >
-              <ShoppingBag />
-              {count > 0 && <span className="bag-count">{count}</span>}
-            </motion.button>
-            <button className="icon-btn menu-btn" onClick={() => setMenu(true)} aria-label="Open menu" aria-expanded={menu}>
-              <Menu />
-            </button>
+    <header className={`nav nav--clear${open ? " is-open" : ""}${scrolled ? " is-scrolled" : ""}${dark && !open ? " is-dark" : ""}`}>
+      <div className="wrap nav__bar">
+        <a className="skip-link" href="#top">
+          Skip to content
+        </a>
+        <a className="nav__logo" href="/" aria-label="Pura, home">
+          <span className="logo-mark" aria-hidden="true" />
+        </a>
+        <nav className="nav__links" aria-label="Main">
+          <div className="nav__item">
+            <a className="nav__link" href="/shop/" onClick={close}>
+              Fragrances {chev}
+            </a>
+            <div className="nav__menu">
+              <div className="wrap grid">
+                {GROUPS.map((g) => (
+                  <div className="menu-col span-3" key={g.key}>
+                    <p className="t-label">{g.label}</p>
+                    {PRODUCTS.filter((p) => p.audience === g.key).map((p) => (
+                      <a key={p.slug} href={`/fragrance/${p.slug}/`} onClick={close}>
+                        {p.short}
+                        <span>{p.family}</span>
+                      </a>
+                    ))}
+                  </div>
+                ))}
+                <div className="menu-col span-3">
+                  <p className="t-label">For everyone</p>
+                  {PRODUCTS.filter((p) => p.audience === "unisex").map((p) => (
+                    <a key={p.slug} href={`/fragrance/${p.slug}/`} onClick={close}>
+                      {p.short}
+                      <span>{p.family}</span>
+                    </a>
+                  ))}
+                  <a href="/shop/" onClick={close}>
+                    All twelve
+                    <span>From {inr(fromPrice(PRODUCTS[0]))}</span>
+                  </a>
+                </div>
+                <a className="menu-card span-3" href="/fragrance/pura-symphony/" onClick={close}>
+                  <div className="panel">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img className="frame__img" src="/images/scenes/symphony-arch-560.webp" alt="Pura Symphony with its ivory box and white flowers" />
+                  </div>
+                  <span className="t-card">Symphony, our bestseller</span>
+                  <span className="t-small muted">Bergamot, magnolia and golden amber</span>
+                </a>
+              </div>
+            </div>
           </div>
+          <div className="nav__item">
+            <a className="nav__link" href="/shop/her/" aria-current={path === "/shop/her/" ? "page" : undefined} onClick={close}>
+              Her
+            </a>
+          </div>
+          <div className="nav__item">
+            <a className="nav__link" href="/shop/him/" aria-current={path === "/shop/him/" ? "page" : undefined} onClick={close}>
+              Him
+            </a>
+          </div>
+          <div className="nav__item">
+            <a className="nav__link" href="/#sizes" onClick={close}>
+              Sizes
+            </a>
+          </div>
+          <div className="nav__item">
+            <a className="nav__link" href="/#order" onClick={close}>
+              Ordering
+            </a>
+          </div>
+        </nav>
+        <div className="nav__actions">
+          <button className="btn btn--primary bag-btn" type="button" onClick={() => setOpen(true)} aria-label={`Bag, ${count} ${count === 1 ? "item" : "items"}`}>
+            <ShoppingBag aria-hidden="true" /> <span className="bag-word">Bag</span> {count > 0 && <span className="bag-n">{count}</span>}
+          </button>
         </div>
-      </header>
-
-      <AnimatePresence>
-        {menu && (
-          <motion.div
-            className="mobile-menu"
-            role="dialog"
-            aria-modal="true"
-            aria-label="Menu"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-          >
-            <div className="flex items-center justify-between">
-              <span className="logo" style={{ width: 92, background: "#d8bd8a" }} role="img" aria-label="Pura" />
-              <button className="icon-btn" onClick={() => setMenu(false)} aria-label="Close menu" aria-expanded={menu}>
-                <X />
-              </button>
-            </div>
-            <nav aria-label="Mobile" className="mt-10">
-              {LINKS.map((l, i) => (
-                <motion.div key={l.href} initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 + i * 0.05, duration: 0.5 }}>
-                  <Link href={l.href} onClick={() => setMenu(false)}>
-                    {l.label}
-                  </Link>
-                </motion.div>
-              ))}
-            </nav>
-            <div className="mt-auto grid gap-3">
-              <a className="btn btn-gold btn-block" href={`https://wa.me/${site.whatsapp}`} target="_blank" rel="noreferrer">
-                Chat on WhatsApp
-              </a>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </>
+        <button className="nav__toggle" type="button" aria-expanded={open} aria-label="Menu" onClick={() => setMenu(!open)}>
+          <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true">
+            <path d={open ? "M4 4l10 10M14 4L4 14" : "M2 5h14M2 13h14"} stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+          </svg>
+        </button>
+      </div>
+    </header>
   );
 }
