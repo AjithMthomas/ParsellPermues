@@ -5,6 +5,7 @@ import { site } from "@/lib/site";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { CartDrawer } from "@/components/CartDrawer";
+import { FlyToBag } from "@/components/FlyToBag";
 import { Moments } from "@/components/Moments";
 // The taste kit's one system (tokens, grid, type, buttons, nav, cards, motion, heroes), then the page CSS.
 import "@/styles/kit/system.css";
@@ -52,6 +53,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <main id="top">{children}</main>
           <Footer />
           <CartDrawer />
+          <FlyToBag />
           <Moments />
         </CartProvider>
       </body>

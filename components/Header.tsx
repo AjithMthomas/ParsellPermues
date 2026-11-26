@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 import { ShoppingBag } from "lucide-react";
 import { PRODUCTS, fromPrice, inr } from "@/data/products";
@@ -19,9 +19,21 @@ const GROUPS = [
 
 /** The kit's nav (nav-mega): opaque bar, one hairline, plain words, the bag as the one button. */
 export function Header() {
-  const { count, setOpen } = useCart();
+  const { count, setOpen, bump } = useCart();
   const [open, setMenu] = useState(false);
+  const [bumping, setBumping] = useState(false);
+  const prevBump = useRef(bump);
   const path = usePathname();
+
+  useEffect(() => {
+    if (bump > prevBump.current) {
+      setBumping(true);
+      const t = setTimeout(() => setBumping(false), 450);
+      prevBump.current = bump;
+      return () => clearTimeout(t);
+    }
+    prevBump.current = bump;
+  }, [bump]);
 
   const [scrolled, setScrolled] = useState(false);
   const [dark, setDark] = useState(false);
@@ -126,7 +138,7 @@ export function Header() {
           </div>
         </nav>
         <div className="nav__actions">
-          <button className="btn btn--primary bag-btn" type="button" onClick={() => setOpen(true)} aria-label={`Bag, ${count} ${count === 1 ? "item" : "items"}`}>
+          <button className={`btn btn--primary bag-btn${bumping ? " has-bump" : ""}`} type="button" onClick={() => setOpen(true)} aria-label={`Bag, ${count} ${count === 1 ? "item" : "items"}`}>
             <ShoppingBag aria-hidden="true" /> <span className="bag-word">Bag</span> {count > 0 && <span className="bag-n">{count}</span>}
           </button>
         </div>

@@ -6,7 +6,7 @@ import { useCart } from "@/lib/cart";
 export function AddButton({ slug, size, label, link }: { slug: string; size: SizeKey | "set"; label: string; link?: boolean }) {
   const { add } = useCart();
   return (
-    <button type="button" className={link ? "link" : "btn btn--primary"} onClick={() => add(slug, size)}>
+    <button type="button" className={link ? "link" : "btn btn--primary"} onClick={(e) => add(slug, size, 1, e)}>
       {label}
     </button>
   );

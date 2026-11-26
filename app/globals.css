@@ -37,36 +37,115 @@ body, main { overflow-x: clip; }
   pointer-events: none;
   z-index: 0;
 }
-.hero-silk {
+/* ---------- hero curtain: billowing like cloth in a gentle breeze */
+.hero-curtain {
   position: absolute;
-  inset: -15%;
-  background:
-    radial-gradient(ellipse 70% 45% at 20% 25%, rgba(245, 236, 222, 0.75), transparent 60%),
-    radial-gradient(ellipse 65% 55% at 80% 75%, rgba(238, 226, 206, 0.6), transparent 60%),
-    linear-gradient(135deg,
-      rgba(246, 239, 230, 0.85) 0%,
-      rgba(242, 232, 218, 0.65) 25%,
-      rgba(249, 244, 237, 0.92) 50%,
-      rgba(238, 225, 205, 0.6) 75%,
-      rgba(246, 239, 230, 0.85) 100%
-    );
-  background-size: 200% 200%;
-  animation: silkDrift 22s ease-in-out infinite alternate;
-  opacity: 0.9;
+  inset: -10%;
+  overflow: hidden;
+  pointer-events: none;
 }
-@keyframes silkDrift {
+.curtain-cloth {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  width: 118%;
+  height: 112%;
+  left: -9%;
+  top: -6%;
+}
+.curtain-pleat {
+  flex: 1 0 12.5%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    rgba(215, 185, 145, 0.28) 0%,
+    rgba(246, 239, 230, 0.72) 28%,
+    rgba(255, 252, 245, 0.92) 50%,
+    rgba(238, 222, 202, 0.65) 74%,
+    rgba(195, 155, 115, 0.35) 100%
+  );
+  transform-origin: 50% 0%;
+  will-change: transform, filter;
+  animation: capeWave 5.8s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite alternate;
+}
+
+.curtain-pleat.p1 { animation-delay: 0s; }
+.curtain-pleat.p2 { animation-delay: -0.7s; }
+.curtain-pleat.p3 { animation-delay: -1.4s; }
+.curtain-pleat.p4 { animation-delay: -2.1s; }
+.curtain-pleat.p5 { animation-delay: -2.8s; }
+.curtain-pleat.p6 { animation-delay: -3.5s; }
+.curtain-pleat.p7 { animation-delay: -4.2s; }
+.curtain-pleat.p8 { animation-delay: -4.9s; }
+
+@keyframes capeWave {
   0% {
-    transform: translate3d(0, 0, 0) scale(1) rotate(0deg);
-    background-position: 0% 0%;
+    transform: translateY(0) skewY(0deg) scaleX(1);
+    filter: brightness(1) drop-shadow(-8px 12px 14px rgba(138, 101, 50, 0.1));
   }
-  50% {
-    transform: translate3d(-2.5%, -1.5%, 0) scale(1.03) rotate(0.6deg);
-    background-position: 45% 35%;
+  35% {
+    transform: translateY(-18px) skewY(2deg) scaleX(1.05);
+    filter: brightness(1.07) drop-shadow(6px 18px 20px rgba(138, 101, 50, 0.16));
+  }
+  68% {
+    transform: translateY(14px) skewY(-1.8deg) scaleX(0.96);
+    filter: brightness(0.94) drop-shadow(-10px 8px 16px rgba(138, 101, 50, 0.12));
   }
   100% {
-    transform: translate3d(2%, 1%, 0) scale(1.02) rotate(-0.5deg);
-    background-position: 100% 75%;
+    transform: translateY(-8px) skewY(1.3deg) scaleX(1.02);
+    filter: brightness(1.04) drop-shadow(4px 14px 18px rgba(138, 101, 50, 0.14));
   }
+}
+
+.curtain-waves-svg {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 65%;
+  pointer-events: none;
+  opacity: 0.82;
+}
+.curtain-wave.wave-back {
+  animation: waveBackMotion 8.5s ease-in-out infinite alternate;
+  transform-origin: 50% 100%;
+}
+.curtain-wave.wave-front {
+  animation: waveFrontMotion 7.2s ease-in-out infinite alternate;
+  transform-origin: 50% 100%;
+}
+@keyframes waveBackMotion {
+  0% { transform: translateY(0) scaleY(1); }
+  50% { transform: translateY(-26px) scaleY(1.08); }
+  100% { transform: translateY(18px) scaleY(0.95); }
+}
+@keyframes waveFrontMotion {
+  0% { transform: translateY(0) scaleY(1); }
+  50% { transform: translateY(22px) scaleY(0.93); }
+  100% { transform: translateY(-22px) scaleY(1.07); }
+}
+
+.curtain-wind-ripple {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    115deg,
+    transparent 28%,
+    rgba(255, 255, 255, 0.04) 42%,
+    rgba(255, 250, 240, 0.28) 50%,
+    rgba(216, 189, 138, 0.15) 56%,
+    transparent 70%
+  );
+  transform: translateX(-120%) skewX(-18deg);
+  animation: breezeWind 11s ease-in-out infinite;
+  mix-blend-mode: overlay;
+}
+@keyframes breezeWind {
+  0% { transform: translateX(-120%) skewX(-18deg); opacity: 0; }
+  25% { opacity: 0.8; }
+  50% { transform: translateX(140%) skewX(-18deg); opacity: 0.8; }
+  100% { transform: translateX(140%) skewX(-18deg); opacity: 0; }
 }
 
 .hero-orbs {
@@ -201,13 +280,18 @@ body, main { overflow-x: clip; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .hero-silk,
+  .curtain-pleat,
+  .curtain-wave,
+  .curtain-wave-back,
+  .curtain-wave-front,
+  .curtain-wind-ripple,
   .hero-orb,
   .hero-orb--1,
   .hero-orb--2,
   .hero-orb--3,
   .fleck,
-  .hero-sweep {
+  .hero-sweep,
+  .bag-btn.has-bump {
     animation: none !important;
     transition: none !important;
     transform: none !important;
@@ -599,3 +683,63 @@ main section h3, main .faq__item h3, main .pair h3 { font-size: var(--t-lead) !i
 }
 /* steps: the number above the words, so every line starts on the card's edge */
 .steps li { grid-template-columns: 1fr; }
+
+/* ---------- fly to bag animation */
+.fly-portal {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  overflow: hidden;
+}
+.flying-ghost {
+  position: fixed;
+  left: 0;
+  top: 0;
+  pointer-events: none;
+  z-index: 9999;
+  will-change: transform, opacity;
+}
+.flying-bottle-frame {
+  width: 44px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--r-sm);
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow:
+    0 10px 28px -4px rgba(34, 24, 15, 0.35),
+    0 0 18px rgba(216, 189, 138, 0.65);
+  padding: 4px;
+  border: 1px solid rgba(216, 189, 138, 0.5);
+  backdrop-filter: blur(4px);
+}
+.flying-bottle-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.25));
+}
+.flying-trail {
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(216, 189, 138, 0.75) 0%, rgba(216, 189, 138, 0) 70%);
+  filter: blur(5px);
+  z-index: -1;
+}
+
+/* Bag button pulse when item lands */
+.bag-btn {
+  transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease);
+}
+.bag-btn.has-bump {
+  animation: bagBounce 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+@keyframes bagBounce {
+  0% { transform: scale(1); }
+  35% { transform: scale(1.22); box-shadow: 0 0 18px rgba(216, 189, 138, 0.85); }
+  70% { transform: scale(0.96); }
+  100% { transform: scale(1); }
+}

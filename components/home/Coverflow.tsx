@@ -117,7 +117,7 @@ export function Coverflow() {
               </div>
               <div className="btn-row">
                 <span className="price-now">{inr(p.prices[size])}</span>
-                <button type="button" className="btn btn--primary" onClick={() => add(p.slug, size)}>
+                <button type="button" className="btn btn--primary" onClick={(e) => add(p.slug, size, 1, e)}>
                   Add to bag
                 </button>
               </div>

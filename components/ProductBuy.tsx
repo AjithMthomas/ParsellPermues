@@ -36,7 +36,7 @@ export function ProductBuy({ p }: { p: Product }) {
         </span>
       </div>
       <div className="btn-row">
-        <button type="button" className="btn btn--primary" onClick={() => add(p.slug, size, qty)}>
+        <button type="button" className="btn btn--primary" onClick={(e) => add(p.slug, size, qty, e)}>
           Add to bag
         </button>
         <a className="btn btn--secondary" href={buyNow} target="_blank" rel="noreferrer">
@@ -55,7 +55,7 @@ export function ProductBuy({ p }: { p: Product }) {
             {SIZES.find((s) => s.key === size)!.label} · {inr(price)}
           </div>
         </div>
-        <button type="button" className="btn btn--primary" onClick={() => add(p.slug, size, qty)}>
+        <button type="button" className="btn btn--primary" onClick={(e) => add(p.slug, size, qty, e)}>
           Add to bag
         </button>
       </div>

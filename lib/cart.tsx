@@ -10,16 +10,32 @@ export interface Line {
   qty: number;
 }
 
+export interface FlyingItem {
+  id: string;
+  thumb: string;
+  startX: number;
+  startY: number;
+  targetX: number;
+  targetY: number;
+}
+
 interface CartApi {
   lines: Line[];
   count: number;
   subtotal: number;
   open: boolean;
   bump: number;
+  flying: FlyingItem[];
   setOpen: (v: boolean) => void;
-  add: (slug: string, size: SizeKey | "set", qty?: number) => void;
+  add: (
+    slug: string,
+    size: SizeKey | "set",
+    qty?: number,
+    source?: React.MouseEvent | HTMLElement | { x: number; y: number } | null
+  ) => void;
   setQty: (slug: string, size: SizeKey | "set", qty: number) => void;
   clear: () => void;
+  removeFlying: (id: string) => void;
 }
 
 const KEY = "pura-bag-v2";
@@ -40,6 +56,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const [lines, setLines] = useState<Line[]>([]);
   const [open, setOpen] = useState(false);
   const [bump, setBump] = useState(0);
+  const [flying, setFlying] = useState<FlyingItem[]>([]);
   const loaded = useRef(false);
 
   useEffect(() => {
@@ -63,14 +80,74 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }
   }, [lines]);
 
-  const add = useCallback((slug: string, size: SizeKey | "set", qty = 1) => {
-    setLines((ls) => {
-      const hit = ls.find((l) => l.slug === slug && l.size === size);
-      if (hit) return ls.map((l) => (l === hit ? { ...l, qty: Math.min(20, l.qty + qty) } : l));
-      return [...ls, { slug, size, qty }];
-    });
-    setBump((b) => b + 1);
+  const removeFlying = useCallback((id: string) => {
+    setFlying((items) => items.filter((it) => it.id !== id));
   }, []);
+
+  const add = useCallback(
+    (
+      slug: string,
+      size: SizeKey | "set",
+      qty = 1,
+      source?: React.MouseEvent | HTMLElement | { x: number; y: number } | null
+    ) => {
+      setLines((ls) => {
+        const hit = ls.find((l) => l.slug === slug && l.size === size);
+        if (hit) return ls.map((l) => (l === hit ? { ...l, qty: Math.min(20, l.qty + qty) } : l));
+        return [...ls, { slug, size, qty }];
+      });
+
+      try {
+        let startX = typeof window !== "undefined" ? window.innerWidth / 2 : 200;
+        let startY = typeof window !== "undefined" ? window.innerHeight / 2 : 200;
+
+        if (source) {
+          if ("clientX" in source && typeof source.clientX === "number") {
+            startX = source.clientX;
+            startY = source.clientY;
+          } else if ("getBoundingClientRect" in source && typeof source.getBoundingClientRect === "function") {
+            const r = source.getBoundingClientRect();
+            startX = r.left + r.width / 2;
+            startY = r.top + r.height / 2;
+          } else if ("x" in source && "y" in source && typeof source.x === "number" && typeof source.y === "number") {
+            startX = source.x;
+            startY = source.y;
+          }
+        } else if (typeof document !== "undefined" && document.activeElement) {
+          const r = document.activeElement.getBoundingClientRect();
+          if (r.width > 0 && r.height > 0) {
+            startX = r.left + r.width / 2;
+            startY = r.top + r.height / 2;
+          }
+        }
+
+        const bagEl = typeof document !== "undefined" ? document.querySelector(".bag-btn") : null;
+        let targetX = typeof window !== "undefined" ? window.innerWidth - 60 : 300;
+        let targetY = 36;
+        if (bagEl) {
+          const br = bagEl.getBoundingClientRect();
+          targetX = br.left + br.width / 2;
+          targetY = br.top + br.height / 2;
+        }
+
+        const thumb =
+          slug === GIFT.slug
+            ? "/images/thumb/pura-symphony-200.webp"
+            : `/images/thumb/${slug}-200.webp`;
+
+        const id = `${Date.now()}-${Math.random()}`;
+        setFlying((items) => [...items, { id, thumb, startX, startY, targetX, targetY }]);
+
+        setTimeout(() => {
+          setBump((b) => b + 1);
+          removeFlying(id);
+        }, 680);
+      } catch {
+        setBump((b) => b + 1);
+      }
+    },
+    [removeFlying]
+  );
 
   const setQty = useCallback((slug: string, size: SizeKey | "set", qty: number) => {
     setLines((ls) =>
@@ -81,8 +158,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const value = useMemo<CartApi>(() => {
     const count = lines.reduce((n, l) => n + l.qty, 0);
     const subtotal = lines.reduce((s, l) => s + (lineInfo(l)?.unit ?? 0) * l.qty, 0);
-    return { lines, count, subtotal, open, bump, setOpen, add, setQty, clear: () => setLines([]) };
-  }, [lines, open, bump, add, setQty]);
+    return { lines, count, subtotal, open, bump, flying, setOpen, add, setQty, clear: () => setLines([]), removeFlying };
+  }, [lines, open, bump, flying, add, setQty, removeFlying]);
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }
