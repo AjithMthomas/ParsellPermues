@@ -66,7 +66,7 @@ export function Header() {
   const close = () => setMenu(false);
 
   return (
-    <header className={`nav nav--clear${open ? " is-open" : ""}${scrolled ? " is-scrolled" : ""}${dark && !open ? " is-dark" : ""}`}>
+    <header className={`nav nav--clear${open ? " is-open" : ""}${scrolled ? " is-scrolled" : " is-initial"}${dark && !open ? " is-dark" : ""}`}>
       <div className="wrap nav__bar">
         <a className="skip-link" href="#top">
           Skip to content
