@@ -37,40 +37,49 @@ export function HerHim() {
   );
 }
 
-/* ---------- four worlds: the photo-chapters moment over the client's campaign photographs */
+/* ---------- four originals: four tall campaign photos side by side, each with its name, family and price */
 export function Worlds() {
-  const ch = [
+  const originals = [
     { slug: "pura-symphony", img: "symphony-wide", alt: "Pura Symphony beside its ivory box among white flowers on marble" },
     { slug: "pura-obsidian", img: "obsidian-wide", alt: "Pura Obsidian on black stone beside its black and gold box" },
     { slug: "pura-elin-lush", img: "elin-lush-wide", alt: "Pura Elin Lush on wet rock among green leaves and white blossom" },
     { slug: "pura-iris", img: "iris-wide", alt: "Pura Iris beside its box among purple irises" },
   ];
   return (
-    <section className="section" id="worlds" data-moment="photo-chapters" aria-labelledby="worlds-h">
-      <div className="wrap mo-ph">
-        <div className="mo-ph__head">
-          <h2 id="worlds-h">Symphony, Obsidian, Elin Lush and Iris in their own light.</h2>
-          <p>The first four Pura fragrances, each with its box, in the photographs we made for them.</p>
+    <section className="section" id="worlds" aria-labelledby="worlds-h">
+      <div className="wrap">
+        <div className="section-head">
+          <h2 id="worlds-h">
+            The Four Originals. <span className="muted">Symphony, Obsidian, Elin Lush and Iris.</span>
+          </h2>
+          <p className="orig-lead">The first four Pura fragrances, each in the campaign photographs captured in their original light.</p>
         </div>
-        <ol className="mo-ph__list">
-          {ch.map((c, i) => {
+        <div className="orig-grid">
+          {originals.map((c, i) => {
             const p = productBySlug(c.slug)!;
             return (
-              <li className="mo-ph__ch" key={c.slug}>
-                <figure className="mo-ph__pic">
+              <a key={c.slug} href={`/fragrance/${p.slug}/`} className="orig-card">
+                <div className="orig-pic">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={`/images/scenes/${c.img}-1024.webp`} alt={c.alt} width={1024} height={768} loading={i === 0 ? "eager" : "lazy"} />
-                </figure>
-                <h3>
-                  <a href={`/fragrance/${p.slug}/`}>{p.name}</a>
-                </h3>
-                <p>
-                  {p.line} {p.family}, from {inr(p.prices["30"])}.
-                </p>
-              </li>
+                  <img
+                    src={`/images/scenes/${c.img}-1024.webp`}
+                    srcSet={`/images/scenes/${c.img}-640.webp 640w, /images/scenes/${c.img}-1024.webp 1024w`}
+                    sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 50vw"
+                    alt={c.alt}
+                    loading={i < 2 ? "eager" : "lazy"}
+                    width={1024}
+                    height={768}
+                  />
+                </div>
+                <div className="orig-meta">
+                  <h3 className="orig-title">{p.name}</h3>
+                  <p className="orig-fam">{p.family}</p>
+                  <span className="orig-price">From {inr(p.prices["30"])}</span>
+                </div>
+              </a>
             );
           })}
-        </ol>
+        </div>
       </div>
     </section>
   );

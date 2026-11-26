@@ -9,6 +9,27 @@ const arrow = (
 export function Hero() {
   return (
     <section className="hero hero--product" data-enter aria-labelledby="hero-h">
+      <div className="hero-bg" aria-hidden="true">
+        <div className="hero-silk" />
+        <div className="hero-orbs">
+          <span className="hero-orb hero-orb--1" />
+          <span className="hero-orb hero-orb--2" />
+          <span className="hero-orb hero-orb--3" />
+        </div>
+        <div className="hero-flecks">
+          <span className="fleck f1" />
+          <span className="fleck f2" />
+          <span className="fleck f3" />
+          <span className="fleck f4" />
+          <span className="fleck f5" />
+          <span className="fleck f6" />
+          <span className="fleck f7" />
+          <span className="fleck f8" />
+          <span className="fleck f9" />
+          <span className="fleck f10" />
+        </div>
+        <div className="hero-sweep" />
+      </div>
       <div className="wrap">
         <div className="hero-text hero__in">
           <div className="hero__head">

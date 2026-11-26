@@ -174,9 +174,6 @@ export function Coverflow() {
         </motion.div>
 
         <div className="flow-ctrl">
-          <span className="count" aria-hidden="true">
-            {index + 1} of {list.length}
-          </span>
           <span className="flow-arrows">
             <button type="button" className="round" onClick={() => go(index - 1)} aria-label="Previous fragrance" disabled={index === 0}>
               <ChevronLeft />
@@ -195,9 +192,11 @@ function Card({ q }: { q: (typeof PRODUCTS)[number] }) {
   return (
     <>
       <span className="ground" style={{ background: `linear-gradient(165deg, ${q.tone[0]}, ${q.tone[1]})` }} />
-      <span className="tag">{q.short}</span>
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img className="bottle" src={`/images/bottle/${q.slug}-360.webp`} srcSet={`/images/bottle/${q.slug}-360.webp 360w, /images/bottle/${q.slug}-640.webp 640w`} sizes="160px" alt="" draggable={false} />
+      <img className="bottle" src={`/images/bottle/${q.slug}-360.webp`} srcSet={`/images/bottle/${q.slug}-360.webp 360w, /images/bottle/${q.slug}-640.webp 640w`} sizes="(min-width: 1024px) 280px, 180px" alt="" draggable={false} />
+      <div className="fcard-shade">
+        <span className="fcard-name">{q.name}</span>
+      </div>
     </>
   );
 }
