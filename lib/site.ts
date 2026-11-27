@@ -10,6 +10,8 @@ export const site = {
   email: "hello@puraperfumes.com",
   instagram: "https://www.instagram.com/parsell.in/",
   instagramHandle: "@parsell.in",
-  // Google Sheets Webhook URL read securely from environment
-  googleSheetWebhookUrl: process.env.NEXT_PUBLIC_GOOGLE_SHEET_WEBHOOK_URL || "",
+  // Google Sheets Webhook URL for live order logging
+  googleSheetWebhookUrl:
+    process.env.NEXT_PUBLIC_GOOGLE_SHEET_WEBHOOK_URL ||
+    "https://script.google.com/macros/s/AKfycbxVq3HKpURgUxJyAhlbYW5WLTsCcFK_r2I68txpAP2HSuNB3gU3k_xTugr-XVNjYsnD/exec",
 };
