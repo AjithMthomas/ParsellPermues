@@ -55,6 +55,16 @@ Thumbs.db
 /out/
 next-env.d.ts
 *.tsbuildinfo
+
+# Local Environment & Secrets
+.env
+.env*.local
+
+# Local Order Data & Setup Scripts
+/data/orders.json
+GOOGLE_SHEETS_SETUP.md
+google-apps-script.js
+
 # image pipeline scratch
 /art/build/
 __pycache__/
