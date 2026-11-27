@@ -8,9 +8,13 @@ import { orderMessage, useCart, waLink } from "@/lib/cart";
 export function ProductBuy({ p }: { p: Product }) {
   const [size, setSize] = useState<SizeKey>("100");
   const [qty, setQty] = useState(1);
-  const { add } = useCart();
+  const { add, startCheckout } = useCart();
   const price = p.prices[size] * qty;
-  const buyNow = waLink(orderMessage([{ slug: p.slug, size, qty }]));
+
+  const handleBuyNow = (e: React.MouseEvent) => {
+    add(p.slug, size, qty, e);
+    startCheckout();
+  };
 
   return (
     <>
@@ -39,9 +43,9 @@ export function ProductBuy({ p }: { p: Product }) {
         <button type="button" className="btn btn--primary" onClick={(e) => add(p.slug, size, qty, e)}>
           Add to bag
         </button>
-        <a className="btn btn--secondary" href={buyNow} target="_blank" rel="noreferrer">
+        <button type="button" className="btn btn--secondary" onClick={handleBuyNow}>
           Buy now on WhatsApp
-        </a>
+        </button>
       </div>
       <p className="t-small muted" style={{ margin: 0 }}>
         {size === "8" ? "Three 8 ml bottles of this fragrance. " : ""}Delivered across India; we confirm your order in the chat.

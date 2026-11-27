@@ -2,16 +2,53 @@
 
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { Check, Minus, Plus, X } from "lucide-react";
+import { ArrowLeft, Check, Minus, Plus, ShoppingBag, X } from "lucide-react";
 import { inr } from "@/data/products";
-import { lineInfo, orderMessage, useCart, waLink } from "@/lib/cart";
+import { lineInfo, orderMessage, useCart, waLink, type CustomerData } from "@/lib/cart";
+import { site } from "@/lib/site";
 
 export function CartDrawer() {
-  const { lines, open, setOpen, setQty, subtotal, bump } = useCart();
+  const { lines, open, checkoutOpen, setOpen, setCheckoutOpen, setQty, subtotal, bump, clear } = useCart();
   const [toast, setToast] = useState(false);
+  const [step, setStep] = useState<"bag" | "details" | "success">("bag");
+
+  // Customer delivery details state
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [city, setCity] = useState("");
+  const [address, setAddress] = useState("");
+  const [note, setNote] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [orderId, setOrderId] = useState("");
+  const [lastWaUrl, setLastWaUrl] = useState("");
+
   const first = useRef(true);
   const closeRef = useRef<HTMLButtonElement>(null);
 
+  // Sync checkoutOpen from cart context
+  useEffect(() => {
+    if (checkoutOpen) {
+      setStep("details");
+    }
+  }, [checkoutOpen]);
+
+  // Load saved customer details from localStorage
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("pura_customer_v1");
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed.name) setName(parsed.name);
+        if (parsed.phone) setPhone(parsed.phone);
+        if (parsed.city) setCity(parsed.city);
+        if (parsed.address) setAddress(parsed.address);
+      }
+    } catch {
+      /* ignore */
+    }
+  }, []);
+
+  // Toast indicator on item add
   useEffect(() => {
     if (first.current) {
       first.current = false;
@@ -24,8 +61,16 @@ export function CartDrawer() {
     return () => clearTimeout(t);
   }, [bump]);
 
+  // Drawer accessibility & body scroll lock
   useEffect(() => {
-    if (!open) return;
+    if (!open) {
+      // Reset checkout step when drawer completely closes
+      const t = setTimeout(() => {
+        setCheckoutOpen(false);
+        setStep("bag");
+      }, 300);
+      return () => clearTimeout(t);
+    }
     closeRef.current?.focus();
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
     window.addEventListener("keydown", onKey);
@@ -34,14 +79,125 @@ export function CartDrawer() {
       window.removeEventListener("keydown", onKey);
       document.documentElement.style.overflow = "";
     };
-  }, [open, setOpen]);
+  }, [open, setOpen, setCheckoutOpen]);
+
+  // Handle Order Submit: save to Google Sheet & API, then open WhatsApp
+  const handleOrderSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!name.trim() || !phone.trim() || !city.trim()) return;
+
+    setSubmitting(true);
+    const newOrderId = `PUR-${Math.floor(1000 + Math.random() * 9000)}`;
+    setOrderId(newOrderId);
+
+    // Save customer info locally for subsequent orders
+    try {
+      localStorage.setItem("pura_customer_v1", JSON.stringify({ name, phone, city, address }));
+    } catch {
+      /* ignore */
+    }
+
+    const customerData: CustomerData = {
+      name: name.trim(),
+      phone: phone.trim(),
+      city: city.trim(),
+      address: address.trim(),
+      note: note.trim(),
+      orderId: newOrderId,
+    };
+
+    const itemsList = lines.map((l) => {
+      const info = lineInfo(l);
+      return {
+        name: info?.name || l.slug,
+        size: info?.size || l.size,
+        qty: l.qty,
+        unitPrice: info?.unit || 0,
+        totalPrice: (info?.unit || 0) * l.qty,
+      };
+    });
+
+    const summary = lines
+      .map((l) => {
+        const info = lineInfo(l);
+        return `${info?.name} (${info?.size}) × ${l.qty}`;
+      })
+      .join(" · ");
+
+    // 1. Post to API to log into Google Sheet & local data/orders.json
+    try {
+      await fetch("/api/order/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          orderId: newOrderId,
+          createdAt: new Date().toISOString(),
+          customer: customerData,
+          items: itemsList,
+          itemsSummary: summary,
+          totalAmount: subtotal,
+          totalFormatted: inr(subtotal),
+        }),
+      });
+    } catch (err) {
+      console.error("[Order] Failed to log order details via API:", err);
+    }
+
+    // Direct client-side sync fallback (works 100% on static export hosting like Vercel/GitHub Pages)
+    const publicWebhook = process.env.NEXT_PUBLIC_GOOGLE_SHEET_WEBHOOK_URL || site.googleSheetWebhookUrl;
+    if (publicWebhook && publicWebhook.trim() !== "") {
+      try {
+        await fetch(publicWebhook, {
+          method: "POST",
+          mode: "no-cors",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            orderId: newOrderId,
+            timestamp: new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }),
+            name: customerData.name,
+            phone: customerData.phone,
+            city: customerData.city,
+            address: customerData.address || "",
+            items: summary,
+            total: inr(subtotal),
+            status: "New (WhatsApp)",
+            note: customerData.note || "",
+          }),
+        });
+      } catch (clientErr) {
+        console.error("[Order] Failed to sync directly to Google Sheet:", clientErr);
+      }
+    }
+
+    // 2. Prepare WhatsApp URL with complete structured details
+    const waUrl = waLink(orderMessage(lines, customerData));
+    setLastWaUrl(waUrl);
+    setSubmitting(false);
+    setStep("success");
+
+    // 3. Open WhatsApp
+    try {
+      const w = window.open(waUrl, "_blank");
+      if (!w || w.closed || typeof w.closed === "undefined") {
+        window.location.href = waUrl;
+      }
+    } catch {
+      window.location.href = waUrl;
+    }
+  };
 
   return (
     <>
       <AnimatePresence>
         {open && (
           <>
-            <motion.div className="drawer-back" onClick={() => setOpen(false)} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} />
+            <motion.div
+              className="drawer-back"
+              onClick={() => setOpen(false)}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            />
             <motion.aside
               className="drawer"
               role="dialog"
@@ -52,72 +208,268 @@ export function CartDrawer() {
               exit={{ x: "100%" }}
               transition={{ type: "spring", stiffness: 320, damping: 36 }}
             >
+              {/* Drawer Header */}
               <div className="drawer-head">
-                <h2 id="bag-h">Your bag</h2>
-                <button ref={closeRef} type="button" className="icon-x" onClick={() => setOpen(false)} aria-label="Close the bag">
+                {step === "details" ? (
+                  <button
+                    type="button"
+                    className="btn-back-bag"
+                    onClick={() => {
+                      setStep("bag");
+                      setCheckoutOpen(false);
+                    }}
+                    aria-label="Back to bag"
+                  >
+                    <ArrowLeft size={16} /> Back to bag
+                  </button>
+                ) : (
+                  <h2 id="bag-h">{step === "success" ? "Order Confirmed" : "Your bag"}</h2>
+                )}
+                <button
+                  ref={closeRef}
+                  type="button"
+                  className="icon-x"
+                  onClick={() => setOpen(false)}
+                  aria-label="Close"
+                >
                   <X size={20} />
                 </button>
               </div>
-              <div className="drawer-body">
-                {lines.length === 0 ? (
-                  <div style={{ padding: "64px 0", display: "grid", gap: 24, justifyItems: "start" }}>
-                    <p style={{ margin: 0 }}>Your bag is empty. Twelve fragrances are a tap away.</p>
-                    <a className="btn btn--primary" href="/shop/" onClick={() => setOpen(false)}>
-                      Browse the fragrances
-                    </a>
-                  </div>
-                ) : (
-                  lines.map((l) => {
-                    const info = lineInfo(l);
-                    if (!info) return null;
-                    return (
-                      <div key={l.slug + l.size} className="bag-line">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={info.thumb} alt="" width={60} height={84} />
-                        <div>
-                          <div className="name">{info.name}</div>
-                          <div className="muted t-small">{info.size}</div>
-                          <div className="qty" style={{ height: 40, marginTop: 8 }} aria-label={`Quantity of ${info.name}`}>
-                            <button type="button" style={{ height: 38 }} onClick={() => setQty(l.slug, l.size, l.qty - 1)} aria-label="One less">
-                              <Minus size={15} />
-                            </button>
-                            <span aria-live="polite">{l.qty}</span>
-                            <button type="button" style={{ height: 38 }} onClick={() => setQty(l.slug, l.size, l.qty + 1)} aria-label="One more">
-                              <Plus size={15} />
-                            </button>
+
+              {/* Drawer Body: Step 1 - Bag Items */}
+              {step === "bag" && (
+                <>
+                  <div className="drawer-body">
+                    {lines.length === 0 ? (
+                      <div style={{ padding: "64px 0", display: "grid", gap: 24, justifyItems: "start" }}>
+                        <p style={{ margin: 0 }}>Your bag is empty. Twelve fragrances are a tap away.</p>
+                        <a className="btn btn--primary" href="/shop/" onClick={() => setOpen(false)}>
+                          Browse the fragrances
+                        </a>
+                      </div>
+                    ) : (
+                      lines.map((l) => {
+                        const info = lineInfo(l);
+                        if (!info) return null;
+                        return (
+                          <div key={l.slug + l.size} className="bag-line">
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img src={info.thumb} alt="" width={60} height={84} />
+                            <div>
+                              <div className="name">{info.name}</div>
+                              <div className="muted t-small">{info.size}</div>
+                              <div className="qty" style={{ height: 40, marginTop: 8 }} aria-label={`Quantity of ${info.name}`}>
+                                <button
+                                  type="button"
+                                  style={{ height: 38 }}
+                                  onClick={() => setQty(l.slug, l.size, l.qty - 1)}
+                                  aria-label="One less"
+                                >
+                                  <Minus size={15} />
+                                </button>
+                                <span aria-live="polite">{l.qty}</span>
+                                <button
+                                  type="button"
+                                  style={{ height: 38 }}
+                                  onClick={() => setQty(l.slug, l.size, l.qty + 1)}
+                                  aria-label="One more"
+                                >
+                                  <Plus size={15} />
+                                </button>
+                              </div>
+                            </div>
+                            <div style={{ textAlign: "right" }}>
+                              <div className="name">{inr(info.unit * l.qty)}</div>
+                              <button
+                                type="button"
+                                className="link"
+                                style={{ minHeight: 44 }}
+                                onClick={() => setQty(l.slug, l.size, 0)}
+                              >
+                                Remove
+                              </button>
+                            </div>
                           </div>
+                        );
+                      })
+                    )}
+                  </div>
+                  {lines.length > 0 && (
+                    <div className="drawer-foot">
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
+                        <span className="muted">Total</span>
+                        <span className="price-now" style={{ fontSize: 32 }}>
+                          {inr(subtotal)}
+                        </span>
+                      </div>
+                      <button
+                        type="button"
+                        className="btn btn--primary btn-wa"
+                        onClick={() => setStep("details")}
+                        style={{ height: 46 }}
+                      >
+                        Place order on WhatsApp →
+                      </button>
+                      <p className="t-small muted" style={{ margin: 0, textAlign: "center" }}>
+                        We confirm delivery details and stock in chat.
+                      </p>
+                    </div>
+                  )}
+                </>
+              )}
+
+              {/* Drawer Body: Step 2 - Delivery Details Form */}
+              {step === "details" && (
+                <>
+                  <div className="drawer-body">
+                    <form id="checkout-form" className="checkout-form" onSubmit={handleOrderSubmit}>
+                      <div>
+                        <h3 style={{ margin: "0 0 6px", fontSize: 22, fontFamily: "var(--font-display)" }}>
+                          Delivery details
+                        </h3>
+                        <p className="t-small muted" style={{ margin: 0 }}>
+                          Enter your contact information so we can record your order before opening WhatsApp.
+                        </p>
+                      </div>
+
+                      <div className="field">
+                        <label htmlFor="c-name">Full name *</label>
+                        <input
+                          id="c-name"
+                          type="text"
+                          required
+                          placeholder="e.g. Ananya Sharma"
+                          value={name}
+                          onChange={(e) => setName(e.target.value)}
+                        />
+                      </div>
+
+                      <div className="field">
+                        <label htmlFor="c-phone">WhatsApp / Phone number *</label>
+                        <input
+                          id="c-phone"
+                          type="tel"
+                          required
+                          placeholder="e.g. 98765 43210"
+                          value={phone}
+                          onChange={(e) => setPhone(e.target.value)}
+                        />
+                      </div>
+
+                      <div className="field">
+                        <label htmlFor="c-city">City & State *</label>
+                        <input
+                          id="c-city"
+                          type="text"
+                          required
+                          placeholder="e.g. Mumbai, Maharashtra"
+                          value={city}
+                          onChange={(e) => setCity(e.target.value)}
+                        />
+                      </div>
+
+                      <div className="field">
+                        <label htmlFor="c-address">Delivery address (Optional)</label>
+                        <input
+                          id="c-address"
+                          type="text"
+                          placeholder="Street, apartment, or landmark"
+                          value={address}
+                          onChange={(e) => setAddress(e.target.value)}
+                        />
+                      </div>
+
+                      <div className="field">
+                        <label htmlFor="c-note">Special note (Optional)</label>
+                        <input
+                          id="c-note"
+                          type="text"
+                          placeholder="e.g. Gift wrap please"
+                          value={note}
+                          onChange={(e) => setNote(e.target.value)}
+                        />
+                      </div>
+
+                      {/* Order Summary box */}
+                      <div className="checkout-summary-card">
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
+                          <span className="muted t-small">Order Summary ({lines.reduce((n, l) => n + l.qty, 0)} items)</span>
+                          <span style={{ fontWeight: 600, fontSize: 16 }}>{inr(subtotal)}</span>
                         </div>
-                        <div style={{ textAlign: "right" }}>
-                          <div className="name">{inr(info.unit * l.qty)}</div>
-                          <button type="button" className="link" style={{ minHeight: 44 }} onClick={() => setQty(l.slug, l.size, 0)}>
-                            Remove
-                          </button>
+                        <div className="muted t-small" style={{ marginTop: 4, lineHeight: 1.4 }}>
+                          {lines
+                            .map((l) => `${lineInfo(l)?.name} (${lineInfo(l)?.size}) × ${l.qty}`)
+                            .join(" · ")}
                         </div>
                       </div>
-                    );
-                  })
-                )}
-              </div>
-              {lines.length > 0 && (
-                <div className="drawer-foot">
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
-                    <span className="muted">Total</span>
-                    <span className="price-now" style={{ fontSize: 32 }}>
-                      {inr(subtotal)}
-                    </span>
+                    </form>
                   </div>
-                  <a className="btn btn--primary btn-wa" href={waLink(orderMessage(lines))} target="_blank" rel="noreferrer">
-                    Place order on WhatsApp
-                  </a>
-                  <p className="t-small muted" style={{ margin: 0 }}>
-                    The chat opens with every item and the total written in. We confirm stock and delivery there.
-                  </p>
+
+                  <div className="drawer-foot">
+                    <button
+                      form="checkout-form"
+                      type="submit"
+                      className="btn btn--primary btn-wa"
+                      disabled={submitting}
+                      style={{ height: 46 }}
+                    >
+                      {submitting ? "Saving order details..." : "Continue to WhatsApp →"}
+                    </button>
+                    <p className="t-small muted" style={{ margin: 0, textAlign: "center" }}>
+                      Your order is logged and WhatsApp will open with your details pre-filled.
+                    </p>
+                  </div>
+                </>
+              )}
+
+              {/* Drawer Body: Step 3 - Order Success Confirmation */}
+              {step === "success" && (
+                <div className="drawer-body" style={{ display: "grid", alignContent: "center", padding: "48px var(--s-5)", textAlign: "center", gap: 18 }}>
+                  <div style={{ width: 56, height: 56, borderRadius: "50%", background: "#e8f5e9", color: "#2e7d32", margin: "0 auto", display: "grid", placeItems: "center" }}>
+                    <Check size={28} />
+                  </div>
+                  <div>
+                    <h3 style={{ margin: "0 0 8px", fontSize: 24, fontFamily: "var(--font-display)" }}>
+                      Order Logged!
+                    </h3>
+                    <p style={{ margin: 0, color: "var(--ink)" }}>
+                      Order reference <b>#{orderId}</b> has been recorded.
+                    </p>
+                    <p className="t-small muted" style={{ marginTop: 6 }}>
+                      We opened WhatsApp so you can send your order message. If WhatsApp did not open automatically, click below:
+                    </p>
+                  </div>
+
+                  {lastWaUrl && (
+                    <a
+                      href={lastWaUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="btn btn--primary btn-wa"
+                      style={{ height: 44 }}
+                    >
+                      Open WhatsApp Chat →
+                    </a>
+                  )}
+
+                  <button
+                    type="button"
+                    className="btn btn--secondary"
+                    onClick={() => {
+                      clear();
+                      setStep("bag");
+                      setOpen(false);
+                    }}
+                  >
+                    Done & Continue Shopping
+                  </button>
                 </div>
               )}
             </motion.aside>
           </>
         )}
       </AnimatePresence>
+
       <AnimatePresence>
         {toast && !open && (
           <motion.button

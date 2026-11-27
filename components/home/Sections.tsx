@@ -146,9 +146,12 @@ export function Sizes() {
               ))}
               <li>
                 <span className="rows__name">{GIFT.name}</span>
-                <p>
-                  {GIFT.contents.join(" and ")}, {inr(GIFT.saves)} less than apart. <AddButton slug={GIFT.slug} size="set" label="Add the duo" link />
-                </p>
+                <div className="duo-details">
+                  <p>
+                    {GIFT.contents.join(" and ")}, {inr(GIFT.saves)} less than apart.
+                  </p>
+                  <AddButton slug={GIFT.slug} size="set" label="Add the duo" className="duo-add-btn" />
+                </div>
                 <span className="rows__value">{inr(GIFT.price)}</span>
               </li>
             </ul>

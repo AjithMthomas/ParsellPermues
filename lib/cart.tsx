@@ -19,14 +19,26 @@ export interface FlyingItem {
   targetY: number;
 }
 
+export interface CustomerData {
+  name?: string;
+  phone?: string;
+  city?: string;
+  address?: string;
+  note?: string;
+  orderId?: string;
+}
+
 interface CartApi {
   lines: Line[];
   count: number;
   subtotal: number;
   open: boolean;
+  checkoutOpen: boolean;
   bump: number;
   flying: FlyingItem[];
   setOpen: (v: boolean) => void;
+  setCheckoutOpen: (v: boolean) => void;
+  startCheckout: () => void;
   add: (
     slug: string,
     size: SizeKey | "set",
@@ -55,9 +67,15 @@ function valid(l: Line) {
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [lines, setLines] = useState<Line[]>([]);
   const [open, setOpen] = useState(false);
+  const [checkoutOpen, setCheckoutOpen] = useState(false);
   const [bump, setBump] = useState(0);
   const [flying, setFlying] = useState<FlyingItem[]>([]);
   const loaded = useRef(false);
+
+  const startCheckout = useCallback(() => {
+    setOpen(true);
+    setCheckoutOpen(true);
+  }, []);
 
   useEffect(() => {
     try {
@@ -158,8 +176,23 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const value = useMemo<CartApi>(() => {
     const count = lines.reduce((n, l) => n + l.qty, 0);
     const subtotal = lines.reduce((s, l) => s + (lineInfo(l)?.unit ?? 0) * l.qty, 0);
-    return { lines, count, subtotal, open, bump, flying, setOpen, add, setQty, clear: () => setLines([]), removeFlying };
-  }, [lines, open, bump, flying, add, setQty, removeFlying]);
+    return {
+      lines,
+      count,
+      subtotal,
+      open,
+      checkoutOpen,
+      bump,
+      flying,
+      setOpen,
+      setCheckoutOpen,
+      startCheckout,
+      add,
+      setQty,
+      clear: () => setLines([]),
+      removeFlying,
+    };
+  }, [lines, open, checkoutOpen, bump, flying, add, setQty, removeFlying, startCheckout]);
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }
@@ -170,17 +203,28 @@ export function useCart() {
   return c;
 }
 
-/** The order message: every line, the total, ready to send in WhatsApp. */
-export function orderMessage(lines: Line[]) {
-  const rows: string[] = ["Hello Pura, I would like to order:", ""];
+/** The order message: customer details, every line, the total, ready to send in WhatsApp. */
+export function orderMessage(lines: Line[], customer?: CustomerData) {
+  const rows: string[] = ["Hello Pura, I would like to place an order:"];
+
+  if (customer) {
+    if (customer.orderId) rows.push(`Order ID: #${customer.orderId}`);
+    if (customer.name) rows.push(`Name: ${customer.name}`);
+    if (customer.phone) rows.push(`Phone: ${customer.phone}`);
+    if (customer.city) rows.push(`City: ${customer.city}${customer.address ? `, ${customer.address}` : ""}`);
+    if (customer.note) rows.push(`Note: ${customer.note}`);
+  }
+
+  rows.push("", "Items:");
   let total = 0;
   lines.forEach((l, i) => {
     const info = lineInfo(l);
     if (!info) return;
     total += info.unit * l.qty;
-    rows.push(`${i + 1}. ${info.name}, ${info.size}, qty ${l.qty}: ${inr(info.unit * l.qty)}`);
+    rows.push(`${i + 1}. ${info.name} (${info.size}) × ${l.qty}: ${inr(info.unit * l.qty)}`);
   });
-  rows.push("", `Total: ${inr(total)}`, "", "Please confirm availability and delivery. Thank you.");
+
+  rows.push("", `Total: ${inr(total)}`, "", "Please confirm availability and delivery. Thank you!");
   return rows.join("\n");
 }
 

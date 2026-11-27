@@ -41,9 +41,16 @@ export function Header() {
   // clear over the hero; frosted once the page moves; light text over a dark section
   useEffect(() => {
     let raf = 0;
+    let currentScrolled = false;
     const read = () => {
       raf = 0;
-      setScrolled(window.scrollY > 8);
+      const y = window.scrollY;
+      // Hysteresis: trigger scrolled at > 24px, revert at < 10px to eliminate any scroll boundary glitch
+      const nextScrolled = currentScrolled ? y > 10 : y > 24;
+      if (nextScrolled !== currentScrolled) {
+        currentScrolled = nextScrolled;
+        setScrolled(nextScrolled);
+      }
       const el = document.elementFromPoint(window.innerWidth / 2, 80);
       setDark(!!el?.closest(".ground-inverse, footer.footer--dark"));
     };

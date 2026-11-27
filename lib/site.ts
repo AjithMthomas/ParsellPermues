@@ -10,4 +10,7 @@ export const site = {
   email: "hello@puraperfumes.com",
   instagram: "https://www.instagram.com/parsell.in/",
   instagramHandle: "@parsell.in",
+  // Google Sheets Webhook URL for order monitoring (from Google Apps Script deployment)
+  googleSheetWebhookUrl:
+    "https://script.google.com/macros/s/AKfycbxVq3HKpURgUxJyAhlbYW5WLTsCcFK_r2I68txpAP2HSuNB3gU3k_xTugr-XVNjYsnD/exec",
 };
