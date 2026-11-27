@@ -19,11 +19,18 @@ const GROUPS = [
 
 /** The kit's nav (nav-mega): opaque bar, one hairline, plain words, the bag as the one button. */
 export function Header() {
-  const { count, setOpen, bump } = useCart();
+  const { count, setOpen, bump, open: cartOpen } = useCart();
   const [open, setMenu] = useState(false);
   const [bumping, setBumping] = useState(false);
   const prevBump = useRef(bump);
   const path = usePathname();
+
+  // Close navigation menu if cart drawer opens
+  useEffect(() => {
+    if (cartOpen) {
+      setMenu(false);
+    }
+  }, [cartOpen]);
 
   useEffect(() => {
     if (bump > prevBump.current) {

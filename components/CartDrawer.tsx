@@ -64,6 +64,7 @@ export function CartDrawer() {
   // Drawer accessibility & body scroll lock
   useEffect(() => {
     if (!open) {
+      document.body.classList.remove("drawer-open");
       // Reset checkout step when drawer completely closes
       const t = setTimeout(() => {
         setCheckoutOpen(false);
@@ -71,11 +72,13 @@ export function CartDrawer() {
       }, 300);
       return () => clearTimeout(t);
     }
+    document.body.classList.add("drawer-open");
     closeRef.current?.focus();
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
     window.addEventListener("keydown", onKey);
     document.documentElement.style.overflow = "hidden";
     return () => {
+      document.body.classList.remove("drawer-open");
       window.removeEventListener("keydown", onKey);
       document.documentElement.style.overflow = "";
     };
@@ -173,6 +176,7 @@ export function CartDrawer() {
     const waUrl = waLink(orderMessage(lines, customerData));
     setLastWaUrl(waUrl);
     setSubmitting(false);
+    clear(); // Clear bag since order is recorded and ready
     setStep("success");
 
     // 3. Open WhatsApp
@@ -229,7 +233,13 @@ export function CartDrawer() {
                   ref={closeRef}
                   type="button"
                   className="icon-x"
-                  onClick={() => setOpen(false)}
+                  onClick={() => {
+                    if (step === "success") {
+                      clear();
+                      setStep("bag");
+                    }
+                    setOpen(false);
+                  }}
                   aria-label="Close"
                 >
                   <X size={20} />
@@ -424,8 +434,32 @@ export function CartDrawer() {
 
               {/* Drawer Body: Step 3 - Order Success Confirmation */}
               {step === "success" && (
-                <div className="drawer-body" style={{ display: "grid", alignContent: "center", padding: "48px var(--s-5)", textAlign: "center", gap: 18 }}>
-                  <div style={{ width: 56, height: 56, borderRadius: "50%", background: "#e8f5e9", color: "#2e7d32", margin: "0 auto", display: "grid", placeItems: "center" }}>
+                <div
+                  className="drawer-body drawer-body--success"
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    padding: "32px var(--s-5) calc(32px + env(safe-area-inset-bottom, 0px))",
+                    textAlign: "center",
+                    gap: 18,
+                    minHeight: "100%",
+                  }}
+                >
+                  <div
+                    style={{
+                      width: 56,
+                      height: 56,
+                      borderRadius: "50%",
+                      background: "#e8f5e9",
+                      color: "#2e7d32",
+                      margin: "0 auto",
+                      display: "grid",
+                      placeItems: "center",
+                      flexShrink: 0,
+                    }}
+                  >
                     <Check size={28} />
                   </div>
                   <div>
@@ -435,7 +469,7 @@ export function CartDrawer() {
                     <p style={{ margin: 0, color: "var(--ink)" }}>
                       Order reference <b>#{orderId}</b> has been recorded.
                     </p>
-                    <p className="t-small muted" style={{ marginTop: 6 }}>
+                    <p className="t-small muted" style={{ marginTop: 6, maxWidth: 320, marginInline: "auto" }}>
                       We opened WhatsApp so you can send your order message. If WhatsApp did not open automatically, click below:
                     </p>
                   </div>
@@ -446,7 +480,7 @@ export function CartDrawer() {
                       target="_blank"
                       rel="noreferrer"
                       className="btn btn--primary btn-wa"
-                      style={{ height: 44 }}
+                      style={{ height: 44, width: "100%", maxWidth: 300 }}
                     >
                       Open WhatsApp Chat →
                     </a>
@@ -460,6 +494,7 @@ export function CartDrawer() {
                       setStep("bag");
                       setOpen(false);
                     }}
+                    style={{ minHeight: 44 }}
                   >
                     Done & Continue Shopping
                   </button>
