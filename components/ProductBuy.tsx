@@ -72,23 +72,14 @@ export function ProductBuy({ p }: { p: Product }) {
           margin: "var(--s-3) 0",
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 13.5, color: "var(--ink)" }}>
-          <span style={{ fontSize: 16 }}>🚚</span>
-          <span>
-            <b>Free Express Shipping</b> across India · Delivery in 2–4 business days
-          </span>
+        <div style={{ fontSize: 13.5, color: "var(--ink)", lineHeight: 1.45 }}>
+          <b>Free Express Shipping</b> across India · Delivery in 2–4 business days
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 13.5, color: "var(--ink)" }}>
-          <span style={{ fontSize: 16 }}>💵</span>
-          <span>
-            <b>Cash on Delivery (COD) & UPI</b> available on WhatsApp
-          </span>
+        <div style={{ fontSize: 13.5, color: "var(--ink)", lineHeight: 1.45 }}>
+          <b>Cash on Delivery (COD) & UPI</b> available on WhatsApp
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 13.5, color: "var(--muted)" }}>
-          <span style={{ fontSize: 16 }}>⚡</span>
-          <span>
-            {size === "8" ? "Three 8 ml bottles · " : ""}Dispatches within 24 hours · 100% Authentic Eau de Parfum
-          </span>
+        <div style={{ fontSize: 13, color: "var(--muted)", lineHeight: 1.45 }}>
+          {size === "8" ? "Three 8 ml bottles · " : ""}Dispatches within 24 hours · 100% Authentic Eau de Parfum
         </div>
       </div>
 
