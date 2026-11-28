@@ -39,7 +39,7 @@ export const metadata: Metadata = {
   other: {
     "page-type": "product",
     "site-kind": "other",
-    "facebook-domain-verification": process.env.NEXT_PUBLIC_FB_DOMAIN_VERIFICATION || "PASTE_CODE_HERE",
+    "facebook-domain-verification": "5ev3t6s8eskypavwjxwvnovz21fogv",
   },
 };
 
