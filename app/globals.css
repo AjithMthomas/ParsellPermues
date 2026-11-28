@@ -483,7 +483,41 @@ body, main { overflow-x: clip; }
 .buybar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 9; padding: 10px 16px calc(10px + env(safe-area-inset-bottom)); background: var(--bg); border-top: 1px solid var(--line); display: flex; align-items: center; gap: var(--s-3); }
 @media (min-width: 1024px) { .buybar { display: none; } }
 @media (max-width: 1023px) { body:has(.buybar) footer.closing { padding-bottom: 96px; } }
-.btn.btn-wa { background: #1f6f4a; border-color: #1f6f4a; color: #fff; }
+.btn.btn-wa,
+button.btn.btn-wa,
+a.btn.btn-wa {
+  background-color: #1a5d3f !important;
+  background: #1a5d3f !important;
+  border: 1px solid #1a5d3f !important;
+  color: #ffffff !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  text-decoration: none !important;
+  font-weight: 500 !important;
+  border-radius: var(--r-btn) !important;
+  box-shadow: 0 2px 8px rgba(26, 93, 63, 0.25) !important;
+  transition: background-color 0.2s var(--ease), transform 0.15s var(--ease), box-shadow 0.2s var(--ease) !important;
+}
+.btn.btn-wa:hover,
+button.btn.btn-wa:hover,
+a.btn.btn-wa:hover {
+  background-color: #144931 !important;
+  background: #144931 !important;
+  border-color: #144931 !important;
+  color: #ffffff !important;
+  text-decoration: none !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(26, 93, 63, 0.35) !important;
+}
+.btn.btn-wa svg,
+button.btn.btn-wa svg,
+a.btn.btn-wa svg {
+  flex-shrink: 0;
+  color: #ffffff !important;
+  fill: #ffffff !important;
+}
 
 /* ---------- bag drawer (fully elevated above header z-index: 50) */
 .drawer-back {
@@ -607,9 +641,11 @@ body, main { overflow-x: clip; }
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
 }
 
-/* When drawer is open, disable pointer events on page header as safety */
+/* When drawer is open, hide page header completely so it never overlaps drawer or close button on mobile */
 body.drawer-open header.nav {
-  pointer-events: none;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
 }
 
 /* ---------- checkout details in bag drawer */
