@@ -3,6 +3,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { GIFT, inr, productBySlug, sizeLabel, type SizeKey } from "@/data/products";
 import { site } from "@/lib/site";
+import { trackAddToCart } from "@/lib/pixel";
 
 export interface Line {
   slug: string;
@@ -114,6 +115,23 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         if (hit) return ls.map((l) => (l === hit ? { ...l, qty: Math.min(20, l.qty + qty) } : l));
         return [...ls, { slug, size, qty }];
       });
+
+      // Fire Meta Pixel AddToCart event
+      try {
+        const info = lineInfo({ slug, size, qty });
+        if (info) {
+          trackAddToCart({
+            name: info.name,
+            slug,
+            price: info.unit,
+            size: typeof info.size === "string" ? info.size : sizeLabel(size as SizeKey),
+            qty,
+            currency: "INR",
+          });
+        }
+      } catch {
+        /* ignore pixel errors */
+      }
 
       try {
         let startX = typeof window !== "undefined" ? window.innerWidth / 2 : 200;

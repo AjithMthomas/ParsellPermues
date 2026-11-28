@@ -7,6 +7,7 @@ import { Footer } from "@/components/Footer";
 import { CartDrawer } from "@/components/CartDrawer";
 import { FlyToBag } from "@/components/FlyToBag";
 import { Moments } from "@/components/Moments";
+import { MetaPixel } from "@/components/MetaPixel";
 // The taste kit's one system (tokens, grid, type, buttons, nav, cards, motion, heroes), then the page CSS.
 import "@/styles/kit/system.css";
 import "@/styles/kit/cards.css";
@@ -35,7 +36,11 @@ export const metadata: Metadata = {
   },
   twitter: { card: "summary_large_image", title, description: site.description, images: ["/og.jpg"] },
   formatDetection: { telephone: false, email: false, address: false },
-  other: { "page-type": "product", "site-kind": "other" },
+  other: {
+    "page-type": "product",
+    "site-kind": "other",
+    "facebook-domain-verification": process.env.NEXT_PUBLIC_FB_DOMAIN_VERIFICATION || "PASTE_CODE_HERE",
+  },
 };
 
 export const viewport: Viewport = { themeColor: "#f6efe6", colorScheme: "light", viewportFit: "cover" };
@@ -48,6 +53,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('m-enter');setTimeout(function(){document.documentElement.classList.add('m-enter-done')},700)" }} />
       </head>
       <body>
+        <MetaPixel />
         <CartProvider>
           <Header />
           <main id="top">{children}</main>

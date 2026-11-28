@@ -27,6 +27,7 @@ export interface OrderRequest {
   itemsSummary: string;
   totalAmount: number;
   totalFormatted: string;
+  utm?: Record<string, string>;
 }
 
 export async function POST(req: NextRequest) {
@@ -53,6 +54,7 @@ export async function POST(req: NextRequest) {
         address: (body.customer.address || "").trim(),
         note: (body.customer.note || "").trim(),
       },
+      utm: body.utm || {},
       items: body.items || [],
       itemsSummary: body.itemsSummary || "",
       totalAmount: body.totalAmount || 0,

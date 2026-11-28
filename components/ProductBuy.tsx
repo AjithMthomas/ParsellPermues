@@ -35,33 +35,85 @@ export function ProductBuy({ p }: { p: Product }) {
             <Plus size={16} />
           </button>
         </div>
-        <span className="price-now" aria-live="polite">
-          {inr(price)}
-        </span>
+        <div style={{ display: "flex", flexDirection: "column" }}>
+          <span className="price-now" aria-live="polite" style={{ lineHeight: 1 }}>
+            {inr(price)}
+          </span>
+          <span className="t-small muted" style={{ fontSize: 12, marginTop: 4 }}>
+            Inclusive of all taxes · Free Shipping
+          </span>
+        </div>
       </div>
       <div className="btn-row">
         <button type="button" className="btn btn--primary" onClick={(e) => add(p.slug, size, qty, e)}>
           Add to bag
         </button>
-        <button type="button" className="btn btn--secondary" onClick={handleBuyNow}>
-          Buy now on WhatsApp
+        <button type="button" className="btn btn--secondary btn-wa" onClick={handleBuyNow}>
+          Buy now on WhatsApp →
         </button>
       </div>
-      <p className="t-small muted" style={{ margin: 0 }}>
-        {size === "8" ? "Three 8 ml bottles of this fragrance. " : ""}Delivered across India; we confirm your order in the chat.
-      </p>
+
+      {/* Value, delivery time, and shipping & COD note */}
+      <div
+        className="pdp-delivery-card"
+        style={{
+          display: "grid",
+          gap: 10,
+          padding: "14px 16px",
+          background: "rgba(34, 24, 15, 0.03)",
+          border: "1px solid var(--line)",
+          borderRadius: "var(--r-md)",
+          margin: "var(--s-3) 0",
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 13.5, color: "var(--ink)" }}>
+          <span style={{ fontSize: 16 }}>🚚</span>
+          <span>
+            <b>Free Express Shipping</b> across India · Delivery in 2–4 business days
+          </span>
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 13.5, color: "var(--ink)" }}>
+          <span style={{ fontSize: 16 }}>💵</span>
+          <span>
+            <b>Cash on Delivery (COD) & UPI</b> available on WhatsApp
+          </span>
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 13.5, color: "var(--muted)" }}>
+          <span style={{ fontSize: 16 }}>⚡</span>
+          <span>
+            {size === "8" ? "Three 8 ml bottles · " : ""}Dispatches within 24 hours · 100% Authentic Eau de Parfum
+          </span>
+        </div>
+      </div>
+
+      {/* Mobile Sticky Action Bar: Both Add to Bag & Buy Now visible without scrolling */}
       <div className="buybar">
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <div className="name" style={{ fontFamily: "var(--font-display)", fontSize: 20, lineHeight: 1.1 }}>
+        <div style={{ flex: "0 1 auto", minWidth: 0, paddingRight: 6 }}>
+          <div className="name" style={{ fontFamily: "var(--font-display)", fontSize: 17, lineHeight: 1.1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
             {p.short}
           </div>
-          <div className="t-small muted">
-            {SIZES.find((s) => s.key === size)!.label} · {inr(price)}
+          <div className="t-small muted" style={{ fontSize: 12 }}>
+            {SIZES.find((s) => s.key === size)!.label} · <b>{inr(price)}</b>
           </div>
         </div>
-        <button type="button" className="btn btn--primary" onClick={(e) => add(p.slug, size, qty, e)}>
-          Add to bag
-        </button>
+        <div style={{ display: "flex", gap: 8, flex: 1, justifyContent: "flex-end" }}>
+          <button
+            type="button"
+            className="btn btn--secondary"
+            style={{ height: 42, padding: "0 12px", fontSize: 13, whiteSpace: "nowrap" }}
+            onClick={(e) => add(p.slug, size, qty, e)}
+          >
+            Add to bag
+          </button>
+          <button
+            type="button"
+            className="btn btn--primary btn-wa"
+            style={{ height: 42, padding: "0 12px", fontSize: 13, whiteSpace: "nowrap" }}
+            onClick={handleBuyNow}
+          >
+            Buy now →
+          </button>
+        </div>
       </div>
     </>
   );

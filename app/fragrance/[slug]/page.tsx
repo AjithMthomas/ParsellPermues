@@ -4,6 +4,7 @@ import { AUDIENCE_LABEL, PRODUCTS, inr, packSrc, productBySlug } from "@/data/pr
 import { site } from "@/lib/site";
 import { ProductBuy } from "@/components/ProductBuy";
 import { ProductCard } from "@/components/ProductCard";
+import { TrackProductView } from "@/components/TrackProductView";
 
 export const dynamicParams = false;
 
@@ -17,12 +18,36 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { slug } = await params;
   const p = productBySlug(slug);
   if (!p) return {};
-  const description = `${p.name}: ${p.family.toLowerCase()} eau de parfum ${AUDIENCE_LABEL[p.audience].toLowerCase()}. 30 ml ${inr(p.prices["30"])}, 100 ml ${inr(p.prices["100"])}, delivered across India.`;
+  const description = `${p.name}: ${p.family.toLowerCase()} eau de parfum ${AUDIENCE_LABEL[p.audience].toLowerCase()}. ${p.line} Available in 8, 30, 50, and 100 ml with Free Express Delivery across India.`;
+  const ogImageUrl = `${site.url}${packSrc(p.slug)}-900.webp`;
+  const pageUrl = `${site.url}/fragrance/${p.slug}/`;
+
   return {
-    title: p.name,
+    title: `${p.name} — Luxury Eau de Parfum | Pura`,
     description,
     alternates: { canonical: `/fragrance/${p.slug}/` },
-    openGraph: { title: `${p.name} | Pura`, description, images: [{ url: `${packSrc(p.slug)}-900.webp`, width: 900, height: 1760, alt: `${p.name} bottle` }] },
+    openGraph: {
+      title: `${p.name} — Luxury Eau de Parfum | Pura`,
+      description,
+      url: pageUrl,
+      siteName: site.name,
+      locale: "en_IN",
+      type: "website",
+      images: [
+        {
+          url: ogImageUrl,
+          width: 900,
+          height: 1760,
+          alt: `${p.name} luxury bottle and packaging`,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${p.name} — Luxury Eau de Parfum | Pura`,
+      description,
+      images: [ogImageUrl],
+    },
   };
 }
 
@@ -53,6 +78,7 @@ export default async function FragrancePage({ params }: Params) {
 
   return (
     <>
+      <TrackProductView product={p} />
       <div className="pdp">
         <div className="wrap">
           <p style={{ margin: "0 0 var(--s-5)" }}>
@@ -64,7 +90,15 @@ export default async function FragrancePage({ params }: Params) {
             <div>
               <div className="pdp-hero" style={{ background: `radial-gradient(90% 75% at 50% 35%, ${p.tone[0]}, ${p.tone[1]})` }}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={`/images/bottle/${p.slug}-640.webp`} srcSet={`/images/bottle/${p.slug}-360.webp 360w, /images/bottle/${p.slug}-640.webp 640w`} sizes="(min-width: 1024px) 300px, 42vw" alt={`${p.name} eau de parfum bottle`} fetchPriority="high" />
+                <img
+                  src={`/images/bottle/${p.slug}-640.webp`}
+                  srcSet={`/images/bottle/${p.slug}-360.webp 360w, /images/bottle/${p.slug}-640.webp 640w`}
+                  sizes="(min-width: 1024px) 300px, 42vw"
+                  width={640}
+                  height={800}
+                  alt={`${p.name} eau de parfum bottle`}
+                  fetchPriority="high"
+                />
               </div>
               {p.scenes && (
                 <div className="pdp-scenes">

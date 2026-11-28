@@ -6,6 +6,8 @@ import { ArrowLeft, Check, Minus, Plus, ShoppingBag, X } from "lucide-react";
 import { inr } from "@/data/products";
 import { lineInfo, orderMessage, useCart, waLink, type CustomerData } from "@/lib/cart";
 import { site } from "@/lib/site";
+import { trackInitiateCheckout, trackPurchase } from "@/lib/pixel";
+import { getStoredUtmParams, formatUtmSummary } from "@/lib/utm";
 
 export function CartDrawer() {
   const { lines, open, checkoutOpen, setOpen, setCheckoutOpen, setQty, subtotal, bump, clear } = useCart();
@@ -31,6 +33,18 @@ export function CartDrawer() {
       setStep("details");
     }
   }, [checkoutOpen]);
+
+  // Track Meta Pixel InitiateCheckout when entering details step
+  useEffect(() => {
+    if (step === "details" && lines.length > 0) {
+      trackInitiateCheckout({
+        value: subtotal,
+        numItems: lines.reduce((n, l) => n + l.qty, 0),
+        contentIds: lines.map((l) => l.slug),
+        currency: "INR",
+      });
+    }
+  }, [step, lines, subtotal]);
 
   // Load saved customer details from localStorage
   useEffect(() => {
@@ -100,12 +114,20 @@ export function CartDrawer() {
       /* ignore */
     }
 
+    // Retrieve stored UTM tracking parameters
+    const utms = getStoredUtmParams();
+    const utmSummary = formatUtmSummary(utms);
+
     const customerData: CustomerData = {
       name: name.trim(),
       phone: phone.trim(),
       city: city.trim(),
       address: address.trim(),
-      note: note.trim(),
+      note: note.trim()
+        ? `${note.trim()}${utmSummary ? ` | [Campaign: ${utmSummary}]` : ""}`
+        : utmSummary
+        ? `[Campaign: ${utmSummary}]`
+        : "",
       orderId: newOrderId,
     };
 
@@ -140,6 +162,7 @@ export function CartDrawer() {
           itemsSummary: summary,
           totalAmount: subtotal,
           totalFormatted: inr(subtotal),
+          utm: utms,
         }),
       });
     } catch (err) {
@@ -176,6 +199,20 @@ export function CartDrawer() {
     const waUrl = waLink(orderMessage(lines, customerData));
     setLastWaUrl(waUrl);
     setSubmitting(false);
+
+    // 3. Track Meta Pixel Purchase event (deduplicated: exactly once per order ID)
+    try {
+      trackPurchase({
+        orderId: newOrderId,
+        value: subtotal,
+        numItems: lines.reduce((n, l) => n + l.qty, 0),
+        contentIds: lines.map((l) => l.slug),
+        currency: "INR",
+      });
+    } catch {
+      /* ignore pixel errors */
+    }
+
     clear(); // Clear bag since order is recorded and ready
     setStep("success");
 
